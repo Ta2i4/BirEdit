@@ -1,6 +1,6 @@
 {-------------------------------------------------------------------------------
 BirEdit text editor.
-Copyright (C) 2008-2009 Aleksey Tatuyko
+Copyright (C) 2008-2009 Alexey Tatuyko
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-08-01.
+The Original Code is BirEdit.dpr by Alexey Tatuyko, released 2009-10-02.
 All Rights Reserved.
 
-$Id: BirEdit.dpr, v 1.3.1.468 2009/08/01 11:53:00 maelh Exp $
+$Id: BirEdit.dpr, v 1.3.2.530 2009/10/02 00:48:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.googlecode.com/
@@ -37,16 +37,15 @@ uses
   VCLFixPack,
   Forms,
   uMainFrm in 'uMainFrm.pas' {Main: TForm},
-  BirEditAdv in 'BirEditAdv.pas',
   uAboutDlg in 'uAboutDlg.pas' {About},
   uConfirmReplaceDlg in 'uConfirmReplaceDlg.pas' {ConfirmReplace},
   uEncloseSelDlg in 'uEncloseSelDlg.pas' {SelIns},
   uGoTo in 'uGoTo.pas' {GoToDlg},
-  uPrintPreviewDlg in 'uPrintPreviewDlg.pas' {Preview},
   uReplaceDlg in 'uReplaceDlg.pas',
   uSearchDlg in 'uSearchDlg.pas' {SearchForm},
   uSettingsDlg in 'uSettingsDlg.pas' {SettingsDlg},
-  uDropped in 'uDropped.pas' {DropDlg};
+  uDropped in 'uDropped.pas' {DropDlg},
+  uPrintPreview in 'uPrintPreview.pas' {PreviewDlg};
 
 {$R *.res}
 

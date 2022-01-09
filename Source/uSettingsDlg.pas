@@ -1,6 +1,6 @@
 {-------------------------------------------------------------------------------
 BirEdit text editor.
-Copyright (C) 2008-2009 Aleksey Tatuyko
+Copyright (C) 2008-2009 Alexey Tatuyko
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uSettingsDlg.pas by Aleksey Tatuyko, released 2009-08-01.
+The Original Code is uSettingsDlg.pas by Alexey Tatuyko, released 2009-10-02.
 All Rights Reserved.
 
-$Id: uSettingsDlg.pas, v 1.3.1.468 2009/08/01 12:01:00 maelh Exp $
+$Id: uSettingsDlg.pas, v 1.3.2.530 2009/10/02 00:54:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.googlecode.com/
@@ -54,6 +54,7 @@ type
     Check12: TCheckBox;
     Check13: TCheckBox;
     Check14: TCheckBox;
+    Check15: TCheckBox;
     OptsList: TCheckListBox;
     Combo1: TComboBox;
     Combo2: TComboBox;
@@ -88,6 +89,11 @@ type
     Tab4: TTabSheet;
     Tab2: TTabSheet;
     Tab3: TTabSheet;
+    grp1: TGroupBox;
+    grp2: TGroupBox;
+    Check16: TCheckBox;
+    Check17: TCheckBox;
+    Check18: TCheckBox;
     procedure FormCreate(Sender: TObject);
   private
     function GetChk1: Boolean;
@@ -104,6 +110,10 @@ type
     function GetChk12: Boolean;
     function GetChk13: Boolean;
     function GetChk14: Boolean;
+    function GetChk15: Boolean;
+    function GetChk16: Boolean;
+    function GetChk17: Boolean;
+    function GetChk18: Boolean;
     function GetSpn1: Integer;
     function GetSpn2: Integer;
     function GetSpn3: Integer;
@@ -131,6 +141,10 @@ type
     procedure SetChk12(Value: Boolean);
     procedure SetChk13(Value: Boolean);
     procedure SetChk14(Value: Boolean);
+    procedure SetChk15(Value: Boolean);
+    procedure SetChk16(Value: Boolean);
+    procedure SetChk17(Value: Boolean);
+    procedure SetChk18(Value: Boolean);
     procedure SetSpn1(Value: Integer);
     procedure SetSpn2(Value: Integer);
     procedure SetSpn3(Value: Integer);
@@ -159,6 +173,10 @@ type
     property Chk12: Boolean read GetChk12 write SetChk12;
     property Chk13: Boolean read GetChk13 write SetChk13;
     property Chk14: Boolean read GetChk14 write SetChk14;
+    property Chk15: Boolean read GetChk15 write SetChk15;
+    property Chk16: Boolean read GetChk16 write SetChk16;
+    property Chk17: Boolean read GetChk17 write SetChk17;
+    property Chk18: Boolean read GetChk18 write SetChk18;
     property Spn1: Integer read GetSpn1 write SetSpn1;
     property Spn2: Integer read GetSpn2 write SetSpn2;
     property Spn3: Integer read GetSpn3 write SetSpn3;
@@ -276,6 +294,26 @@ end;
 function TSettingsDlg.GetChk14;
 begin
   Result := Check14.Checked;
+end;
+
+function TSettingsDlg.GetChk15;
+begin
+  Result := Check15.Checked;
+end;
+
+function TSettingsDlg.GetChk16;
+begin
+  Result := Check16.Checked;
+end;
+
+function TSettingsDlg.GetChk17;
+begin
+  Result := Check17.Checked;
+end;
+
+function TSettingsDlg.GetChk18;
+begin
+  Result := Check18.Checked;
 end;
 
 function TSettingsDlg.GetCom1: Integer;
@@ -411,6 +449,26 @@ end;
 procedure TSettingsDlg.SetChk14(Value: Boolean);
 begin
   Check14.Checked := Value;
+end;
+
+procedure TSettingsDlg.SetChk15(Value: Boolean);
+begin
+  Check15.Checked := Value;
+end;
+
+procedure TSettingsDlg.SetChk16(Value: Boolean);
+begin
+  Check16.Checked := Value;
+end;
+
+procedure TSettingsDlg.SetChk17(Value: Boolean);
+begin
+  Check17.Checked := Value;
+end;
+
+procedure TSettingsDlg.SetChk18(Value: Boolean);
+begin
+  Check18.Checked := Value;
 end;
 
 procedure TSettingsDlg.SetCom1(Value: Integer);

@@ -1,6 +1,6 @@
 {-------------------------------------------------------------------------------
 BirEdit text editor.
-Copyright (C) 2008-2009 Aleksey Tatuyko
+Copyright (C) 2008-2009 Alexey Tatuyko
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uAboutDlg.pas by Aleksey Tatuyko, released 2009-08-01.
+The Original Code is uAboutDlg.pas by Alexey Tatuyko, released 2009-10-02.
 All Rights Reserved.
 
-$Id: uAboutDlg.pas, v 1.3.1.468 2009/08/01 11:53:00 maelh Exp $
+$Id: uAboutDlg.pas, v 1.3.2.530 2009/10/02 00:49:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.googlecode.com/
@@ -33,38 +33,24 @@ unit uAboutDlg;
 interface
 
 uses
-  Windows, Forms, ShellAPI, uMainFrm, Classes, Controls, ExtCtrls, StdCtrls;
+  Windows, Forms, uMainFrm, Classes, Controls, ExtCtrls, StdCtrls,
+  ComCtrls;
 
 type
   TAbout = class(TForm)
     Image1: TImage;
     lbl1: TLabel;
     lbl2: TLabel;
-    lbl3: TLabel;
-    lbl4: TLabel;
-    lbl5: TLabel;
-    lbl6: TLabel;
-    lbl7: TLabel;
-    lbl8: TLabel;
     btn1: TButton;
-    procedure lbl5Click(Sender: TObject);
-    procedure lbl7Click(Sender: TObject);
+    PageCtrl1: TPageControl;
+    Tab1: TTabSheet;
+    Tab3: TTabSheet;
+    Memo1: TMemo;
+    Memo2: TMemo;
   end;
 
 implementation
 
 {$R *.DFM}
-
-procedure TAbout.lbl5Click(Sender: TObject);
-begin
-  ShellExecute(Self.Handle, 'open', 'http://biredit.googlecode.com/', nil, nil,
-                 SW_SHOWNORMAL);
-end;
-
-procedure TAbout.lbl7Click(Sender: TObject);
-begin
-  ShellExecute(Self.Handle, 'open', 'http://biredit.freeforums.org/', nil, nil,
-                 SW_SHOWNORMAL);
-end;
 
 end.

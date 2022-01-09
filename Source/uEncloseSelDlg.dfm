@@ -16,6 +16,7 @@ object SelIns: TSelIns
   PixelsPerInch = 96
   TextHeight = 13
   object BeforeLbl: TLabel
+    Tag = 101
     Left = 8
     Top = 8
     Width = 109
@@ -23,6 +24,7 @@ object SelIns: TSelIns
     Caption = 'Insert before selection'
   end
   object AfterLbl: TLabel
+    Tag = 102
     Left = 8
     Top = 56
     Width = 101
@@ -48,7 +50,8 @@ object SelIns: TSelIns
     OnKeyDown = Edit1KeyDown
   end
   object OkBtn: TButton
-    Left = 192
+    Tag = 11
+    Left = 191
     Top = 24
     Width = 75
     Height = 25

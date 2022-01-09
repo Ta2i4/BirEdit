@@ -28,6 +28,7 @@ object DropDlg: TDropDlg
     TabOrder = 0
   end
   object BtnOpen: TButton
+    Tag = 11
     Left = 20
     Top = 335
     Width = 150
@@ -41,14 +42,17 @@ object DropDlg: TDropDlg
     Left = 288
     Top = 184
     object N1: TMenuItem
+      Tag = 2001
       Caption = 'Check all'
       OnClick = N1Click
     end
     object N2: TMenuItem
+      Tag = 2002
       Caption = 'Uncheck all'
       OnClick = N2Click
     end
     object N3: TMenuItem
+      Tag = 2003
       Caption = 'Invert'
       OnClick = N3Click
     end

@@ -16,6 +16,7 @@ object GoToDlg: TGoToDlg
   PixelsPerInch = 96
   TextHeight = 13
   object LineLbl: TLabel
+    Tag = 101
     Left = 10
     Top = 10
     Width = 19
@@ -23,6 +24,7 @@ object GoToDlg: TGoToDlg
     Caption = 'Line'
   end
   object ChrLbl: TLabel
+    Tag = 102
     Left = 10
     Top = 35
     Width = 35
@@ -37,10 +39,11 @@ object GoToDlg: TGoToDlg
     MaxValue = 1.000000000000000000
     MinValue = 1.000000000000000000
     Value = 1.000000000000000000
-    TabOrder = 1
+    TabOrder = 0
     OnKeyDown = Spin1KeyDown
   end
   object OkBtn: TButton
+    Tag = 11
     Left = 85
     Top = 65
     Width = 75
@@ -48,7 +51,7 @@ object GoToDlg: TGoToDlg
     Caption = 'OK'
     Default = True
     ModalResult = 1
-    TabOrder = 0
+    TabOrder = 2
   end
   object Spin2: TJvSpinEdit
     Left = 120
@@ -58,7 +61,7 @@ object GoToDlg: TGoToDlg
     MaxValue = 1.000000000000000000
     MinValue = 1.000000000000000000
     Value = 1.000000000000000000
-    TabOrder = 2
+    TabOrder = 1
     OnKeyDown = Spin1KeyDown
   end
 end
