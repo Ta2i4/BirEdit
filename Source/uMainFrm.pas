@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@mail.ru
 
 
-The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-24.
+The Original Code is uMainFrm.pas by Aleksey Tatuyko, released 2009-05-25.
 All Rights Reserved.
 
-$Id: uMainFrm.pas, v 1.2.1.399 2009/05/24 09:15:00 maelh Exp $
+$Id: uMainFrm.pas, v 1.2.2.400 2009/05/25 00:05:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://fireforge.net/projects/biredit/
@@ -76,7 +76,6 @@ type
     N57: TMenuItem;
     N39: TMenuItem;
     N46: TMenuItem;
-    N58: TMenuItem;
     N30: TMenuItem;
     N56: TMenuItem;
     N59: TMenuItem;
@@ -129,16 +128,12 @@ type
     N135: TMenuItem;
     SynEditRegexSearch1: TSynEditRegexSearch;
     SynEditSearch1: TSynEditSearch;
-    N138: TMenuItem;
-    N139: TMenuItem;
-    N140: TMenuItem;
     N141: TMenuItem;
     N26: TMenuItem;
     N27: TMenuItem;
     N28: TMenuItem;
     N29: TMenuItem;
     N31: TMenuItem;
-    N42: TMenuItem;
     N48: TMenuItem;
     FontDialog1: TFontDialog;
     N51: TMenuItem;
@@ -148,6 +143,11 @@ type
     Save: TSaveTextFileDialog;
     dlg1: TJvRunDialog;
     N38: TMenuItem;
+    N18: TMenuItem;
+    N33: TMenuItem;
+    N36: TMenuItem;
+    N34: TMenuItem;
+    N35: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure N2Click(Sender: TObject);
     procedure N3Click(Sender: TObject);
@@ -196,7 +196,6 @@ type
     procedure N100Click(Sender: TObject);
     procedure N102Click(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure N139Click(Sender: TObject);
     procedure N141Click(Sender: TObject);
     procedure N26Click(Sender: TObject);
     procedure N27Click(Sender: TObject);
@@ -204,7 +203,6 @@ type
     procedure N29Click(Sender: TObject);
     procedure N31Click(Sender: TObject);
     procedure Popup1Popup(Sender: TObject);
-    procedure N42Click(Sender: TObject);
     procedure N48Click(Sender: TObject);
     procedure N51Click(Sender: TObject);
     procedure N32Click(Sender: TObject);
@@ -216,6 +214,8 @@ type
     procedure EditChange(Sender: TObject);
     procedure N38Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure N18Click(Sender: TObject);
+    procedure N33Click(Sender: TObject);
   private
     fSearchFromCaret, gbSearchBackwards, gbSearchCaseSensitive,
     gbSearchFromCaret, gbSearchRegex, gbSearchSelectionOnly,
@@ -244,8 +244,8 @@ type
     procedure RecentItemClick(sender: TObject);
     procedure ReloadRecentItems;
     procedure ReplaceExecute;
-    {procedure ReplaceAgainExecute;
-    procedure ReplaceBackwardsExecute;}
+    procedure ReplaceAgainExecute;
+    procedure ReplaceBackwardsExecute;
     procedure WorkParams;
     //this procedures added in v1.2.1 :
     procedure MySetTextStr(const Value: string);
@@ -609,7 +609,17 @@ begin
   ShowSearchReplaceDialog(True);
 end;
 
-{procedure TEditor.ReplaceAgainExecute;
+procedure TEditor.N18Click(Sender: TObject);
+begin
+  ReplaceAgainExecute;
+end;
+
+procedure TEditor.N33Click(Sender: TObject);
+begin
+  ReplaceBackwardsExecute;
+end;
+
+procedure TEditor.ReplaceAgainExecute;
 begin
   gbtempSearchBackwards := False;
 	if (gsSearchText = '') then ShowSearchReplaceDialog(True)
@@ -621,7 +631,7 @@ begin
 	gbtempSearchBackwards := True;
 	if (gsSearchText = '') then ShowSearchReplaceDialog(True)
   else DoSearchReplaceText(True, True);
-end;}
+end;
 
 procedure TEditor.LoadTranslate(const lang: string);
 var
@@ -654,10 +664,10 @@ begin
   N25.Caption := N14.Caption;
   N30.Caption := langini.ReadString('Main', '16', 'Copy Add');
   N37.Caption := langini.ReadString('Main', '17', 'Dublicate Selection');
+  N18.Caption := langini.ReadString('Main', '18', 'Replace Next');
   N39.Caption := langini.ReadString('Main', '19', 'Copy All');
   N45.Caption := N39.Caption;
   N46.Caption:=langini.ReadString('Main','21','Clear Clipboard');
-  N42.Caption:=langini.ReadString('Main','22','Insert');
   N48.Caption:=langini.ReadString('Main','23','Color under cursor (RGB)');
   N49.Caption:=langini.ReadString('Main','24','Help');
   N50.Caption:=langini.ReadString('Main','25','About...');
@@ -681,7 +691,6 @@ begin
   N87.Caption:=langini.ReadString('Main','40','Unindent');
   N88.Caption:=langini.ReadString('Main','41','Block');
   N90.Caption:=langini.ReadString('Main','42','Enclose Selection');
-  N138.Caption:=langini.ReadString('Main','43','Line');
   N95.Caption:=N57.Caption;
   N96.Caption:=N46.Caption;
   N99.Caption:=langini.ReadString('Main','44','Time/Date');
@@ -689,8 +698,7 @@ begin
   mysg2:=langini.ReadString('Main','46','Text not found.');
   N104.Caption:=langini.ReadString('Main','47','Revert');
   N105.Caption:=langini.ReadString('Main','48','New');
-  N139.Caption:=langini.ReadString('Main','49','Delete');
-  N140.Caption:=langini.ReadString('Main','50','Special');
+  N36.Caption:=langini.ReadString('Main','50','Search');
   N141.Caption:=langini.ReadString('Main','51','Find mathing brace');
   N114.Caption:=langini.ReadString('Main','52','Properties');
   N51.Caption:=langini.ReadString('Main','53','Font...');
@@ -705,6 +713,7 @@ begin
   N130.Caption:=langini.ReadString('Main','62','Delete non-existent');
   N132.Caption:=langini.ReadString('Main','63','Clear list');
   N102.Caption:=langini.ReadString('Main','64','Filename and path');
+  N33.Caption := langini.ReadString('Main', '65', 'Replace Previous');
   mysg3:=StringReplace(langini.ReadString('Main','66','File has "read-only" attribute.\nSave changes to file?'),'\n',#13#10,[rfReplaceAll]);
   N26.Caption:=langini.ReadString('Main','67','Find...');
   N27.Caption:=langini.ReadString('Main','68','Find Next');
@@ -744,8 +753,28 @@ begin
 end;
 
 procedure TEditor.RecentItemClick(Sender: TObject);
+  procedure MyLoadF(fFileName: TFileName);
+  begin
+    if Edit.Modified then begin
+      case Application.MessageBox(PChar(mysg7), 'BirEdit',
+                                  MB_YESNOCANCEL + MB_ICONQUESTION) of
+        IDYES:
+          begin
+            if FileExists(MyFileName) then begin
+              MySaveFile(MyFileName, curcp);
+              MyOpenFile(fFileName);
+            end else
+            if Save.Execute then begin
+              MySaveFile(Save.FileName, Save.EncodingIndex);
+              MyOpenFile(fFileName);
+            end;
+            end;
+        IDNO: MyOpenFile(fFileName);
+      end;
+    end else MyOpenFile(fFileName);
+  end;
 begin
-  with (Sender as TMenuItem) do if FileExists(Hint) then MyOpenFile(Hint);
+  with (Sender as TMenuItem) do if FileExists(Hint) then MyLoadF(Hint);
 end;
 
 procedure TEditor.ReloadRecentItems;
@@ -872,7 +901,10 @@ begin
       IDCANCEL: CanClose := False;
       IDYES:
         begin
-          if FileExists(MyFileName) then MySaveFile(MyFileName, curcp) else
+          if FileExists(MyFileName) then begin
+            MySaveFile(MyFileName, curcp);
+            CanClose := True;
+          end else
           if Save.Execute then begin
             MySaveFile(Save.FileName, Save.EncodingIndex);
             CanClose := True;
@@ -1026,8 +1058,28 @@ begin
 end;
 
 procedure TEditor.N3Click(Sender: TObject);
+  procedure MyOpen;
+  begin
+    if Open.Execute then MyOpenFile(Open.FileName);
+  end;
 begin
-  if Open.Execute then MyOpenFile(Open.FileName);
+  if Edit.Modified then begin
+    case Application.MessageBox(PChar(mysg7), 'BirEdit',
+                                  MB_YESNOCANCEL + MB_ICONQUESTION) of
+      IDYES:
+        begin
+          if FileExists(MyFileName) then begin
+            MySaveFile(MyFileName, curcp);
+            MyOpen;
+          end else
+          if Save.Execute then begin
+            MySaveFile(Save.FileName, Save.EncodingIndex);
+            MyOpen;
+          end;
+        end;
+      IDNO: MyOpen;
+    end;
+  end else MyOpen;
 end;
 
 procedure TEditor.N4Click(Sender: TObject);
@@ -1116,11 +1168,6 @@ end;
 procedure TEditor.N29Click(Sender: TObject);
 begin
   ReplaceExecute;
-end;
-
-procedure TEditor.N42Click(Sender: TObject);
-begin
-  Edit.ExecuteCommand(510, 'A', @Edit.lines);
 end;
 
 procedure TEditor.N50Click(Sender: TObject);
@@ -1373,7 +1420,6 @@ end;
 
 procedure TEditor.N104Click(Sender: TObject);
 begin
-  Edit.ClearAll;
   MyOpenFile(MyFileName);
 end;
 
@@ -1389,9 +1435,14 @@ begin
                                   MB_YESNOCANCEL + MB_ICONQUESTION) of
       IDYES:
         begin
-          if FileExists(MyFileName) then MySaveFile(MyFileName, curcp) else
-          if Save.Execute then MySaveFile(Save.FileName, Save.EncodingIndex);
-          MyNewDoc;
+          if FileExists(MyFileName) then begin
+            MySaveFile(MyFileName, curcp);
+            MyNewDoc;
+          end else
+          if Save.Execute then begin
+            MySaveFile(Save.FileName, Save.EncodingIndex);
+            MyNewDoc;
+          end;
         end;
       IDNO: MyNewDoc;
     end;
@@ -1441,7 +1492,7 @@ end;
 
 procedure TEditor.JvTimer4Timer(Sender: TObject);
 var
-  cpas, fe, fm ,lc, red, selt, stxt, und: Boolean;
+  cpas, fe, fm ,lc, red, selt, stxt, und, stxt2: Boolean;
   capt: string;
 begin
   fe := FileExists(MyFileName);
@@ -1452,6 +1503,7 @@ begin
   red := Edit.CanRedo;
   selt := (Edit.SelLength > 0);
   stxt := not (gsSearchText = '');
+  stxt2 := not (gsReplaceText = '');
   N4.Enabled := fe;
   N7.Enabled := lc;
   N8.Enabled := lc;
@@ -1461,20 +1513,21 @@ begin
   N15.Enabled := selt;
   N16.Enabled := cpas;
   N17.Enabled := selt;
+  N18.Enabled := stxt2;
+  N33.Enabled := stxt2;
   N19.Enabled :=und;
   N20.Enabled := red;
   N22.Enabled := selt;
   N23.Enabled := selt;
   N24.Enabled := cpas;
   N25.Enabled := lc;
-  N26.Enabled := lc;
-  N27.Enabled := lc and stxt;
-  N28.Enabled := lc and stxt;
-  N29.Enabled := lc;
+  N27.Enabled := stxt;
+  N28.Enabled := stxt;
   N30.Enabled := selt;
-  N31.Enabled := lc;
+  N36.Enabled := lc;
   N37.Enabled := selt;
   N39.Enabled := lc;
+  N45.Enabled := lc;
   N46.Enabled := cpas;
   N55.Enabled := selt;
   N56.Enabled := cpas;
@@ -1493,8 +1546,6 @@ begin
   N114.Enabled := fe;
   N124.Enabled := fe;
   N127.Enabled := (N127.Count > 3);
-  N139.Enabled := lc;
-  N140.Enabled := lc;
   if fe then begin
     Status.Panels.Items[2].Text := MyBytesToStr(myfsize);
     if ExtractFilePath(MyFileName) = ''
@@ -1519,8 +1570,8 @@ begin
 end;
 
 procedure TEditor.JvDragDrop1Drop(Sender: TObject; Pos: TPoint; Value: TStrings);
-var
-  i:Integer;
+{var
+  i:Integer;}
 begin
   //for i:=0 to Value.Count-1 do begin
   //  if i=0 then begin
@@ -1586,6 +1637,7 @@ begin
   N15.Caption:='Copy';
   N16.Caption:='Paste';
   N17.Caption:='Cut';
+  N18.Caption := 'Replace Next';
   N19.Caption:=N11.Caption;
   N20.Caption:=N12.Caption;
   N22.Caption:=N17.Caption;
@@ -1599,10 +1651,11 @@ begin
   N30.Caption:='Copy Add';
   N31.Caption:='Goto...';
   N32.Caption:='Settings';
+  N33.Caption := 'Replace Previous';
+  N36.Caption := 'Search';
   N37.Caption:='Dublicate Selection';
   N38.Caption := 'Command...';
   N39.Caption:='Copy All';
-  N42.Caption:='Insert';
   N45.Caption:=N39.Caption;
   N46.Caption:='Clear Clipboard';
   N48.Caption:='Color under cursor (RGB)';
@@ -1645,9 +1698,6 @@ begin
   N127.Caption:='Recent files';
   N130.Caption:='Delete non-existent';
   N132.Caption:='Clear list';
-  N138.Caption:='Line';
-  N139.Caption:='Delete';
-  N140.Caption:='Special';
   N141.Caption:='Find mathing brace';
   Save.FileName:=myunk+'.txt';
   mylang:='';
@@ -1688,11 +1738,6 @@ end;
 procedure TEditor.N102Click(Sender: TObject);
 begin
   Edit.SelText := MyFileName;
-end;
-
-procedure TEditor.N139Click(Sender: TObject);
-begin
-  Edit.ExecuteCommand(507, 'A', @Edit.Lines);
 end;
 
 end.

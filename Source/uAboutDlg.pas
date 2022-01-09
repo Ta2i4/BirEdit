@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@mail.ru
 
 
-The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-24.
+The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-25.
 All Rights Reserved.
 
-$Id: uAboutDlg.pas, v 1.2.1.399 2009/05/24 09:17:00 maelh Exp $
+$Id: uAboutDlg.pas, v 1.2.2.400 2009/05/25 00:06:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://fireforge.net/projects/biredit/

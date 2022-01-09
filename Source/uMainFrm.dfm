@@ -260,19 +260,6 @@ object Editor: TEditor
       object N67: TMenuItem
         Caption = '-'
       end
-      object N138: TMenuItem
-        Caption = 'Line'
-        object N42: TMenuItem
-          Caption = 'Insert'
-          ShortCut = 16462
-          OnClick = N42Click
-        end
-        object N139: TMenuItem
-          Caption = 'Delete'
-          ShortCut = 16473
-          OnClick = N139Click
-        end
-      end
       object N88: TMenuItem
         Caption = 'Block'
         object N86: TMenuItem
@@ -353,17 +340,9 @@ object Editor: TEditor
           OnClick = N102Click
         end
       end
-      object N140: TMenuItem
-        Caption = 'Special'
-        object N141: TMenuItem
-          Caption = 'Find mathing brace'
-          ShortCut = 24642
-          OnClick = N141Click
-        end
-      end
-      object N58: TMenuItem
-        Caption = '-'
-      end
+    end
+    object N36: TMenuItem
+      Caption = 'Search'
       object N26: TMenuItem
         Caption = 'Find...'
         ShortCut = 16454
@@ -379,15 +358,36 @@ object Editor: TEditor
         ShortCut = 8306
         OnClick = N28Click
       end
+      object N34: TMenuItem
+        Caption = '-'
+      end
       object N29: TMenuItem
         Caption = 'Replace...'
         ShortCut = 16456
         OnClick = N29Click
       end
+      object N18: TMenuItem
+        Caption = 'Replace Next'
+        ShortCut = 16498
+        OnClick = N18Click
+      end
+      object N33: TMenuItem
+        Caption = 'Replace Previous'
+        ShortCut = 24690
+        OnClick = N33Click
+      end
+      object N35: TMenuItem
+        Caption = '-'
+      end
       object N31: TMenuItem
         Caption = 'Goto...'
         ShortCut = 16455
         OnClick = N31Click
+      end
+      object N141: TMenuItem
+        Caption = 'Find mathing brace'
+        ShortCut = 24642
+        OnClick = N141Click
       end
     end
     object N101: TMenuItem
