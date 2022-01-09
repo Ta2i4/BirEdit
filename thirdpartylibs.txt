@@ -1,0 +1,5 @@
+Used components:
+=================
+- Unicode SynEdit (http://mh-nexus.de/unisynedit.htm)
+- TNT Unicode Controls with Unicode exceptions (http://mh-nexus.de/tntunicodecontrols.htm)
+- JVCL (http://jvcl.sourceforge.net/)
