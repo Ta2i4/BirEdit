@@ -18,13 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uAboutDlg.pas by Alexey Tatuyko, released 2010-03-19.
+The Original Code is uAboutDlg.pas by Alexey Tatuyko, released 2010-10-26.
 All Rights Reserved.
 
-$Id: uAboutDlg.pas, v 2.0.0.18 2010/03/19 09:14:00 ta2i4 Exp $
+$Id: uAboutDlg.pas, v 2.0.1.42 2010/10/26 04:32:00 tatuich Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
-located at http://biredit.fireforge.net/
+located at http://biredit.googlecode.com/
 
 }
  

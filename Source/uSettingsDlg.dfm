@@ -3,7 +3,7 @@ object SettingsDlg: TSettingsDlg
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Settings'
-  ClientHeight = 373
+  ClientHeight = 372
   ClientWidth = 394
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -141,7 +141,7 @@ object SettingsDlg: TSettingsDlg
     object Tab2: TTabSheet
       Tag = 302
       Caption = 'Editor'
-      object PageCtrl2: TPageControl
+      object Tab6: TPageControl
         Left = 0
         Top = 0
         Width = 386
@@ -244,15 +244,6 @@ object SettingsDlg: TSettingsDlg
             Value = 1024.000000000000000000
             TabOrder = 1
           end
-          object Check10: TCheckBox
-            Tag = 208
-            Left = 10
-            Top = 235
-            Width = 320
-            Height = 17
-            Caption = 'Word wrap'
-            TabOrder = 10
-          end
           object Combo4: TComboBox
             Tag = 1003
             Left = 180
@@ -311,15 +302,6 @@ object SettingsDlg: TSettingsDlg
               'Half of Block'
               'Block')
           end
-          object Check1: TCheckBox
-            Tag = 207
-            Left = 10
-            Top = 215
-            Width = 320
-            Height = 17
-            Caption = 'Read only'
-            TabOrder = 9
-          end
           object Spin4: TJvSpinEdit
             Left = 10
             Top = 105
@@ -351,14 +333,46 @@ object SettingsDlg: TSettingsDlg
             MaxValue = 1024.000000000000000000
             TabOrder = 4
           end
+        end
+        object Tab7: TTabSheet
+          Tag = 304
+          Caption = 'Options'
+          ImageIndex = 2
+          object Check1: TCheckBox
+            Tag = 207
+            Left = 10
+            Top = 10
+            Width = 320
+            Height = 17
+            Caption = 'Read only'
+            TabOrder = 0
+          end
+          object Check10: TCheckBox
+            Tag = 208
+            Left = 10
+            Top = 30
+            Width = 320
+            Height = 17
+            Caption = 'Word wrap'
+            TabOrder = 1
+          end
           object Check4: TCheckBox
             Tag = 209
             Left = 10
-            Top = 255
+            Top = 50
             Width = 320
             Height = 17
             Caption = 'Paste text after caret'
-            TabOrder = 11
+            TabOrder = 2
+          end
+          object Check19: TCheckBox
+            Tag = 219
+            Left = 10
+            Top = 70
+            Width = 320
+            Height = 17
+            Caption = 'Enable active line highlight'
+            TabOrder = 3
           end
         end
         object Tab5: TTabSheet

@@ -18,13 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uPrintPreview.pas by Alexey Tatuyko, released 2010-03-24.
+The Original Code is uPrintPreview.pas by Alexey Tatuyko, released 2010-10-26.
 All Rights Reserved.
 
-$Id: uPrintPreview.pas, v 2.0.0.20 2010/03/24 02:56:00 ta2i4 Exp $
+$Id: uPrintPreview.pas, v 2.0.1.42 2010/10/26 04:35:00 tatuich Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
-located at http://biredit.fireforge.net/
+located at http://biredit.googlecode.com/
 
 }
 

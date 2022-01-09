@@ -41,7 +41,7 @@ object About: TAbout
     Top = 29
     Width = 80
     Height = 13
-    Caption = 'version 2.0.0.25'
+    Caption = 'version 2.0.1.49'
   end
   object btn1: TButton
     Left = 414
@@ -77,8 +77,8 @@ object About: TAbout
             'ic license.'
           ''
           'Project links:'
-          'http://biredit.fireforge.net/ - homepage'
-          'http://fireforge.net/projects/biredit/ - project page'
+          'http://biredit.ta2i4-lab.ru/ - homepage'
+          'http://biredit.googlecode.com/ - project page'
           ''
           'Contacts:'
           'E-mail: tatuich@gmail.com')
@@ -99,15 +99,16 @@ object About: TAbout
         Lines.Strings = (
           'Third party libs used:'
           
-            '- FastMM v4.95 2010/03/24 SVN (http://sourceforge.net/projects/f' +
+            '- FastMM v4.97 2010/10/23 SVN (http://sourceforge.net/projects/f' +
             'astmm/)'
-          '- JVCL v3.39 (http://sourceforge.net/projects/jvcl/)'
+          '- JVCL v3.40 (http://sourceforge.net/projects/jvcl/)'
           
-            '- SynEdit 2009/12/14  SVN (http://sourceforge.net/projects/syned' +
-            'it/)'
+            '- SynEdit 2010/09/14 SVN (http://sourceforge.net/projects/synedi' +
+            't/)'
           ''
           'Special thanks:'
-          '- Oleg Domani (http://viacoding.ucoz.ru/)')
+          '- Andrey Bondarenko'
+          '- Oleg Domani')
         ReadOnly = True
         ScrollBars = ssVertical
         TabOrder = 0

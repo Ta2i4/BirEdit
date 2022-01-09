@@ -1,6 +1,6 @@
 ; This is english translation for BirEdit.
 ;
-; Get the support on http://biredit.fireforge.net/
+; Get the support on http://biredit.googlecode.com/
 ;
 ; If you will found a mistakes in translation,
 ; please, post the fixes on the official forum of the program.
@@ -15,7 +15,7 @@ Name=Alexey Tatuyko
 Mail=tatuich@gmail.com
 
 [TranslationInfo]
-Ver=2.0.0.23
+Ver=2.0.1.43
 Name=English
 
 [Main]
@@ -199,6 +199,7 @@ Name=English
 216=Use colors
 217=Syntax print
 218=Line numbers
+219=Enable active line highlight
 301=Application
 302=Editor
 303=Other

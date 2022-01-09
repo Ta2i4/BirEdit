@@ -19,13 +19,13 @@ You can contact with me by e-mail: tatuich@gmail.com
 
 
 The Original Code is bireditlistfolderplugin.dpr by Alexey Tatuyko,
-released 2010-04-03.
+released 2010-10-26.
 All Rights Reserved.
 
-$Id: bireditlistfolderplugin.dpr, v 0.0.3.23 2010/04/03 04:56:00 ta2i4 Exp $
+$Id: bireditlistfolderplugin.dpr, v 0.0.4.42 2010/10/26 04:39:00 tatuich Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
-located at http://biredit.fireforge.net/
+located at http://biredit.googlecode.com/
 
 }
 

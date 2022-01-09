@@ -18,13 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uMainFrm.pas by Alexey Tatuyko, released 2010-04-03.
+The Original Code is uMainFrm.pas by Alexey Tatuyko, released 2010-10-28.
 All Rights Reserved.
 
-$Id: uMainFrm.pas, v 2.0.0.23 2010/04/03 05:01:00 ta2i4 Exp $
+$Id: uMainFrm.pas, v 2.0.1.43 2010/10/28 05:04:00 tatuich Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
-located at http://biredit.fireforge.net/
+located at http://biredit.googlecode.com/
 
 }
 
@@ -470,6 +470,7 @@ var
     ssbp,                    //  show status bar
     synh,                    //  use syntax highlight
     tray,                    //  show tray icon
+    enal,                    //  enable active line highlight
     mn_wnst,                 //  TForm.WindowState
     ed_insm,                 //  TSynEdit.InsertMode
     ed_reon,                 //  TSynEdit.ReadOnly
@@ -2387,6 +2388,7 @@ begin
                               Round((Screen.WorkAreaHeight - bor.mn_hght) / 2));
     bor.mn_wnst := beini.ReadBool('wndpos', 'maximized', False);
     bor.drag := beini.ReadBool('general', 'acceptdrag', True);
+    bor.enal := beini.ReadBool('general', 'activelinehighlight', True);
     bor.ptac := beini.ReadBool('general', 'pasteaftercaret', False);
     bor.sdfl := beini.ReadBool('general', 'scandropfolders', True);
     bor.sdsf := beini.ReadBool('general', 'scansubfolders', True);
@@ -2500,7 +2502,8 @@ begin
   if bor.synh then MySetSynByFid(0) else N74.Enabled := False;
   Recent.Capacity := bor.rfcl;
   if bor.tray then ShowTrayIcon;
-  Edit.ActiveLineColor := bor.ed_alic;
+  if bor.enal then Edit.ActiveLineColor := bor.ed_alic
+  else Edit.ActiveLineColor := clNone;
   Edit.Color := bor.ed_colr;
   Edit.ExtraLineSpacing := bor.ed_exls;
   Edit.InsertCaret := TSynEditCaretType(bor.ed_insc);
@@ -2588,6 +2591,7 @@ begin
     end;
     bor.mn_wnst := beini.ReadBool('wndpos', 'maximized', False);
     beini.WriteBool('general', 'acceptdrag', bor.drag);
+    beini.WriteBool('general', 'activelinehighlight', bor.enal);
     beini.WriteBool('general', 'pasteaftercaret', bor.ptac);
     beini.WriteBool('general', 'scandropfolders', bor.sdfl);
     beini.WriteBool('general', 'scansubfolders', bor.sdsf);
@@ -3302,6 +3306,7 @@ begin
     Chk16 := bor.pr_clrs;
     Chk17 := bor.pr_high;
     Chk18 := bor.pr_lnum;
+    Chk19 := bor.enal;
     Spn1 := Recent.Capacity;
     Spn2 := Edit.MaxScrollWidth;
     Spn3 := Edit.MaxUndo;
@@ -3357,6 +3362,9 @@ begin
       bor.pr_clrs := Chk16;
       bor.pr_high := Chk17;
       bor.pr_lnum := Chk18;
+      bor.enal := Chk19;
+      if bor.enal then Edit.ActiveLineColor := bor.ed_alic
+      else Edit.ActiveLineColor := clNone;
       bor.drag := JvDragDrop1.AcceptDrag;
       bor.rfcl := Recent.Capacity;
       bor.ssbp := Status.Visible;
