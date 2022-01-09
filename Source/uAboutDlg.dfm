@@ -40,7 +40,7 @@ object About: TAbout
     Top = 29
     Width = 86
     Height = 13
-    Caption = 'Version 1.3.0.463'
+    Caption = 'Version 1.3.1.468'
   end
   object lbl3: TLabel
     Left = 10
@@ -59,13 +59,13 @@ object About: TAbout
     Caption = 'Project page:'
   end
   object lbl5: TLabel
-    Left = 201
+    Left = 228
     Top = 75
-    Width = 175
+    Width = 148
     Height = 13
     Cursor = crHandPoint
     Alignment = taRightJustify
-    Caption = 'http://fireforge.net/projects/biredit/'
+    Caption = 'http://biredit.googlecode.com/'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlue
     Font.Height = -11

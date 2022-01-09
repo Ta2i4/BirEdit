@@ -15,16 +15,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>
 
-You can contact with me by e-mail: tatuich@mail.ru
+You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-07-27.
+The Original Code is uSearchDlg.pas by Aleksey Tatuyko, released 2009-08-01.
 All Rights Reserved.
 
-$Id: uSearchDlg.pas, v 1.3.0.463 2009/07/27 05:30:00 maelh Exp $
+$Id: uSearchDlg.pas, v 1.3.1.468 2009/08/01 12:00:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
-located at http://fireforge.net/projects/biredit/
+located at http://biredit.googlecode.com/
 
 }
 

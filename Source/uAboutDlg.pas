@@ -15,16 +15,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>
 
-You can contact with me by e-mail: tatuich@mail.ru
+You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-07-27.
+The Original Code is uAboutDlg.pas by Aleksey Tatuyko, released 2009-08-01.
 All Rights Reserved.
 
-$Id: uAboutDlg.pas, v 1.3.0.463 2009/07/27 05:27:00 maelh Exp $
+$Id: uAboutDlg.pas, v 1.3.1.468 2009/08/01 11:53:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
-located at http://fireforge.net/projects/biredit/
+located at http://biredit.googlecode.com/
 
 }
  
@@ -57,14 +57,14 @@ implementation
 
 procedure TAbout.lbl5Click(Sender: TObject);
 begin
-  ShellExecute(Self.Handle, 'open', 'http://fireforge.net/projects/biredit/',
-                 nil, nil, SW_SHOWNORMAL);
+  ShellExecute(Self.Handle, 'open', 'http://biredit.googlecode.com/', nil, nil,
+                 SW_SHOWNORMAL);
 end;
 
 procedure TAbout.lbl7Click(Sender: TObject);
 begin
-  ShellExecute(Self.Handle, 'open', 'http://biredit.freeforums.org/',
-                 nil, nil, SW_SHOWNORMAL);
+  ShellExecute(Self.Handle, 'open', 'http://biredit.freeforums.org/', nil, nil,
+                 SW_SHOWNORMAL);
 end;
 
 end.

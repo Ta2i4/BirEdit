@@ -15,16 +15,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>
 
-You can contact with me by e-mail: tatuich@mail.ru
+You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-06-03.
+The Original Code is BirEditAdv.pas by Aleksey Tatuyko, released 2009-08-01.
 All Rights Reserved.
 
-$Id: BirEditAdv.pas, v 1.2.7.409 2009/06/03 00:06:00 maelh Exp $
+$Id: BirEditAdv.pas, v 1.3.1.468 2009/08/01 11:54:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
-located at http://fireforge.net/projects/biredit/
+located at http://biredit.googlecode.com/
 
 }
 
@@ -33,11 +33,10 @@ unit BirEditAdv;
 interface
 
 uses
-  SysUtils, ShellAPI, uMainFrm;
+  SysUtils, uMainFrm;
 
   function MyBytesToStr(const mfSize: UInt64): string;
   function MyExtByFilter(const fId: Integer; const fName: TFileName): TFileName;
-  procedure MyShowFileProperties(filename: string);
 
 implementation
 
@@ -145,18 +144,6 @@ begin
     51: if not (fExt = '.dot') then Result := Result + '.dot';
     52: if not (fExt = '.rc') then Result := Result + '.rc';
   end;
-end;
-
-procedure MyShowFileProperties(filename: string);
-var
-  sei: TShellExecuteInfo;
-begin
-  FillChar(sei, SizeOf(sei), 0);
-  sei.cbSize := SizeOf(sei);
-  sei.lpFile := PChar(filename);
-  sei.lpVerb := 'properties';
-  sei.fMask := SEE_MASK_INVOKEIDLIST;
-  ShellExecuteEx(@sei);
 end;
 
 end.

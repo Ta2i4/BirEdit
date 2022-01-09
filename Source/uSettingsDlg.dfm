@@ -13,9 +13,10 @@ object SettingsDlg: TSettingsDlg
   Font.Style = []
   OldCreateOrder = False
   Position = poOwnerFormCenter
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object ApplyBtn: TButton
+  object Btn1: TButton
     Left = 15
     Top = 340
     Width = 75
@@ -25,7 +26,7 @@ object SettingsDlg: TSettingsDlg
     ModalResult = 1
     TabOrder = 0
   end
-  object CancelBtn: TButton
+  object Btn2: TButton
     Left = 100
     Top = 340
     Width = 75
@@ -35,15 +36,15 @@ object SettingsDlg: TSettingsDlg
     ModalResult = 2
     TabOrder = 1
   end
-  object PageControl1: TPageControl
+  object PageCtrl1: TPageControl
     Left = 0
     Top = 0
     Width = 374
     Height = 335
-    ActivePage = AppTab
+    ActivePage = Tab1
     Align = alTop
     TabOrder = 2
-    object AppTab: TTabSheet
+    object Tab1: TTabSheet
       Caption = 'Application'
       ImageIndex = 2
       object Lbl1: TLabel
@@ -53,7 +54,7 @@ object SettingsDlg: TSettingsDlg
         Height = 13
         Caption = 'Recent files capacity'
       end
-      object TrayChk: TCheckBox
+      object Check7: TCheckBox
         Left = 10
         Top = 10
         Width = 340
@@ -61,7 +62,7 @@ object SettingsDlg: TSettingsDlg
         Caption = 'Minimize to tray'
         TabOrder = 0
       end
-      object StatusBarChk: TCheckBox
+      object Check8: TCheckBox
         Left = 10
         Top = 30
         Width = 340
@@ -69,7 +70,7 @@ object SettingsDlg: TSettingsDlg
         Caption = 'Show status bar'
         TabOrder = 1
       end
-      object GVisChk: TCheckBox
+      object Check9: TCheckBox
         Left = 10
         Top = 50
         Width = 340
@@ -104,34 +105,34 @@ object SettingsDlg: TSettingsDlg
         TabOrder = 4
       end
     end
-    object EditorTab: TTabSheet
+    object Tab2: TTabSheet
       Caption = 'Editor'
-      object PageCtrl3: TPageControl
+      object PageCtrl2: TPageControl
         Left = 0
         Top = 0
         Width = 366
         Height = 307
-        ActivePage = EditOptsTab
+        ActivePage = Tab4
         Align = alClient
         TabOrder = 0
         TabPosition = tpBottom
-        object EditOptsTab: TTabSheet
+        object Tab4: TTabSheet
           Caption = 'Options'
-          object TabSizeLbl: TLabel
+          object Lbl13: TLabel
             Left = 10
             Top = 130
             Width = 47
             Height = 13
             Caption = 'Tab width'
           end
-          object UndoLimLbl: TLabel
+          object Lbl12: TLabel
             Left = 10
             Top = 50
             Width = 46
             Height = 13
             Caption = 'Undo limit'
           end
-          object SMLbl: TLabel
+          object Lbl11: TLabel
             Left = 180
             Top = 130
             Width = 72
@@ -199,7 +200,7 @@ object SettingsDlg: TSettingsDlg
             Value = 1024.000000000000000000
             TabOrder = 1
           end
-          object WrapChk: TCheckBox
+          object Check10: TCheckBox
             Left = 10
             Top = 235
             Width = 320
@@ -207,7 +208,7 @@ object SettingsDlg: TSettingsDlg
             Caption = 'Word wrap'
             TabOrder = 10
           end
-          object SMCombo: TComboBox
+          object Combo4: TComboBox
             Left = 180
             Top = 145
             Width = 150
@@ -309,13 +310,9 @@ object SettingsDlg: TSettingsDlg
             TabOrder = 11
           end
         end
-        object AdvTab: TTabSheet
+        object Tab5: TTabSheet
           Caption = 'Advanced'
           ImageIndex = 1
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object OptsList: TCheckListBox
             Left = 0
             Top = 0
@@ -356,13 +353,9 @@ object SettingsDlg: TSettingsDlg
         end
       end
     end
-    object GutterTab: TTabSheet
+    object Tab3: TTabSheet
       Caption = 'Gutter'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Lbl7: TLabel
         Left = 10
         Top = 10
@@ -384,7 +377,7 @@ object SettingsDlg: TSettingsDlg
         Height = 13
         Caption = 'Gradient steps'
       end
-      object ShowLZChk: TCheckBox
+      object Check12: TCheckBox
         Left = 150
         Top = 30
         Width = 200
@@ -392,7 +385,7 @@ object SettingsDlg: TSettingsDlg
         Caption = 'Leading zeros'
         TabOrder = 4
       end
-      object StartZeroChk: TCheckBox
+      object Check14: TCheckBox
         Left = 150
         Top = 90
         Width = 200
@@ -400,7 +393,7 @@ object SettingsDlg: TSettingsDlg
         Caption = 'Zero start'
         TabOrder = 7
       end
-      object GASizeChk: TCheckBox
+      object Check11: TCheckBox
         Left = 150
         Top = 10
         Width = 200
@@ -408,7 +401,7 @@ object SettingsDlg: TSettingsDlg
         Caption = 'Autosize'
         TabOrder = 3
       end
-      object ShowLnNumChk: TCheckBox
+      object Check13: TCheckBox
         Left = 150
         Top = 50
         Width = 200

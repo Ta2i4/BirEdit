@@ -15,16 +15,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>
 
-You can contact with me by e-mail: tatuich@mail.ru
+You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uMainFrm.pas by Aleksey Tatuyko, released 2009-07-27.
+The Original Code is uMainFrm.pas by Aleksey Tatuyko, released 2009-08-01.
 All Rights Reserved.
 
-$Id: uMainFrm.pas, v 1.3.0.463 2009/07/27 09:32:00 maelh Exp $
+$Id: uMainFrm.pas, v 1.3.1.468 2009/08/01 11:58:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
-located at http://fireforge.net/projects/biredit/
+located at http://biredit.googlecode.com/
 
 }
 
@@ -273,22 +273,20 @@ type
     procedure FindAgainExecute;
     procedure FindBackwardsExecute;
     procedure ItemClick(Sender: TObject);
-    procedure LoadFromFile(const FileName: TFileName; cid, fid: Byte);
     procedure LoadAppLoc;
     procedure LoadTranslate(const lang: string);
     procedure MyLoadLoc(AWnd: TForm; ASectionInIni:string);
-    procedure MyOpenFile(OpenFileName: TFileName; cid, fid: Byte);
-    procedure MySaveFile(SaveFileName: TFileName; seId, fid: Integer);
+    procedure MyOpenFile(OpenFileName: TFileName; Encoding: TEncoding);
+    procedure MySaveFile(SaveFileName: TFileName; seId: Integer);
     procedure ReplaceExecute;
     procedure ReplaceAgainExecute;
     procedure ReplaceBackwardsExecute;
     procedure WorkParams;
     procedure MySetTextStr(const Value: string);
-    procedure MyLoadFromStreamEnc(Stream: TStream; Encoding: TEncoding);
-    procedure MyLoadFromStream(Stream: TStream; cid: Byte);
-    procedure MyLoadFromFile(const FileName: TFileName; cid: Byte);
+    procedure MyLoadFromStream(Stream: TStream; Encoding: TEncoding);
+    procedure MyLoadFromFile(const FileName: TFileName; Encoding: TEncoding);
     procedure MySaveToFileEnc(const FileName: TFileName; Encoding: TEncoding);
-    procedure MySaveToFile(const FileName: TFileName; seid, fid: Integer);
+    procedure MySaveToFile(const FileName: TFileName; seid: Integer);
     procedure MyShowDroppedDlg(const fValues: TStrings);
     procedure MyScanDropFiles(const fValues: TStrings);
     procedure MyOpenDropped(const FileName: TFileName);
@@ -334,16 +332,16 @@ begin
                                   MB_YESNOCANCEL + MB_ICONQUESTION) of
       IDYES:
         if FileExists(MyFileName) then begin
-          MySaveFile(MyFileName, curcp, 1);
-          MyOpenFile(FileName, 0, 1);
+          MySaveFile(MyFileName, curcp);
+          MyOpenFile(FileName, nil);
         end else if Save.Execute then begin
           Save.FileName := MyExtByFilter(Save.FilterIndex, Save.FileName);
-          MySaveFile(Save.FileName, Save.EncodingIndex, Save.FilterIndex);
-          MyOpenFile(FileName, 0, 1);
+          MySaveFile(Save.FileName, Save.EncodingIndex);
+          MyOpenFile(FileName, nil);
         end;
-      IDNO: MyOpenFile(FileName, 0, 1);
+      IDNO: MyOpenFile(FileName, nil);
     end;
-  end else MyOpenFile(FileName, 0, 1);
+  end else MyOpenFile(FileName, nil);
 end;
 
 procedure TMain.MyShowDroppedDlg(const fValues: TStrings);
@@ -382,9 +380,9 @@ var
   begin
     if FindFirst(MyDir + '*', faAnyFile, mys) = 0 then repeat
       if (mys.Name = '.') or (mys.Name = '..') then Continue;
-      if (mys.Attr and faDirectory) <> 0 then begin
-        if sudir then MyScanDir(IncludeTrailingPathDelimiter(MyDir + mys.Name));
-      end else tmpstrs.Add(IncludeTrailingPathDelimiter(MyDir) + mys.Name);
+      if not ((mys.Attr and faDirectory) <> 0)
+      then tmpstrs.Add(IncludeTrailingPathDelimiter(MyDir) + mys.Name) else
+      if sudir then MyScanDir(IncludeTrailingPathDelimiter(MyDir + mys.Name));
     until FindNext(mys) <> 0;
   end;
 
@@ -446,7 +444,7 @@ begin
   end;
 end;
 
-procedure TMain.MyLoadFromStreamEnc(Stream: TStream; Encoding: TEncoding);
+procedure TMain.MyLoadFromStream(Stream: TStream; Encoding: TEncoding);
 var
   Size: Integer;
   Buffer: TBytes;
@@ -468,31 +466,35 @@ begin
   end;
 end;
 
-procedure TMain.MyLoadFromStream(Stream: TStream; cid: Byte);
-begin
-  case cid of
-    0: MyLoadFromStreamEnc(Stream, nil);
-    1: MyLoadFromStreamEnc(Stream, TEncoding.Default);
-    2: MyLoadFromStreamEnc(Stream, TEncoding.ASCII);
-    3: MyLoadFromStreamEnc(Stream, TEncoding.Unicode);
-    4: MyLoadFromStreamEnc(Stream, TEncoding.BigEndianUnicode);
-    5: MyLoadFromStreamEnc(Stream, TEncoding.UTF8);
-    6: MyLoadFromStreamEnc(Stream, TEncoding.UTF7);
-  end;
-end;
-
-procedure TMain.MyLoadFromFile(const FileName: TFileName; cid: Byte);
+procedure TMain.MyLoadFromFile(const FileName: TFileName; Encoding: TEncoding);
 var
   Stream: TStream;
 begin
   Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
   try
-    MyLoadFromStream(Stream, cid);
+    MyLoadFromStream(Stream, Encoding);
     myfsize := Stream.Size;
     MyFileName := FileName;
   finally
     Stream.Free;
   end;
+end;
+
+procedure TMain.MyOpenFile(OpenFileName: TFileName; Encoding: TEncoding);
+begin
+  if ExtractFilePath(OpenFileName) = ''
+  then OpenFileName := appath + OpenFileName;
+  Edit.ClearAll;
+  try
+    MyLoadFromFile(OpenFileName, Encoding);
+  except
+    Application.MessageBox(PChar(mysg1), 'BirEdit', MB_OK+MB_ICONSTOP);
+    MyFileName := '';
+    myfsize := 0;
+    curcp := 0;
+  end;
+  Rcnt.Add(OpenFileName, 0);
+  prev := FileAge(OpenFileName);
 end;
 
 procedure TMain.MySaveToFileEnc(const FileName: TFileName; Encoding: TEncoding);
@@ -510,7 +512,7 @@ begin
   end;
 end;
 
-procedure TMain.MySaveToFile(const FileName: TFileName; seid, fid: Integer);
+procedure TMain.MySaveToFile(const FileName: TFileName; seid: Integer);
 begin
   try
     case seid of
@@ -528,16 +530,23 @@ begin
   end;
 end;
 
-procedure TMain.LoadFromFile(const FileName: TFileName; cid, fid: Byte);
+procedure TMain.MySaveFile(SaveFileName: TFileName; seId: Integer);
 begin
-  try
-    MyLoadFromFile(FileName, cid);
-  except
-    Application.MessageBox(PChar(mysg1), 'BirEdit', MB_OK+MB_ICONSTOP);
-    MyFileName := '';
-    myfsize := 0;
-    curcp := 0;
-  end;
+  if ExtractFilePath(SaveFileName) = ''
+  then SaveFileName := appath + SaveFileName;
+  if FileExists(SaveFileName) then begin
+    if FileIsReadOnly(SaveFileName) then begin
+      if Application.MessageBox(PChar(mysg3), 'BirEdit',
+                                  MB_YESNO + MB_ICONQUESTION) = IDYES
+      then begin
+        if FileSetReadOnly(SaveFileName, False)
+        then MySaveToFile(SaveFileName, seId);
+        FileSetReadOnly(SaveFileName, True);
+      end else Exit;
+    end else MySaveToFile(SaveFileName, seId);
+  end else MySaveToFile(SaveFileName, seId);
+  Rcnt.Add(SaveFileName, 0);
+  prev := FileAge(SaveFileName);
 end;
 
 procedure TMain.MyLoadLoc(AWnd: TForm; ASectionInIni: string);
@@ -674,11 +683,6 @@ begin
   if ConfirmReplace <> nil then ConfirmReplace.Free;
 end;
 
-procedure TMain.EditDropFiles(Sender: TObject; X, Y: Integer; AFiles: TStrings);
-begin
-  MyScanDropFiles(AFiles);
-end;
-
 procedure TMain.EditReplaceText(Sender: TObject; const ASearch,
   AReplace: string; Line, Column: Integer; var Action: TSynReplaceAction);
 var
@@ -739,16 +743,6 @@ begin
   ShowSearchReplaceDialog(True);
 end;
 
-procedure TMain.N18Click(Sender: TObject);
-begin
-  ReplaceAgainExecute;
-end;
-
-procedure TMain.N33Click(Sender: TObject);
-begin
-  ReplaceBackwardsExecute;
-end;
-
 procedure TMain.ReplaceAgainExecute;
 begin
   gbtempSearchBackwards := False;
@@ -761,6 +755,21 @@ begin
 	gbtempSearchBackwards := True;
 	if (gsSearchText = '') then ShowSearchReplaceDialog(True)
   else DoSearchReplaceText(True, True);
+end;
+
+procedure TMain.EditDropFiles(Sender: TObject; X, Y: Integer; AFiles: TStrings);
+begin
+  MyScanDropFiles(AFiles);
+end;
+
+procedure TMain.N18Click(Sender: TObject);
+begin
+  ReplaceAgainExecute;
+end;
+
+procedure TMain.N33Click(Sender: TObject);
+begin
+  ReplaceBackwardsExecute;
 end;
 
 procedure TMain.LoadTranslate(const lang: string);
@@ -1012,35 +1021,6 @@ begin
   end;
 end;
 
-procedure TMain.MyOpenFile(OpenFileName: TFileName; cid, fid: Byte);
-begin
-  if ExtractFilePath(OpenFileName) = ''
-  then OpenFileName := appath + OpenFileName;
-  Edit.ClearAll;
-  LoadFromFile(OpenFileName, cid, fid);
-  Rcnt.Add(OpenFileName, 0);
-  prev := FileAge(OpenFileName);
-end;
-
-procedure TMain.MySaveFile(SaveFileName: TFileName; seId, fid: Integer);
-begin
-  if ExtractFilePath(SaveFileName) = ''
-  then SaveFileName := appath + SaveFileName;
-  if FileExists(SaveFileName) then begin
-    if FileIsReadOnly(SaveFileName) then begin
-      if Application.MessageBox(PChar(mysg3), 'BirEdit',
-                                  MB_YESNO + MB_ICONQUESTION) = IDYES
-      then begin
-        if FileSetReadOnly(SaveFileName, False)
-        then MySaveToFile(SaveFileName, seId, fid);
-        FileSetReadOnly(SaveFileName, True);
-      end else Exit;
-    end else MySaveToFile(SaveFileName, seId, fid);
-  end else MySaveToFile(SaveFileName, seId, fid);
-  Rcnt.Add(SaveFileName, 0);
-  prev := FileAge(SaveFileName);
-end;
-
 procedure TMain.WorkParams;
 var
   ToCreate, ToPaste, ToPrint, ToQuit: Boolean;
@@ -1063,13 +1043,13 @@ begin
   end;
   if ExtractFilePath(ParamFile) = '' then ParamFile := appath + ParamFile;
   if FileExists(ParamFile) then begin
-    MyOpenFile(ParamFile, 0, 1);
+    MyOpenFile(ParamFile, nil);
     if ToPrint then begin
       synprint1.SynEdit := Edit;
       synprint1.Wrap := True;
       synprint1.Print;
     end;
-  end else if ToCreate then MySaveFile(ParamFile, 0, 1);
+  end else if ToCreate then MySaveFile(ParamFile, 0);
   if ToPaste then Edit.PasteFromClipboard;
   if ToQuit then Application.Terminate;
 end;
@@ -1082,11 +1062,11 @@ begin
       IDCANCEL: CanClose := False;
       IDYES:
         if FileExists(MyFileName) then begin
-          MySaveFile(MyFileName, curcp, 1);
+          MySaveFile(MyFileName, curcp);
           CanClose := True;
         end else if Save.Execute then begin
           Save.FileName := MyExtByFilter(Save.FilterIndex, Save.FileName);
-          MySaveFile(Save.FileName, Save.EncodingIndex, Save.FilterIndex);
+          MySaveFile(Save.FileName, Save.EncodingIndex);
           CanClose := True;
         end else CanClose := False;
       IDNO: CanClose := True;
@@ -1222,7 +1202,7 @@ procedure TMain.RcntClick(Sender: TObject; const RecentName, Caption: string;
 
   procedure MyOpen;
   begin
-    MyOpenFile(RecentName, 0, 1);
+    MyOpenFile(RecentName, nil);
   end;
 
 begin
@@ -1231,11 +1211,11 @@ begin
                                   MB_YESNOCANCEL + MB_ICONQUESTION) of
       IDYES:
         if FileExists(MyFileName) then begin
-          MySaveFile(MyFileName, curcp, 1);
+          MySaveFile(MyFileName, curcp);
           MyOpen;
         end else if Save.Execute then begin
           Save.FileName := MyExtByFilter(Save.FilterIndex, Save.FileName);
-          MySaveFile(Save.FileName, Save.EncodingIndex, Save.FilterIndex);
+          MySaveFile(Save.FileName, Save.EncodingIndex);
           MyOpen;
         end;
       IDNO: MyOpen;
@@ -1252,7 +1232,7 @@ procedure TMain.N3Click(Sender: TObject);
 
   procedure MyOpen;
   begin
-    if Open.Execute then MyOpenFile(Open.FileName, 0, Open.FilterIndex);
+    if Open.Execute then MyOpenFile(Open.FileName, nil);
   end;
 
 begin
@@ -1261,11 +1241,11 @@ begin
                                   MB_YESNOCANCEL + MB_ICONQUESTION) of
       IDYES:
         if FileExists(MyFileName) then begin
-          MySaveFile(MyFileName, curcp, 1);
+          MySaveFile(MyFileName, curcp);
           MyOpen;
         end else if Save.Execute then begin
           Save.FileName := MyExtByFilter(Save.FilterIndex, Save.FileName);
-          MySaveFile(Save.FileName, Save.EncodingIndex, Save.FilterIndex);
+          MySaveFile(Save.FileName, Save.EncodingIndex);
           MyOpen;
         end;
       IDNO: MyOpen;
@@ -1275,14 +1255,14 @@ end;
 
 procedure TMain.N4Click(Sender: TObject);
 begin
-  MySaveFile(MyFileName, curcp, 1);
+  MySaveFile(MyFileName, curcp);
 end;
 
 procedure TMain.N5Click(Sender: TObject);
 begin
   if Save.Execute then begin
     Save.FileName := MyExtByFilter(Save.FilterIndex, Save.FileName);
-    MySaveFile(Save.FileName, Save.EncodingIndex, Save.FilterIndex);
+    MySaveFile(Save.FileName, Save.EncodingIndex);
   end;
 end;
 
@@ -1409,12 +1389,12 @@ end;
 
 procedure TMain.N53Click(Sender: TObject);
 begin
-  MyOpenFile(MyFileName, 0, 1);
+  MyOpenFile(MyFileName, nil);
 end;
 
 procedure TMain.N54Click(Sender: TObject);
 begin
-  MyOpenFile(MyFileName, 1, 1);
+  MyOpenFile(MyFileName, TEncoding.Default);
 end;
 
 procedure TMain.N57Click(Sender: TObject);
@@ -1424,7 +1404,7 @@ end;
 
 procedure TMain.N58Click(Sender: TObject);
 begin
-  MyOpenFile(MyFileName, 2, 1);
+  MyOpenFile(MyFileName, TEncoding.ASCII);
 end;
 
 procedure TMain.N39Click(Sender: TObject);
@@ -1522,22 +1502,17 @@ end;
 
 procedure TMain.N31Click(Sender: TObject);
 var
-  lnumber: TPoint;
+  lxy: TPoint;
   gtbox: TGoToDlg;
 begin
   gtbox := TGoToDlg.Create(Self);
   with gtbox do try
     MyLoadLoc(gtbox, 'GoToDlg');
-    Spin1.MinValue := 1;
-    Spin1.MaxValue := Edit.Lines.Count;
-    Spin1.Value := Edit.CaretY;
-    Spin2.MinValue := 1;
-    Spin2.MaxValue := MaxInt;
-    Spin2.Value := Edit.CaretX;
+    MaxXY := Point(Edit.Lines.Count, MaxInt);
+    CaretXY := Point(Edit.CaretX, Edit.CaretY);
     if ShowModal = mrOk then begin
-      lnumber.Y := Spin1.AsInteger;
-      lnumber.X := Spin2.AsInteger;
-      Edit.ExecuteCommand(17, 'A', @lnumber);
+      lxy := CaretXY;
+      Edit.ExecuteCommand(17, 'A', @lxy);
     end;
   finally
     gtbox.Free;
@@ -1552,81 +1527,63 @@ begin
   setdlg := TSettingsDlg.Create(Self);
   with setdlg do try
     MyLoadLoc(setdlg, 'SettingsDlg');
-    TrayChk.Checked := JvTrayIcon1.Active;
-    StatusBarChk.Checked := Status.Visible;
-    Check1.Checked := Edit.ReadOnly;
-    Check2.Checked := Edit.Gutter.UseFontStyle;
-    Check3.Checked := Edit.Gutter.Gradient;
-    Check5.Checked := sddir;
-    Check6.Checked := sudir;
-    Check4.Checked := psafc;
-    WrapChk.Checked := Edit.WordWrap;
-    GASizeChk.Checked := Edit.Gutter.AutoSize;
-    ShowLZChk.Checked := Edit.Gutter.LeadingZeros;
-    GVisChk.Checked := Edit.Gutter.Visible;
-    ShowLnNumChk.Checked := Edit.Gutter.ShowLineNumbers;
-    StartZeroChk.Checked := Edit.Gutter.ZeroStart;
-    Combo1.ItemIndex := Byte(Edit.InsertCaret);
-    Combo2.ItemIndex := Byte(Edit.OverwriteCaret);
-    Combo3.ItemIndex := Byte(Edit.ScrollHintFormat);
-    SMCombo.ItemIndex := Byte(Edit.SelectionMode);
-    Spin1.MinValue := 1;
-    Spin1.MaxValue := MaxInt;
-    Spin1.AsInteger := Rcnt.Capacity;
-    Spin2.MinValue := 1;
-    Spin2.MaxValue := MaxInt;
-    Spin2.AsInteger := Edit.MaxScrollWidth;
-    Spin3.MinValue := 0;
-    Spin3.MaxValue := MaxInt;
-    Spin3.AsInteger := Edit.MaxUndo;
-    Spin4.MinValue := - MaxInt - 1;
-    Spin4.MaxValue := MaxInt;
-    Spin4.AsInteger := Edit.RightEdge;
-    Spin5.MinValue := 1;
-    Spin5.MaxValue := MAXBYTE + 1;
-    Spin5.AsInteger := Edit.TabWidth;
-    Spin6.MinValue := 2;
-    Spin6.MaxValue := MaxInt;
-    Spin6.AsInteger := Edit.Gutter.DigitCount;
-    Spin7.MinValue := 0;
-    Spin7.MaxValue := MaxInt;
-    Spin7.AsInteger := Edit.Gutter.LineNumberStart;
-    Spin8.MinValue := 2;
-    Spin8.MaxValue := MaxInt;
-    Spin8.AsInteger := Edit.Gutter.GradientSteps;
-    Spin9.MinValue := 0;
-    Spin9.MaxValue := MaxInt;
-    Spin9.AsInteger := Edit.ExtraLineSpacing;
+    Chk1 := Edit.ReadOnly;
+    Chk2 := Edit.Gutter.UseFontStyle;
+    Chk3 := Edit.Gutter.Gradient;
+    Chk4 := psafc;
+    Chk5 := sddir;
+    Chk6 := sudir;
+    Chk7 := JvTrayIcon1.Active;
+    Chk8 := Status.Visible;
+    Chk9 := Edit.Gutter.Visible;
+    Chk10 := Edit.WordWrap;
+    Chk11 := Edit.Gutter.AutoSize;
+    Chk12 := Edit.Gutter.LeadingZeros;
+    Chk13 := Edit.Gutter.ShowLineNumbers;
+    Chk14 := Edit.Gutter.ZeroStart;
+    Spn1 := Rcnt.Capacity;
+    Spn2 := Edit.MaxScrollWidth;
+    Spn3 := Edit.MaxUndo;
+    Spn4 := Edit.RightEdge;
+    Spn5 := Edit.TabWidth;
+    Spn6 := Edit.Gutter.DigitCount;
+    Spn7 := Edit.Gutter.LineNumberStart;
+    Spn8 := Edit.Gutter.GradientSteps;
+    Spn9 := Edit.ExtraLineSpacing;
+    Cmb1 := Byte(Edit.InsertCaret);
+    Cmb2 := Byte(Edit.OverwriteCaret);
+    Cmb3 := Byte(Edit.ScrollHintFormat);
+    Cmb4 := Byte(Edit.SelectionMode);
     for I := 0 to 26
     do OptsList.Checked[i] := TSynEditorOption(i) in Edit.Options;
     if ShowModal = mrOk then begin
-      JvTrayIcon1.Active := TrayChk.Checked;
-      Status.Visible := StatusBarChk.Checked;
-      sddir := Check5.Checked;
-      sudir := Check6.Checked;
-      psafc := Check4.Checked;
-      Rcnt.Capacity := Spin1.AsInteger;
-      Edit.MaxScrollWidth := Spin2.AsInteger;
-      Edit.MaxUndo := Spin3.AsInteger;
-      Edit.RightEdge := Spin4.AsInteger;
-      Edit.TabWidth := Spin5.AsInteger;
-      Edit.ExtraLineSpacing := Spin9.AsInteger;
-      Edit.InsertCaret := TSynEditCaretType(Combo1.ItemIndex);
-      Edit.OverwriteCaret := TSynEditCaretType(Combo2.ItemIndex);
-      Edit.ScrollHintFormat := TScrollHintFormat(Combo3.ItemIndex);
-      Edit.SelectionMode := TSynSelectionMode(SMCombo.ItemIndex);
-      Edit.ReadOnly := Check1.Checked;
-      Edit.Gutter.AutoSize := GASizeChk.Checked;
-      Edit.Gutter.LeadingZeros := ShowLZChk.Checked;
-      Edit.Gutter.DigitCount := Spin6.AsInteger;
-      Edit.Gutter.LineNumberStart := Spin7.AsInteger;
-      Edit.Gutter.ShowLineNumbers := ShowLnNumChk.Checked;
-      Edit.Gutter.UseFontStyle := Check2.Checked;
-      Edit.Gutter.Visible := GVisChk.Checked;
-      Edit.Gutter.ZeroStart := StartZeroChk.Checked;
-      Edit.Gutter.Gradient := Check3.Checked;
-      Edit.Gutter.GradientSteps := Spin8.AsInteger;
-      Edit.WordWrap := WrapChk.Checked;
+      Edit.ReadOnly := Chk1;
+      Edit.Gutter.UseFontStyle := Chk2;
+      Edit.Gutter.Gradient := Chk3;
+      psafc := Chk4;
+      sddir := Chk5;
+      sudir := Chk6;
+      JvTrayIcon1.Active := Chk7;
+      Status.Visible := Chk8;
+      Edit.Gutter.Visible := Chk9;
+      Edit.WordWrap := Chk10;
+      Edit.Gutter.AutoSize := Chk11;
+      Edit.Gutter.LeadingZeros := Chk12;
+      Edit.Gutter.ShowLineNumbers := Chk13;
+      Edit.Gutter.ZeroStart := Chk14;
+      Rcnt.Capacity := Spn1;
+      Edit.MaxScrollWidth := Spn2;
+      Edit.MaxUndo := Spn3;
+      Edit.RightEdge := Spn4;
+      Edit.TabWidth := Spn5;
+      Edit.Gutter.DigitCount := Spn6;
+      Edit.Gutter.LineNumberStart := Spn7;
+      Edit.Gutter.GradientSteps := Spn8;
+      Edit.ExtraLineSpacing := Spn9;
+      Edit.InsertCaret := TSynEditCaretType(Cmb1);
+      Edit.OverwriteCaret := TSynEditCaretType(Cmb2);
+      Edit.ScrollHintFormat := TScrollHintFormat(Cmb3);
+      Edit.SelectionMode := TSynSelectionMode(Cmb4);
       for I := 0 to 26 do if OptsList.Checked[i] = True
       then Edit.Options := Edit.Options + [TSynEditorOption(i)]
       else Edit.Options := Edit.Options - [TSynEditorOption(i)];
@@ -1656,22 +1613,22 @@ end;
 
 procedure TMain.N61Click(Sender: TObject);
 begin
-  MyOpenFile(MyFileName, 3, 1);
+  MyOpenFile(MyFileName, TEncoding.Unicode);
 end;
 
 procedure TMain.N62Click(Sender: TObject);
 begin
-  MyOpenFile(MyFileName, 4, 1);
+  MyOpenFile(MyFileName, TEncoding.BigEndianUnicode);
 end;
 
 procedure TMain.N63Click(Sender: TObject);
 begin
-  MyOpenFile(MyFileName, 5, 1);
+  MyOpenFile(MyFileName, TEncoding.UTF8);
 end;
 
 procedure TMain.N64Click(Sender: TObject);
 begin
-  MyOpenFile(MyFileName, 6, 1);
+  MyOpenFile(MyFileName, TEncoding.UTF7);
 end;
 
 procedure TMain.N68Click(Sender: TObject);
@@ -1769,7 +1726,7 @@ end;
 
 procedure TMain.N104Click(Sender: TObject);
 begin
-  MyOpenFile(MyFileName, 0, 1);
+  MyOpenFile(MyFileName, nil);
 end;
 
 procedure TMain.N105Click(Sender: TObject);
@@ -1786,11 +1743,11 @@ begin
                                   MB_YESNOCANCEL + MB_ICONQUESTION) of
       IDYES:
         if FileExists(MyFileName) then begin
-          MySaveFile(MyFileName, curcp, 1);
+          MySaveFile(MyFileName, curcp);
           MyNewDoc;
         end else if Save.Execute then begin
           Save.FileName := MyExtByFilter(Save.FilterIndex, Save.FileName);
-          MySaveFile(Save.FileName, Save.EncodingIndex, Save.FilterIndex);
+          MySaveFile(Save.FileName, Save.EncodingIndex);
           MyNewDoc;
         end;
       IDNO: MyNewDoc;
@@ -1799,8 +1756,15 @@ begin
 end;
 
 procedure TMain.N114Click(Sender: TObject);
+var
+  sei: TShellExecuteInfo;
 begin
-  MyShowFileProperties(MyFileName);
+  FillChar(sei, SizeOf(sei), 0);
+  sei.cbSize := SizeOf(sei);
+  sei.lpFile := PChar(MyFileName);
+  sei.lpVerb := 'properties';
+  sei.fMask := SEE_MASK_INVOKEIDLIST;
+  ShellExecuteEx(@sei);
 end;
 
 procedure TMain.JvTimer1Timer(Sender: TObject);
@@ -1833,7 +1797,7 @@ begin
       if Application.MessageBox(PChar(mysg5), 'BirEdit',
                                   MB_YESNO + MB_ICONQUESTION) = IDYES
       then begin
-        MySaveFile(MyFileName, curcp, 1);
+        MySaveFile(MyFileName, curcp);
         prev := FileAge(MyFileName);
       end;
       prevnoex := True;

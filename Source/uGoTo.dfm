@@ -3,7 +3,7 @@ object GoToDlg: TGoToDlg
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Go to...'
-  ClientHeight = 99
+  ClientHeight = 98
   ClientWidth = 249
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
