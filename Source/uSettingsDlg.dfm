@@ -90,10 +90,6 @@ object SettingsDlg: TSettingsDlg
     end
     object EditorTab: TTabSheet
       Caption = 'Editor'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object PageCtrl3: TPageControl
         Left = 0
         Top = 0
@@ -105,10 +101,6 @@ object SettingsDlg: TSettingsDlg
         TabPosition = tpBottom
         object EditOptsTab: TTabSheet
           Caption = 'Options'
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object TabSizeLbl: TLabel
             Left = 10
             Top = 130
@@ -185,9 +177,9 @@ object SettingsDlg: TSettingsDlg
             TabOrder = 1
           end
           object WrapChk: TCheckBox
-            Left = 370
+            Left = 350
             Top = 30
-            Width = 200
+            Width = 220
             Height = 17
             Caption = 'Word wrap'
             TabOrder = 9
@@ -198,7 +190,7 @@ object SettingsDlg: TSettingsDlg
             Width = 150
             Height = 21
             AutoCloseUp = True
-            ItemHeight = 0
+            ItemHeight = 13
             ItemIndex = 0
             TabOrder = 7
             Text = 'Normal'
@@ -212,7 +204,7 @@ object SettingsDlg: TSettingsDlg
             Top = 25
             Width = 150
             Height = 21
-            ItemHeight = 0
+            ItemHeight = 13
             ItemIndex = 0
             TabOrder = 4
             Text = 'Vertical Line'
@@ -237,7 +229,7 @@ object SettingsDlg: TSettingsDlg
             Top = 65
             Width = 150
             Height = 21
-            ItemHeight = 0
+            ItemHeight = 13
             ItemIndex = 3
             TabOrder = 5
             Text = 'Block'
@@ -248,9 +240,9 @@ object SettingsDlg: TSettingsDlg
               'Block')
           end
           object Check1: TCheckBox
-            Left = 370
+            Left = 350
             Top = 10
-            Width = 200
+            Width = 220
             Height = 17
             Caption = 'Read only'
             TabOrder = 8
@@ -269,7 +261,7 @@ object SettingsDlg: TSettingsDlg
             Top = 105
             Width = 150
             Height = 21
-            ItemHeight = 0
+            ItemHeight = 13
             ItemIndex = 1
             TabOrder = 6
             Text = 'Top to Bottom'
@@ -277,14 +269,18 @@ object SettingsDlg: TSettingsDlg
               'Top Line Only'
               'Top to Bottom')
           end
+          object Check4: TCheckBox
+            Left = 350
+            Top = 50
+            Width = 220
+            Height = 17
+            Caption = 'Use syntax highlighting'
+            TabOrder = 10
+          end
         end
         object AdvTab: TTabSheet
           Caption = 'Advanced'
           ImageIndex = 1
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object OptsList: TCheckListBox
             Left = 0
             Top = 0
@@ -328,10 +324,6 @@ object SettingsDlg: TSettingsDlg
     object GutterTab: TTabSheet
       Caption = 'Gutter'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Lbl7: TLabel
         Left = 10
         Top = 10
