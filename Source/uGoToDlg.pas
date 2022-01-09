@@ -15,32 +15,46 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>
 
-You can contact with me by e-mail: tatuich@mail.ru
 
-
-The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2008-11-05.
+The Original Code is uGoToDlg.pas by Aleksey Tatuyko, released 2008-11-05.
 All Rights Reserved.
 
-$Id: BirEdit.dpr,v 1.1.7.199 2008/11/05 12:29:00 maelh Exp $
+$Id: uGoToDlg.pas,v 1.1.7.199 2008/11/05 12:33:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit home page,
 located at http://BirEdit.FireForge.net
  
- }
+}
 
-program BirEdit;
+unit uGoToDlg;
+
+interface
 
 uses
-  Forms,
-  uMainFrm in 'uMainFrm.pas' {Editor: TTntForm};
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Mask, JvExMask, JvSpin, TntStdCtrls;
 
-{$R *.res}
-{$R fileicon.res}
+type
+  TGoToBox = class(TForm)
+    TntLabel1: TTntLabel;
+    JvSpinEdit1: TJvSpinEdit;
+    TntButton1: TTntButton;
+    procedure JvSpinEdit1KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+  end;
 
+var
+  GoToBox: TGoToBox;
+
+implementation
+
+{$R *.dfm}
+
+procedure TGoToBox.JvSpinEdit1KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
 begin
-  Application.Initialize;
-  Application.Title:='BirEdit';
-  Application.MainFormOnTaskBar:=True;
-  Application.CreateForm(TEditor, Editor);
-  Application.Run;
+  if Key=27 then // Escape
+    ModalResult:=mrCancel;
+end;
+
 end.

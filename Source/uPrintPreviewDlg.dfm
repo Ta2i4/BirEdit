@@ -10,8 +10,10 @@ object Preview: TPreview
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  KeyPreview = True
   OldCreateOrder = False
   Position = poDesktopCenter
+  OnKeyDown = TntFormKeyDown
   OnShow = TntFormShow
   PixelsPerInch = 96
   TextHeight = 13

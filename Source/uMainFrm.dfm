@@ -2,7 +2,7 @@ object Editor: TEditor
   Left = 353
   Top = 233
   Caption = 'Untitled - BirEdit'
-  ClientHeight = 386
+  ClientHeight = 366
   ClientWidth = 592
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -15,14 +15,13 @@ object Editor: TEditor
   OnCloseQuery = TntFormCloseQuery
   OnCreate = TntFormCreate
   OnDestroy = TntFormDestroy
-  OnResize = TntFormResize
   PixelsPerInch = 96
   TextHeight = 13
   object Edit: TSynEdit
     Left = 0
     Top = 0
     Width = 592
-    Height = 367
+    Height = 347
     Align = alClient
     ActiveLineColor = clInactiveCaptionText
     Font.Charset = DEFAULT_CHARSET
@@ -32,20 +31,16 @@ object Editor: TEditor
     Font.Style = []
     PopupMenu = Popup1
     TabOrder = 0
-    Gutter.AutoSize = True
     Gutter.Font.Charset = DEFAULT_CHARSET
     Gutter.Font.Color = clBlack
     Gutter.Font.Height = -11
     Gutter.Font.Name = 'Courier New'
     Gutter.Font.Style = []
-    Gutter.ShowLineNumbers = True
-    Gutter.Gradient = True
     OnReplaceText = EditReplaceText
-    ExplicitHeight = 347
   end
   object Status: TTntStatusBar
     Left = 0
-    Top = 367
+    Top = 347
     Width = 592
     Height = 19
     Panels = <
@@ -53,7 +48,7 @@ object Editor: TEditor
         Width = 100
       end
       item
-        Width = 100
+        Width = 120
       end
       item
         Width = 60
@@ -61,9 +56,9 @@ object Editor: TEditor
       item
         Width = 50
       end>
-    ExplicitTop = 347
   end
   object MainMenu: TTntMainMenu
+    AutoHotkeys = maManual
     Left = 208
     Top = 64
     object N1: TTntMenuItem
@@ -72,7 +67,7 @@ object Editor: TEditor
         Caption = 'New'
         Hint = 'New'
         ImageIndex = 0
-        ShortCut = 16462
+        ShortCut = 113
         OnClick = N105Click
       end
       object N3: TTntMenuItem
@@ -136,14 +131,6 @@ object Editor: TEditor
       end
       object N125: TTntMenuItem
         Caption = 'Codepage'
-        object N134: TTntMenuItem
-          AutoCheck = True
-          Caption = 'Default'
-          Checked = True
-          Default = True
-          RadioItem = True
-          OnClick = N134Click
-        end
         object N106: TTntMenuItem
           AutoCheck = True
           Caption = 'UTF-16 Little Endian'
@@ -299,6 +286,11 @@ object Editor: TEditor
       end
       object N138: TTntMenuItem
         Caption = 'Line'
+        object N42: TTntMenuItem
+          Caption = 'Insert'
+          ShortCut = 16462
+          OnClick = N42Click
+        end
         object N139: TTntMenuItem
           Caption = 'Delete'
           ShortCut = 16473
@@ -361,6 +353,11 @@ object Editor: TEditor
       end
       object N77: TTntMenuItem
         Caption = 'Insert'
+        object N48: TTntMenuItem
+          Caption = 'Color under cursor (RGB)'
+          ShortCut = 32854
+          OnClick = N48Click
+        end
         object N99: TTntMenuItem
           Caption = 'Time/Date'
           ShortCut = 16500
@@ -411,6 +408,11 @@ object Editor: TEditor
         ShortCut = 16456
         OnClick = N29Click
       end
+      object N31: TTntMenuItem
+        Caption = 'Goto...'
+        ShortCut = 16455
+        OnClick = N31Click
+      end
       object N18: TTntMenuItem
         Caption = '-'
       end
@@ -436,17 +438,17 @@ object Editor: TEditor
           object N35: TTntMenuItem
             Caption = '3'
             ShortCut = 24627
-            OnClick = N31Click
+            OnClick = N035Click
           end
           object N43: TTntMenuItem
             Caption = '4'
             ShortCut = 24628
-            OnClick = N41Click
+            OnClick = N043Click
           end
           object N53: TTntMenuItem
             Caption = '5'
             ShortCut = 24629
-            OnClick = N51Click
+            OnClick = N53Click
           end
           object N63: TTntMenuItem
             Caption = '6'
@@ -489,12 +491,12 @@ object Editor: TEditor
           object N36: TTntMenuItem
             Caption = '3'
             ShortCut = 16435
-            OnClick = N32Click
+            OnClick = N36Click
           end
           object N44: TTntMenuItem
             Caption = '4'
             ShortCut = 16436
-            OnClick = N42Click
+            OnClick = N44Click
           end
           object N54: TTntMenuItem
             Caption = '5'
@@ -526,6 +528,17 @@ object Editor: TEditor
     end
     object N101: TTntMenuItem
       Caption = 'Options'
+      object N51: TTntMenuItem
+        Caption = 'Font...'
+        OnClick = N51Click
+      end
+      object N32: TTntMenuItem
+        Caption = 'Settings'
+        OnClick = N32Click
+      end
+      object N52: TTntMenuItem
+        Caption = '-'
+      end
       object N117: TTntMenuItem
         Caption = 'Language'
         object N126: TTntMenuItem
@@ -537,34 +550,6 @@ object Editor: TEditor
           OnClick = N126Click
         end
       end
-      object N47: TTntMenuItem
-        AutoCheck = True
-        Caption = 'Line Numbers'
-        OnClick = N47Click
-      end
-      object N79: TTntMenuItem
-        AutoCheck = True
-        Caption = 'Special Symbols'
-        OnClick = N79Click
-      end
-      object N116: TTntMenuItem
-        AutoCheck = True
-        Caption = 'Show Statusbar'
-        OnClick = N116Click
-      end
-      object N103: TTntMenuItem
-        Caption = 'Tab Settings'
-        ShortCut = 16468
-        OnClick = N103Click
-      end
-      object N48: TTntMenuItem
-        AutoCheck = True
-        Caption = 'Word Wrap'
-        OnClick = N48Click
-      end
-    end
-    object N40: TTntMenuItem
-      Caption = 'Advanced'
     end
     object N49: TTntMenuItem
       Caption = 'Help'
@@ -648,6 +633,7 @@ object Editor: TEditor
     Top = 32
   end
   object Popup1: TTntPopupMenu
+    OnPopup = Popup1Popup
     Left = 304
     Top = 64
     object N19: TTntMenuItem
@@ -736,11 +722,21 @@ object Editor: TEditor
     Top = 32
   end
   object SynEditRegexSearch1: TSynEditRegexSearch
-    Left = 344
-    Top = 184
+    Left = 88
+    Top = 16
   end
   object SynEditSearch1: TSynEditSearch
-    Left = 288
-    Top = 200
+    Left = 56
+    Top = 16
+  end
+  object FontDialog1: TFontDialog
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Courier New'
+    Font.Style = []
+    Options = [fdEffects, fdFixedPitchOnly]
+    Left = 208
+    Top = 120
   end
 end
