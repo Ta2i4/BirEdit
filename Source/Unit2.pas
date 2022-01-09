@@ -16,10 +16,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
-The Original Code is Unit2.pas by Aleksey Tatuyko, released 2008-06-02.
+The Original Code is Unit2.pas by Aleksey Tatuyko, released 2008-10-17.
 All Rights Reserved.
 
-$Id: Unit2.pas,v 1.1.3.135 2008/09/02 11:06:00 maelh Exp $
+$Id: Unit2.pas,v 1.1.6.180 2008/10/17 08:46:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit home page,
 located at http://BirEdit.FireForge.net
@@ -45,13 +45,13 @@ type
     TntButton4: TTntButton;
     TntButton5: TTntButton;
     TntLabel1: TTntLabel;
+    TntButton6: TTntButton;
     procedure TntButton1Click(Sender: TObject);
     procedure TntButton2Click(Sender: TObject);
     procedure TntButton3Click(Sender: TObject);
     procedure TntButton4Click(Sender: TObject);
     procedure TntButton5Click(Sender: TObject);
     procedure TntFormShow(Sender: TObject);
-    procedure TntFormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -62,8 +62,6 @@ var
   Preview: TPreview;
 
 implementation
-
-uses Unit1;
 
 {$R *.DFM}
 
@@ -94,11 +92,6 @@ end;
 procedure TPreview.TntButton5Click(Sender: TObject);
 begin
   SynEditPrintPreview.Print;
-end;
-
-procedure TPreview.TntFormCreate(Sender: TObject);
-begin
-  if WideFileExists(WideExtractFilePath(TntApplication.ExeName)+'lang\'+Editor.mylang) then Editor.LoadTranslateForm2(Editor.mylang);
 end;
 
 procedure TPreview.TntFormShow(Sender: TObject);

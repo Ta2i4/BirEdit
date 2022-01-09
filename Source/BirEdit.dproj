@@ -23,7 +23,42 @@
     <Borland.Personality>Delphi.Personality</Borland.Personality>
     <Borland.ProjectType>VCLApplication</Borland.ProjectType>
     <BorlandProject>
-<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">1</VersionInfo><VersionInfo Name="Release">3</VersionInfo><VersionInfo Name="Build">137</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1033</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName">© 2008 Aleksey Tatuyko</VersionInfoKeys><VersionInfoKeys Name="FileDescription">BirEdit Text Editor</VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.1.3.137</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">© 2008 Aleksey Tatuyko</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks">BirEdit Text Editor is a trademark of Aleksey Tatuyko</VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName">BirEdit Text Editor</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.1.3</VersionInfoKeys><VersionInfoKeys Name="Comments">BirEdit Text Editor</VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">BirEdit.dpr</Source></Source><Excluded_Packages></Excluded_Packages></Delphi.Personality></BorlandProject></BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">1</VersionInfo><VersionInfo Name="Release">6</VersionInfo><VersionInfo Name="Build">180</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1033</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName">© 2008 Aleksey Tatuyko</VersionInfoKeys><VersionInfoKeys Name="FileDescription">BirEdit Text Editor</VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.1.6.180</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">© 2008 Aleksey Tatuyko</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks">BirEdit Text Editor is a trademark of Aleksey Tatuyko</VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName">BirEdit Text Editor</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.1.6</VersionInfoKeys><VersionInfoKeys Name="Comments">BirEdit Text Editor</VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">BirEdit.dpr</Source></Source><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+    </Excluded_Packages></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <ItemGroup>
@@ -35,20 +70,36 @@
       <DesignClass>TTntForm</DesignClass>
     </DCCReference>
     <DCCReference Include="Unit2.pas">
-      <Form>Preview</Form>
       <DesignClass>TTntForm</DesignClass>
+      <Form>Preview</Form>
     </DCCReference>
     <DCCReference Include="Unit3.pas">
-      <Form>About</Form>
       <DesignClass>TTntForm</DesignClass>
+      <Form>About</Form>
+    </DCCReference>
+    <DCCReference Include="Unit4.pas">
+      <DesignClass>TTntForm</DesignClass>
+      <Form>SearchForm</Form>
+    </DCCReference>
+    <DCCReference Include="Unit5.pas">
+      <DesignClass>TTntForm</DesignClass>
+      <Form>TntForm5</Form>
     </DCCReference>
     <DCCReference Include="Unit6.pas">
-      <Form>SelIns</Form>
       <DesignClass>TTntForm</DesignClass>
+      <Form>SelIns</Form>
     </DCCReference>
     <DCCReference Include="Unit7.pas">
-      <Form>TabOpt</Form>
       <DesignClass>TTntForm</DesignClass>
+      <Form>TabOpt</Form>
+    </DCCReference>
+    <DCCReference Include="Unit8.pas">
+      <DesignClass>TTntForm</DesignClass>
+      <Form>ConfirmReplace</Form>
+    </DCCReference>
+    <DCCReference Include="Unit9.pas">
+      <DesignClass>TTntForm</DesignClass>
+      <Form>MyMsgDlg</Form>
     </DCCReference>
   </ItemGroup>
 </Project>

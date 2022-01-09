@@ -13,7 +13,6 @@ object SelIns: TSelIns
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
-  OnCreate = TntFormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object TntLabel1: TTntLabel
@@ -50,16 +49,18 @@ object SelIns: TSelIns
     Width = 75
     Height = 25
     Caption = 'OK'
+    Default = True
+    ModalResult = 1
     TabOrder = 2
-    OnClick = TntButton1Click
   end
   object TntButton2: TTntButton
     Left = 192
     Top = 56
     Width = 75
     Height = 25
+    Cancel = True
     Caption = 'Cancel'
+    ModalResult = 2
     TabOrder = 3
-    OnClick = TntButton2Click
   end
 end

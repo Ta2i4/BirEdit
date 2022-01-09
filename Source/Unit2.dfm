@@ -12,7 +12,6 @@ object Preview: TPreview
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
-  OnCreate = TntFormCreate
   OnShow = TntFormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -124,6 +123,16 @@ object Preview: TPreview
       ShowHint = False
       TabOrder = 4
       OnClick = TntButton5Click
+    end
+    object TntButton6: TTntButton
+      Left = 136
+      Top = 64
+      Width = 121
+      Height = 25
+      Caption = 'Close'
+      Default = True
+      ModalResult = 1
+      TabOrder = 5
     end
   end
 end

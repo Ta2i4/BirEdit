@@ -16,10 +16,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
-The Original Code is Unit1.pas by Aleksey Tatuyko, released 2008-06-02.
+The Original Code is Unit1.pas by Aleksey Tatuyko, released 2008-10-17.
 All Rights Reserved.
 
-$Id: Unit1.pas,v 1.1.3.135 2008/09/02 11:21:00 maelh Exp $
+$Id: Unit1.pas,v 1.1.6.180 2008/10/17 10:27:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit home page,
 located at http://BirEdit.FireForge.net
@@ -36,8 +36,6 @@ uses
 
   function MyBytesToStr(const i64Size: Int64):WideString;
   function MyGetVar(varname:WideString):WideString;
-  function MyIsWordBreakChar(AChar: WideChar): Boolean;
-  function MyToggleCase(const aStr: WideString): WideString;
   procedure MyShowFilePropertiesW(filename:WideString);
 
 implementation
@@ -52,28 +50,6 @@ begin
   else if i64Size div i64MB > 0 then Result := WideFormat('%.2f ' + mysn2, [i64Size / i64MB])
   else if i64Size div i64KB > 0 then Result := WideFormat('%.2f ' + mysn3, [i64Size / i64KB])
   else Result := IntToStr(i64Size) + ' ' + mysn4;
-end;
-
-function MyIsWordBreakChar(AChar: WideChar): Boolean;
-begin
-  case AChar of
-      #0..#32, '.', ',', ';', ':', '"', '''', '´', '`', '°', '^', '!', '?', '&',
-      '$', '@', '§', '%', '#', '~', '[', ']', '(', ')', '{', '}', '<', '>',
-      '-', '=', '+', '*', '/', '\', '|':
-    Result := True;
-  else
-    Result := False;
-  end;
-end;
-
-function MyToggleCase(const aStr: WideString): WideString;
-var
-  i: Integer;
-  sLower: WideString;
-begin
-  Result := SynWideUpperCase(aStr);
-  sLower := SynWideLowerCase(aStr);
-  for i := 1 to Length(aStr) do if Result[i] = aStr[i] then Result[i] := sLower[i];
 end;
 
 function MyGetVar(varname:WideString):WideString;

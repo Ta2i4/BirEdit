@@ -12,7 +12,6 @@ object About: TAbout
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
-  OnCreate = TntFormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object TntImage1: TTntImage
@@ -627,8 +626,9 @@ object About: TAbout
     Top = 208
     Width = 75
     Height = 25
+    Default = True
+    ModalResult = 1
     TabOrder = 0
-    OnClick = btn1Click
   end
   object TntMemo1: TTntMemo
     Left = 8

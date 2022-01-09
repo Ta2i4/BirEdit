@@ -13,8 +13,6 @@ object TabOpt: TTabOpt
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
-  OnCreate = TntFormCreate
-  OnShow = TntFormShow
   PixelsPerInch = 96
   TextHeight = 13
   object TntLabel1: TTntLabel
@@ -30,17 +28,19 @@ object TabOpt: TTabOpt
     Width = 75
     Height = 25
     Caption = 'OK'
+    Default = True
+    ModalResult = 1
     TabOrder = 1
-    OnClick = TntButton1Click
   end
   object TntButton2: TTntButton
     Left = 120
     Top = 40
     Width = 75
     Height = 25
+    Cancel = True
     Caption = 'Cancel'
+    ModalResult = 2
     TabOrder = 2
-    OnClick = TntButton2Click
   end
   object JvSpinEdit1: TJvSpinEdit
     Left = 8

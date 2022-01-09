@@ -16,23 +16,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
-The Original Code is BirIniFiles.pas by Aleksey Tatuyko, released 2008-08-11.
+The Original Code is BirIniFiles.pas by Aleksey Tatuyko, released 2008-10-17.
 All Rights Reserved.
 
-$Id: BirIniFiles.pas,v 1.1.3.135 2008/09/02 11:29:00 maelh Exp $
+$Id: BirIniFiles.pas,v 1.1.6.180 2008/10/17 10:28:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit home page,
 located at http://BirEdit.FireForge.net
  
-
-
--------------------------------------------------------------------------------
-History:
-
-2008/09/02 - v 1.1.3.135
-- New function ReadColor(const Section, Ident: String; Default: TColor): TColor;
-
-------------------------------------------------------------------------------- 
 }
 
 

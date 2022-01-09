@@ -16,35 +16,32 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
-The Original Code is Unit6.pas by Aleksey Tatuyko, released 2008-10-17.
+The Original Code is Unit10.pas by Aleksey Tatuyko, released 2008-10-17.
 All Rights Reserved.
 
-$Id: Unit6.pas,v 1.1.6.180 2008/10/17 08:47:00 maelh Exp $
+$Id: Unit1.pas,v 1.1.6.180 2008/10/17 08:49:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit home page,
 located at http://BirEdit.FireForge.net
  
- }
- 
-unit Unit6;
+}
+
+unit Unit11;
 
 interface
 
 uses
-  TntForms, TntStdCtrls, StdCtrls, Classes, Controls;
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, TntForms, ExtCtrls, TntExtCtrls, StdCtrls, TntStdCtrls, Unit9;
 
 type
-  TSelIns = class(TTntForm)
-    TntLabel1: TTntLabel;
-    TntLabel2: TTntLabel;
-    TntEdit1: TTntEdit;
-    TntEdit2: TTntEdit;
-    TntButton1: TTntButton;
+  TMyBMsgDlg = class(TMyMsgDlg)
     TntButton2: TTntButton;
+    TntButton3: TTntButton;
   end;
 
 var
-  SelIns: TSelIns;
+  MyBMsgDlg: TMyBMsgDlg;
 
 implementation
 

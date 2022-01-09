@@ -16,15 +16,15 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
-The Original Code is Unit1.pas by Aleksey Tatuyko, released 2008-06-02.
+The Original Code is Unit1.pas by Aleksey Tatuyko, released 2008-10-17.
 All Rights Reserved.
 
-$Id: Unit1.pas,v 1.1.3.135 2008/09/02 11:28:00 maelh Exp $
+$Id: Unit1.pas,v 1.1.6.180 2008/10/17 10:34:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit home page,
 located at http://BirEdit.FireForge.net
  
- }
+}
 
 unit Unit1;
 
@@ -33,10 +33,11 @@ interface
 uses
   Windows, Messages, ComCtrls, Dialogs, Menus, Classes, Controls, ToolWin,
   TntWindows, TntForms, TntGraphics, TntDialogs, TntControls, TntClasses,
-  TntSysUtils, SynEdit, SynUnicode, TntMenus, TntComCtrls, SynEditPrint, BirIniFiles,
-  ImgList, ExtCtrls,
-  ShellAPI, SysUtils, JvTimer, JvDebugHandler, JvComponentBase, JvDragDrop,
-  TntWideStrUtils, TntFormatStrUtils, TntSystem, ShlObj, Forms, XPMan, Graphics;
+  TntSysUtils, SynEdit, SynUnicode, TntMenus, TntComCtrls, SynEditPrint,
+  BirIniFiles, ImgList, ExtCtrls, ShellAPI, SysUtils, JvTimer, JvDebugHandler,
+  JvComponentBase, JvDragDrop, TntWideStrUtils, TntFormatStrUtils, TntSystem,
+  ShlObj, Forms, XPMan, Graphics, SynEditTypes, SynEditRegexSearch,
+  SynEditMiscClasses, SynEditSearch, SynEditKeyCmds, Clipbrd;
 
 type
   TEditor = class(TTntForm)
@@ -71,29 +72,6 @@ type
     N23: TTntMenuItem;
     N24: TTntMenuItem;
     N25: TTntMenuItem;
-    N18: TTntMenuItem;
-    N26: TTntMenuItem;
-    N01: TTntMenuItem;
-    N110: TTntMenuItem;
-    N27: TTntMenuItem;
-    N31: TTntMenuItem;
-    N41: TTntMenuItem;
-    N51: TTntMenuItem;
-    N61: TTntMenuItem;
-    N71: TTntMenuItem;
-    N81: TTntMenuItem;
-    N91: TTntMenuItem;
-    N28: TTntMenuItem;
-    N02: TTntMenuItem;
-    N111: TTntMenuItem;
-    N29: TTntMenuItem;
-    N32: TTntMenuItem;
-    N42: TTntMenuItem;
-    N52: TTntMenuItem;
-    N62: TTntMenuItem;
-    N72: TTntMenuItem;
-    N82: TTntMenuItem;
-    N92: TTntMenuItem;
     N33: TTntMenuItem;
     N34: TTntMenuItem;
     N03: TTntMenuItem;
@@ -145,7 +123,6 @@ type
     N45: TTntMenuItem;
     N55: TTntMenuItem;
     N65: TTntMenuItem;
-    N75: TTntMenuItem;
     N85: TTntMenuItem;
     N95: TTntMenuItem;
     N96: TTntMenuItem;
@@ -156,26 +133,6 @@ type
     N105: TTntMenuItem;
     N114: TTntMenuItem;
     N115: TTntMenuItem;
-    TntToolBar1: TTntToolBar;
-    imagelist1: TImageList;
-    TntToolButton1: TTntToolButton;
-    TntToolButton2: TTntToolButton;
-    TntToolButton3: TTntToolButton;
-    TntToolButton4: TTntToolButton;
-    TntToolButton5: TTntToolButton;
-    TntToolButton6: TTntToolButton;
-    TntToolButton7: TTntToolButton;
-    TntToolButton8: TTntToolButton;
-    TntToolButton9: TTntToolButton;
-    TntToolButton10: TTntToolButton;
-    TntToolButton11: TTntToolButton;
-    TntToolButton12: TTntToolButton;
-    TntToolButton13: TTntToolButton;
-    TntToolButton14: TTntToolButton;
-    TntToolButton15: TTntToolButton;
-    TntToolButton16: TTntToolButton;
-    TntToolButton17: TTntToolButton;
-    N118: TTntMenuItem;
     N116: TTntMenuItem;
     JvTimer1: TJvTimer;
     JvTimer3: TJvTimer;
@@ -201,11 +158,25 @@ type
     N100: TTntMenuItem;
     N102: TTntMenuItem;
     N125: TTntMenuItem;
-    N129: TTntMenuItem;
-    N133: TTntMenuItem;
     N134: TTntMenuItem;
     N135: TTntMenuItem;
     XPManifest1: TXPManifest;
+    N97: TTntMenuItem;
+    N136: TTntMenuItem;
+    N98: TTntMenuItem;
+    N106: TTntMenuItem;
+    N79: TTntMenuItem;
+    SynEditRegexSearch1: TSynEditRegexSearch;
+    SynEditSearch1: TSynEditSearch;
+    N138: TTntMenuItem;
+    N139: TTntMenuItem;
+    N140: TTntMenuItem;
+    N141: TTntMenuItem;
+    N18: TTntMenuItem;
+    N26: TTntMenuItem;
+    N27: TTntMenuItem;
+    N28: TTntMenuItem;
+    N29: TTntMenuItem;
     procedure TntFormCreate(Sender: TObject);
     procedure TntFormDestroy(Sender: TObject);
     procedure N2Click(Sender: TObject);
@@ -222,7 +193,6 @@ type
     procedure N17Click(Sender: TObject);
     procedure N01Click(Sender: TObject);
     procedure N110Click(Sender: TObject);
-    procedure N27Click(Sender: TObject);
     procedure N31Click(Sender: TObject);
     procedure N41Click(Sender: TObject);
     procedure N51Click(Sender: TObject);
@@ -232,7 +202,7 @@ type
     procedure N91Click(Sender: TObject);
     procedure N02Click(Sender: TObject);
     procedure N111Click(Sender: TObject);
-    procedure N29Click(Sender: TObject);
+    procedure N211Click(Sender: TObject);
     procedure N32Click(Sender: TObject);
     procedure N42Click(Sender: TObject);
     procedure N52Click(Sender: TObject);
@@ -262,7 +232,6 @@ type
     procedure N104Click(Sender: TObject);
     procedure N105Click(Sender: TObject);
     procedure N114Click(Sender: TObject);
-    procedure N118Click(Sender: TObject);
     procedure N116Click(Sender: TObject);
     procedure JvTimer1Timer(Sender: TObject);
     procedure JvTimer3Timer(Sender: TObject);
@@ -278,202 +247,575 @@ type
     procedure N80Click(Sender: TObject);
     procedure N100Click(Sender: TObject);
     procedure N102Click(Sender: TObject);
-    procedure N129Click(Sender: TObject);
-    procedure N133Click(Sender: TObject);
     procedure N134Click(Sender: TObject);
     procedure TntFormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure N103Click(Sender: TObject);
+    procedure N97Click(Sender: TObject);
+    procedure N136Click(Sender: TObject);
+    procedure N98Click(Sender: TObject);
+    procedure N106Click(Sender: TObject);
+    procedure TntFormResize(Sender: TObject);
+    procedure N79Click(Sender: TObject);
+    procedure N139Click(Sender: TObject);
+    procedure N141Click(Sender: TObject);
+    procedure EditReplaceText(Sender: TObject; const ASearch,
+      AReplace: WideString; Line, Column: Integer;
+      var Action: TSynReplaceAction);
+    procedure N26Click(Sender: TObject);
+    procedure N210Click(Sender: TObject);
+    procedure N27Click(Sender: TObject);
+    procedure N28Click(Sender: TObject);
+    procedure N29Click(Sender: TObject);
   private
     { Private declarations }
-    prevnoex:Boolean;
-    prev: integer;
-    myusn: WideString;
-    procedure AddRecentItem(RecFileName:TWideFileName);
+    fSearchFromCaret, gbSearchBackwards, gbSearchCaseSensitive,
+    gbSearchFromCaret, gbSearchRegex, gbSearchSelectionOnly,
+    gbSearchTextAtCaret, gbSearchWholeWords, gbTempSearchBackwards,
+    prevnoex: Boolean;
+    savefmt, filefmt: 0..4;
+    prev: Integer;
+    bigsize, myfsize: Int64;
+    MyFileName: TWideFileName;
+    gsReplaceText, gsReplaceTextHistory, gsSearchText, gsSearchTextHistory,
+    myusn: UnicodeString;
+    function ShowMyMessageDlg(MessageIndex: Byte; AFileName: TWideFileName): Boolean;
     procedure AddLog;
+    procedure AddRecentItem(RecFileName: TWideFileName);
+    procedure AddToClipboard;
+    procedure AdvancedItemClick(Sender: TObject);
+    procedure ChangeClipboard;
+    procedure ClearClipboard;
+    procedure DoSearchReplaceText(AReplace: Boolean; ABackwards: Boolean);
+    procedure ShowSearchReplaceDialog(AReplace: Boolean);
+    procedure FindExecute;
+    procedure FindAgainExecute;
+    procedure FindBackwardsExecute;
+    procedure GoToMarker(Aindex: Byte);
+    procedure ItemClick(Sender: TObject);
+    procedure LoadFromFile(const FileName: TWideFileName);
     procedure LoadMyApp;
-    procedure LoadTranslate(lang:WideString);
-    procedure MyOpenFile(OpenFileName:TWideFileName);
-    procedure MySaveFile(SaveFileName:TWideFileName);
+    procedure LoadTranslate(const lang: UnicodeString);
+    procedure MyOpenFile(OpenFileName: TWideFileName);
+    procedure MySaveFile(SaveFileName: TWideFileName);
     procedure RecentItemClick(sender: TObject);
     procedure ReloadRecentItems;
+    procedure ReplaceExecute;
+    {procedure ReplaceAgainExecute;
+    procedure ReplaceBackwardsExecute;
+    //no need for now}
+    procedure SaveToFile(const FileName: TWideFileName);
+    procedure SetMarker(Aindex: Byte);
+    procedure ShowMyMessage(MessageIndex: Byte);
     procedure WorkParams;
   public
     { Public declarations }
-    savefmt: 0..2;
-    bigsize,myfsize: Int64;
-    MyFileName: TWideFileName;
-    errm1,errm2,mysg4,mylang:WideString;
-    procedure AdvancedItemClick(sender: TObject);
-    procedure ItemClick(sender: TObject);
-    procedure LoadTranslateForm2(lang:WideString);
-    procedure LoadTranslateForm6(lang:WideString);
-    procedure LoadTranslateForm7(lang:WideString);
+    mylang: UnicodeString;
   end;
 
+const
+  progver='1.1.6';
+  progbld='180';
+
 var
-  mysg1:WideString='File has ''read-only'' attribute.\nSave changes to file?';
-  mysg2:WideString='Current file has changed in other program.\nReopen the file?';
-  mysg3:WideString='File is no more exists.\nSave the file?';
-  mysg5:WideString='File has changed.\nSave the file?';
-  myunk:WideString='Untitled';
-  mysn1:WideString='GB';
-  mysn2:WideString='MB';
-  mysn3:WideString='KB';
-  mysn4:WideString='Byte(s)';
-  Editor:  TEditor;
+  CRCap: UnicodeString = 'Confirm replace';
+  CRBut1: UnicodeString = 'Yes';
+  CRBut2: UnicodeString = 'No';
+  CRBut3: UnicodeString = 'Cancel';
+  CRBut4: UnicodeString = 'Yes to all';
+  CRLab: UnicodeString = 'Replace this occurence of "%s"?';
+  myunk: UnicodeString = 'Untitled';
+  mysn1: UnicodeString = 'GB';
+  mysn2: UnicodeString = 'MB';
+  mysn3: UnicodeString = 'KB';
+  mysn4: UnicodeString = 'Byte(s)';
+  Editor: TEditor;
   ini: TBirIniFile;
 
 implementation
 
-uses Unit2, Unit3, Unit6, Unit7, BirEditAdv;
+uses
+  BirEditAdv, Unit2, Unit3, Unit4, Unit5, Unit6, Unit7, Unit8, Unit9, Unit10,
+  Unit11;
 
 {$R *.DFM}
 
-procedure TEditor.LoadTranslate(lang:WideString);
+{Errors and messages}
+
+procedure TEditor.ShowMyMessage(MessageIndex: Byte);
+var
+  msgstr: UnicodeString;
+  langini: TBirIniFile;
+  erdlg: TMyMsgDlg;
+begin
+  erdlg:=TMyMsgDlg.Create(Self);
+  with erdlg do try
+    if WideFileExists(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang) then begin
+      langini:=TBirIniFile.Create(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang);
+      TntButton1.Caption:=langini.ReadString('MsgDlgs','0','OK');
+      case MessageIndex of
+        0: msgstr:=langini.ReadString('MsgDlgs','1','Cannot open file.');
+        1: msgstr:=langini.ReadString('MsgDlgs','10','Text not found.');
+      end;
+      langini.Free;
+    end else begin
+      case MessageIndex of
+        0: msgstr:='Cannot open file.';
+        1: msgstr:='Text not found.';
+      end;
+    end;
+    TntLabel1.Caption:=msgstr;
+    case MessageIndex of
+      0: TntImage1.Picture.Icon.Handle:=LoadIconW(0,PWideChar(IDI_ERROR));
+      1: TntImage1.Picture.Icon.Handle:=LoadIconW(0,PWideChar(IDI_INFORMATION));
+    end;
+    if ShowModal=mrOk then {do nothing};
+  finally
+    erdlg.Free;
+  end;
+end;
+
+function TEditor.ShowMyMessageDlg(MessageIndex: Byte; AFileName: TWideFileName): Boolean;
+var
+  msgstr: UnicodeString;
+  langini: TBirIniFile;
+  msgdlg: TMyMsgDlg;
+begin
+  if MessageIndex>3 then msgdlg:=TMyBMsgDlg.Create(Self) else msgdlg:=TMyAMsgDlg.Create(Self);
+  with msgdlg do try
+    msgdlg.TntImage1.Picture.Icon.Handle:=LoadIconW(0,PWideChar(IDI_WARNING));
+    if WideFileExists(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang) then begin
+      langini:=TBirIniFile.Create(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang);
+      case MessageIndex of
+        0: msgstr:=langini.ReadString('MsgDlgs','2','File has "read-only" attribute.\nSave changes to file?');
+        1: msgstr:=langini.ReadString('MsgDlgs','5','Current file has changed in other program.\nReopen the file?');
+        2: msgstr:=langini.ReadString('MsgDlgs','6','File is no more exists.\nSave the file?');
+        3: msgstr:=langini.ReadString('MsgDlgs','7','Are you sure that you want to open the large file?');
+        4: msgstr:=langini.ReadString('MsgDlgs','9','File has changed.\nSave the file?');
+      end;
+      TntButton1.Caption:=langini.ReadString('MsgDlgs','3','Yes');
+      if MessageIndex>3 then begin
+        with msgdlg as TMyBMsgDlg do begin
+          TntButton2.Caption:=langini.ReadString('MsgDlgs','4','No');
+          TntButton3.Caption:=langini.ReadString('MsgDlgs','8','Cancel');
+        end;
+      end else with msgdlg as TMyAMsgDlg do TntButton2.Caption:=langini.ReadString('MsgDlgs','4','No');
+    langini.Free;
+    end else begin
+      case MessageIndex of
+        0: msgstr:='File has "read-only" attribute.\nSave changes to file?';
+        1: msgstr:='Current file has changed in other program.\nReopen the file?';
+        2: msgstr:='File is no more exists.\nSave the file?';
+        3: msgstr:='Are you sure that you want to open the large file?';
+        4: msgstr:='File has changed.\nSave the file?';
+      end;
+    end;
+    msgstr:=UnicodeStringReplace(msgstr,'\n',#13#10,[rfReplaceAll]);
+    TntLabel1.Caption:=msgstr;
+    if MessageIndex>3 then begin
+      with msgdlg as TMyBMsgDlg do case ShowModal of
+        mrYes:
+        begin
+          if WideFileExists(MyFileName) then MySaveFile(MyFileName) else if Save.Execute then MySaveFile(Save.FileName);
+          Result:=True;
+        end;
+        mrNo: Result:=True;
+        mrCancel: Result:=False;
+        end;
+    end else begin
+      case ShowModal of
+        mrYes:
+        begin
+          case MessageIndex of
+            0:
+            begin
+              WideFileSetReadOnly(AFileName,False);
+              SaveToFile(AFileName);
+              WideFileSetReadOnly(AFileName,True);
+            end;
+            1: N104.Click;
+            2:
+            begin
+              SaveToFile(AFileName);
+              prev:=WideFileAge(AFileName);
+            end;
+          end;
+          Result:=True;
+        end;
+        mrNo: Result:=False;
+        end;
+    end;
+  finally
+    msgdlg.Free;
+  end;
+end;
+
+{Load/Save the file}
+
+procedure TEditor.LoadFromFile(const FileName:TWideFileName);
+var
+  Stream: TStream;
+
+ procedure MyLoad;
+ begin
+   Edit.Lines.LoadFromStream(Stream);
+   MyFileName:=FileName;
+   myfsize:=Stream.Size;
+ end;
+
+begin
+  try
+    Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
+    try
+      if Stream.Size>bigsize then begin
+        if ShowMyMessageDlg(3,'') then MyLoad
+      end else MyLoad;
+    finally
+      Stream.Free;
+    end;
+  except
+    ShowMyMessage(0);
+  end;
+end;
+
+procedure TEditor.SaveToFile(const FileName:TWideFileName);
+var
+  Stream:TStream;
+begin
+  Stream:=TFileStream.Create(FileName, fmCreate);
+  try
+    Edit.Lines.SaveToStream(Stream);
+    MyFileName:=FileName;
+    myfsize:=Stream.Size;
+    Edit.Modified:=False;
+  finally
+    Stream.Free;
+  end;
+end;
+
+{Find and Replace}
+
+procedure TEditor.ShowSearchReplaceDialog(AReplace: boolean);
+var
+  langini: TBirIniFile;
+  dlg:TSearchForm;
+begin
+  if AReplace then dlg:=TReplaceForm.Create(Self) else dlg:=TSearchForm.Create(Self);
+  with dlg do try
+    if WideFileExists(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang) then begin
+      langini:=TBirIniFile.Create(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang);
+      Caption:=langini.ReadString('SearchDlg','0','Search Text');
+      TntLabel1.Caption:=langini.ReadString('SearchDlg','1','Search for');
+      TntGroupBox1.Caption:=langini.ReadString('SearchDlg','2','Options');
+      TntCheckBox1.Caption:=langini.ReadString('SearchDlg','3','Case sensitivity');
+      TntCheckBox2.Caption:=langini.ReadString('SearchDlg','4','Whole words only');
+      TntCheckBox3.Caption:=langini.ReadString('SearchDlg','5','Search from caret');
+      TntCheckBox4.Caption:=langini.ReadString('SearchDlg','6','Selected text only');
+      TntCheckBox5.Caption:=langini.ReadString('SearchDlg','7','Regular expression');
+      TntRadioGroup1.Caption:=langini.ReadString('SearchDlg','8','Direction');
+      TntRadioGroup1.Items[0]:=langini.ReadString('SearchDlg','9','Forward');
+      TntRadioGroup1.Items[1]:=langini.ReadString('SearchDlg','10','Backward');
+      TntButton1.Caption:=langini.ReadString('SearchDlg','11','OK');
+      TntButton2.Caption:=langini.ReadString('SearchDlg','12','Cancel');
+      if AReplace then with dlg as TReplaceForm
+      do TntLabel2.Caption:=langini.ReadString('SearchDlg','13','Replace with:');
+      langini.Free;
+    end;
+    SearchBackwards:=(gbSearchBackwards or gbtempSearchBackwards);
+    SearchCaseSensitive:=gbSearchCaseSensitive;
+    SearchFromCursor:=gbSearchFromCaret;
+    SearchInSelectionOnly:=gbSearchSelectionOnly;
+    SearchRegularExpression:=gbSearchRegex;
+    gbSearchTextAtCaret:=true;
+    SearchText:=gsSearchText;
+    if gbSearchTextAtCaret then begin
+      if Edit.SelAvail and (Edit.BlockBegin.Char=Edit.BlockEnd.Char)
+      then SearchText:=Edit.SelText
+      else SearchText:=Edit.GetWordAtRowCol(Edit.CaretXY);
+    end;
+    if AReplace then with dlg as TReplaceForm do begin
+      ReplaceText:=gsReplaceText;
+      ReplaceTextHistory:=gsReplaceTextHistory;
+    end;
+    SearchWholeWords:=gbSearchWholeWords;
+    if ShowModal = mrOK then begin
+      if not(gbtempSearchBackwards) then
+        gbSearchBackwards := SearchBackwards;
+      gbSearchCaseSensitive := SearchCaseSensitive;
+      gbSearchFromCaret := SearchFromCursor;
+      gbSearchSelectionOnly := SearchInSelectionOnly;
+      gbSearchWholeWords := SearchWholeWords;
+      gbSearchRegex := SearchRegularExpression;
+      gsSearchText := SearchText;
+      if AReplace then with dlg as TReplaceForm do begin
+        gsReplaceText:=ReplaceText;
+        gsReplaceTextHistory:=ReplaceTextHistory;
+      end;
+      fSearchFromCaret := gbSearchFromCaret;
+      if gsSearchText <> '' then begin
+        DoSearchReplaceText(AReplace, gbSearchBackwards);
+        fSearchFromCaret := TRUE;
+      end;
+    end;
+  finally
+    dlg.Free;
+  end;
+end;
+
+procedure TEditor.DoSearchReplaceText(AReplace:boolean;ABackwards:boolean);
+var Options: TSynSearchOptions;
+begin
+  if AReplace
+  then Options:=[ssoPrompt,ssoReplace,ssoReplaceAll]
+  else Options:=[];
+  if ABackwards then Include(Options,ssoBackwards);
+  if gbSearchCaseSensitive then Include(Options,ssoMatchCase);
+  if not fSearchFromCaret then Include(Options,ssoEntireScope);
+  if gbSearchSelectionOnly then Include(Options,ssoSelectedOnly);
+  if gbSearchWholeWords then Include(Options,ssoWholeWord);
+  if gbSearchRegex then Edit.SearchEngine:=SynEditRegexSearch1 else Edit.SearchEngine:=SynEditSearch1;
+  if Edit.SearchReplace(gsSearchText,gsReplaceText,Options)=0
+  then begin
+    ShowMyMessage(1);
+    if ssoBackwards in Options
+    then Edit.BlockEnd:=Edit.BlockBegin
+    else Edit.BlockBegin:=Edit.BlockEnd;
+    Edit.CaretXY:=Edit.BlockBegin;
+  end;
+  if ConfirmReplace<>nil then ConfirmReplace.Free;
+end;
+
+procedure TEditor.EditReplaceText(Sender: TObject; const ASearch,
+  AReplace: WideString; Line, Column: Integer; var Action: TSynReplaceAction);
+var
+  APos      : TPoint;
+  EditRect  : TRect;
+  SynEditor : TSynEdit;
+begin
+  if ASearch=AReplace then Action:=raSkip
+  else begin
+    SynEditor:=TSynEdit(Sender);
+    APos:=Edit.ClientToScreen(SynEditor.RowColumnToPixels
+                                    (SynEditor.BufferToDisplayPos
+                                    (BufferCoord(Column, Line))));
+    EditRect              := ClientRect;
+    EditRect.TopLeft      := ClientToScreen(EditRect.TopLeft);
+    EditRect.BottomRight  := ClientToScreen(EditRect.BottomRight);
+    if ConfirmReplace=nil then ConfirmReplace:=TConfirmReplace.Create(TntApplication);
+    with ConfirmReplace do begin
+      Caption:=CRCap;
+      TntButton1.Caption:=CRBut1;
+      TntButton2.Caption:=CRBut2;
+      TntButton3.Caption:=CRBut3;
+      TntButton4.Caption:=CRBut4;
+      TntLabel1.Caption:=WideFormat(CRLab,[ASearch]);
+    end;
+    ConfirmReplace.PrepareShow(EditRect,APos.X,APos.Y,APos.Y+Edit.LineHeight);
+    case ConfirmReplace.ShowModal of
+      mrYes       : Action:=raReplace;
+      mrYesToAll  : Action:=raReplaceAll;
+      mrNo        : Action:=raSkip;
+      else          Action:=raCancel;
+    end;
+  end;
+end;
+
+procedure TEditor.FindExecute;
+begin
+  gbtempSearchBackwards:=false;
+  ShowSearchReplaceDialog(FALSE);
+end;
+
+procedure TEditor.FindAgainExecute;
+begin
+  gbtempSearchBackwards:=false;
+	if (gsSearchText='')
+  then ShowSearchReplaceDialog(FALSE)
+  else DoSearchReplaceText(FALSE,False);
+end;
+
+procedure TEditor.FindBackwardsExecute;
+begin
+	gbtempSearchBackwards:=true;
+	if (gsSearchText='')
+  then ShowSearchReplaceDialog(FALSE)
+  else DoSearchReplaceText(FALSE,TRUE);
+end;
+
+procedure TEditor.ReplaceExecute;
+begin
+    ShowSearchReplaceDialog(TRUE);
+end;
+
+{procedure TEditor.ReplaceAgainExecute;
+begin
+  gbtempSearchBackwards:=false;
+	if (gsSearchText='')
+  then ShowSearchReplaceDialog(True)
+  else DoSearchReplaceText(True,False);
+end;
+
+procedure TEditor.ReplaceBackwardsExecute;
+begin
+	gbtempSearchBackwards:=true;
+	if (gsSearchText='')
+  then ShowSearchReplaceDialog(True)
+  else DoSearchReplaceText(True,TRUE);
+end;}
+
+
+{Code of the program}
+
+procedure TEditor.SetMarker(Aindex:Byte);
+var SetPoint:TPoint; SetCommand:TSynEditorCommand;
+begin
+  SetPoint.X:=Edit.CaretX;
+  SetPoint.Y:=Edit.CaretY;
+  case Aindex of
+    1: SetCommand:=ecSetMarker1;
+    2: SetCommand:=ecSetMarker2;
+    3: SetCommand:=ecSetMarker3;
+    4: SetCommand:=ecSetMarker4;
+    5: SetCommand:=ecSetMarker5;
+    6: SetCommand:=ecSetMarker6;
+    7: SetCommand:=ecSetMarker7;
+    8: SetCommand:=ecSetMarker8;
+    9: SetCommand:=ecSetMarker9;
+  else SetCommand:=ecSetMarker0; 
+  end;
+  Edit.ExecuteCommand(SetCommand,'A',@SetPoint);
+end;
+
+procedure TEditor.GoToMarker(Aindex:Byte);
+var GTMPoint:TPoint; GTMCommand:TSynEditorCommand;
+begin
+  GTMPoint.X:=Edit.CaretX;
+  GTMPoint.Y:=Edit.CaretY;
+  case Aindex of
+    1: GTMCommand:=ecGotoMarker1;
+    2: GTMCommand:=ecGotoMarker2;
+    3: GTMCommand:=ecGotoMarker3;
+    4: GTMCommand:=ecGotoMarker4;
+    5: GTMCommand:=ecGotoMarker5;
+    6: GTMCommand:=ecGotoMarker6;
+    7: GTMCommand:=ecGotoMarker7;
+    8: GTMCommand:=ecGotoMarker8;
+    9: GTMCommand:=ecGotoMarker9;
+  else GTMCommand:=ecGotoMarker0; 
+  end;
+  Edit.ExecuteCommand(GTMCommand,'A',@GTMPoint);
+end;
+
+procedure TEditor.LoadTranslate(const lang:UnicodeString);
 var i:Integer; langini:TBirIniFile;
 begin
   langini:=TBirIniFile.Create(WideExtractFilePath(TntApplication.ExeName)+'lang\'+lang);
-  errm1:=langini.ReadString('Errors','EOutOfMemory','Out of memory.');
-  errm2:=langini.ReadString('Errors','EFOpenError','Cannot open file.');
-  mysg1:=langini.ReadString('Messages','Msg1','File has ''read-only'' attribute.\nSave changes to file?');
-  mysg2:=langini.ReadString('Messages','Msg2','Current file has changed in other program.\nReopen the file?');
-  mysg3:=langini.ReadString('Messages','Msg3','File is no more exists.\nSave the file?');
-  mysg4:=langini.ReadString('Messages','Msg4','Are you sure that you want to open the big file?');
-  mysg5:=langini.ReadString('Messages','Msg5','File has changed.\nSave the file?');
-  myunk:=langini.ReadString('Other','Untitled','Untitled');
-  mysn1:=langini.ReadString('Other','GBytes','GB');
-  mysn2:=langini.ReadString('Other','MBytes','MB');
-  mysn3:=langini.ReadString('Other','KBytes','KB');
-  mysn4:=langini.ReadString('Other','Bytes','Byte(s)');
-  N1.Caption:=langini.ReadString('Menu','0','File');
-  N2.Caption:=langini.ReadString('Menu','1','Exit');
-  N3.Caption:=langini.ReadString('Menu','2','Open');
-  N4.Caption:=langini.ReadString('Menu','3','Save');
-  N5.Caption:=langini.ReadString('Menu','4','Save As...');
-  N7.Caption:=langini.ReadString('Menu','5','Print Preview');
-  N8.Caption:=langini.ReadString('Menu','6','Print');
-  N10.Caption:=langini.ReadString('Menu','7','Edit');
-  N11.Caption:=langini.ReadString('Menu','8','Undo');
-  N12.Caption:=langini.ReadString('Menu','9','Redo');
-  N14.Caption:=langini.ReadString('Menu','10','Select All');
-  N15.Caption:=langini.ReadString('Menu','11','Copy');
-  N16.Caption:=langini.ReadString('Menu','12','Paste');
-  N17.Caption:=langini.ReadString('Menu','13','Cut');
+  N1.Caption:=langini.ReadString('Main','0','File');
+  N2.Caption:=langini.ReadString('Main','1','Exit');
+  N3.Caption:=langini.ReadString('Main','2','Open');
+  N4.Caption:=langini.ReadString('Main','3','Save');
+  N5.Caption:=langini.ReadString('Main','4','Save As...');
+  N7.Caption:=langini.ReadString('Main','5','Print Preview');
+  N8.Caption:=langini.ReadString('Main','6','Print');
+  N10.Caption:=langini.ReadString('Main','7','Edit');
+  N11.Caption:=langini.ReadString('Main','8','Undo');
+  N12.Caption:=langini.ReadString('Main','9','Redo');
+  N14.Caption:=langini.ReadString('Main','10','Select All');
+  N15.Caption:=langini.ReadString('Main','11','Copy');
+  N16.Caption:=langini.ReadString('Main','12','Paste');
+  N17.Caption:=langini.ReadString('Main','13','Cut');
   N19.Caption:=N11.Caption;
   N20.Caption:=N12.Caption;
   N22.Caption:=N17.Caption;
   N23.Caption:=N15.Caption;
   N24.Caption:=N16.Caption;
   N25.Caption:=N14.Caption;
-  N26.Caption:=langini.ReadString('Menu','14','Set');
-  N28.Caption:=langini.ReadString('Menu','15','Go To');
-  N30.Caption:=langini.ReadString('Menu','16','Copy Add');
-  N33.Caption:=N26.Caption;
-  N34.Caption:=N28.Caption;
-  N37.Caption:=langini.ReadString('Menu','17','Dublicate Selection');
-  N38.Caption:=langini.ReadString('Menu','18','Bookmarks');
-  N39.Caption:=langini.ReadString('Menu','19','Copy All');
-  N40.Caption:=langini.ReadString('Menu','20','Advanced');
+  N33.Caption:=langini.ReadString('Main','14','Set');
+  N34.Caption:=langini.ReadString('Main','15','Go To');
+  N30.Caption:=langini.ReadString('Main','16','Copy Add');
+  N37.Caption:=langini.ReadString('Main','17','Dublicate Selection');
+  N38.Caption:=langini.ReadString('Main','18','Bookmarks');
+  N39.Caption:=langini.ReadString('Main','19','Copy All');
+  N40.Caption:=langini.ReadString('Main','20','Advanced');
   N45.Caption:=N39.Caption;
-  N46.Caption:=langini.ReadString('Menu','21','Clear Clipboard');
-  N47.Caption:=langini.ReadString('Menu','22','Line Numbers');
-  N48.Caption:=langini.ReadString('Menu','23','Word Wrap');
-  N49.Caption:=langini.ReadString('Menu','24','Help');
-  N50.Caption:=langini.ReadString('Menu','25','About...');
+  N46.Caption:=langini.ReadString('Main','21','Clear Clipboard');
+  N47.Caption:=langini.ReadString('Main','22','Line Numbers');
+  N48.Caption:=langini.ReadString('Main','23','Word Wrap');
+  N49.Caption:=langini.ReadString('Main','24','Help');
+  N50.Caption:=langini.ReadString('Main','25','About...');
   N55.Caption:=N30.Caption;
-  N56.Caption:=langini.ReadString('Menu','26','Swap');
-  N57.Caption:=langini.ReadString('Menu','27','Clear All');
-  N59.Caption:=langini.ReadString('Menu','28','Clear');
-  N60.Caption:=langini.ReadString('Menu','29','Uppercase');
+  N56.Caption:=langini.ReadString('Main','26','Swap');
+  N57.Caption:=langini.ReadString('Main','27','Clear All');
+  N59.Caption:=langini.ReadString('Main','28','Clear');
+  N60.Caption:=langini.ReadString('Main','29','Uppercase');
   N65.Caption:=N56.Caption;
-  N66.Caption:=langini.ReadString('Menu','30','Convert');
-  N68.Caption:=langini.ReadString('Menu','31','Lowercase');
-  N69.Caption:=langini.ReadString('Menu','32','Title Case');
-  N70.Caption:=langini.ReadString('Menu','33','Invert Case');
-  N75.Caption:=N38.Caption;
-  N76.Caption:=langini.ReadString('Menu','34','Sentence Case');
-  N77.Caption:=langini.ReadString('Menu','35','Insert');
-  N100.Caption:=langini.ReadString('Menu','36','Filename');
-  N80.Caption:=langini.ReadString('Menu','38','Open With...');
+  N66.Caption:=langini.ReadString('Main','30','Convert');
+  N68.Caption:=langini.ReadString('Main','31','Lowercase');
+  N69.Caption:=langini.ReadString('Main','32','Title Case');
+  N70.Caption:=langini.ReadString('Main','33','Invert Case');
+  N76.Caption:=langini.ReadString('Main','34','Sentence Case');
+  N77.Caption:=langini.ReadString('Main','35','Insert');
+  N100.Caption:=langini.ReadString('Main','36','Filename');
+  N79.Caption:=langini.ReadString('Main','37','Special Symbols');
+  N80.Caption:=langini.ReadString('Main','38','Open With...');
   N85.Caption:=N59.Caption;
-  N86.Caption:=langini.ReadString('Menu','39','Indent');
-  N87.Caption:=langini.ReadString('Menu','40','Unindent');
-  N88.Caption:=langini.ReadString('Menu','41','Block');
-  N90.Caption:=langini.ReadString('Menu','42','Enclose Selection');
+  N86.Caption:=langini.ReadString('Main','39','Indent');
+  N87.Caption:=langini.ReadString('Main','40','Unindent');
+  N88.Caption:=langini.ReadString('Main','41','Block');
+  N90.Caption:=langini.ReadString('Main','42','Enclose Selection');
+  N138.Caption:=langini.ReadString('Main','43','Line');
   N95.Caption:=N57.Caption;
   N96.Caption:=N46.Caption;
-  N99.Caption:=langini.ReadString('Menu','44','Time/Date');
-  N101.Caption:=langini.ReadString('Menu','45','Options');
-  N103.Caption:=langini.ReadString('Menu','46','Tab Settings');
-  N104.Caption:=langini.ReadString('Menu','47','Revert');
-  N105.Caption:=langini.ReadString('Menu','48','New');
-  N114.Caption:=langini.ReadString('Menu','52','Properties');
-  N116.Caption:=langini.ReadString('Menu','53','Show Statusbar');
-  N117.Caption:=langini.ReadString('Menu','54','Language');
-  N118.Caption:=langini.ReadString('Menu','55','Show Toolbar');
-  N119.Caption:=langini.ReadString('Menu','56','New Window');
-  N120.Caption:=langini.ReadString('Menu','57','Launch');
-  N122.Caption:=langini.ReadString('Menu','58','Empty Window');
-  N124.Caption:=langini.ReadString('Menu','59','Execute Document');
-  N126.Caption:=langini.ReadString('Menu','60','Internal');
-  N127.Caption:=langini.ReadString('Menu','61','Recent files');
-  N130.Caption:=langini.ReadString('Menu','62','Delete non-existent');
-  N132.Caption:=langini.ReadString('Menu','63','Clear list');
-  N102.Caption:=langini.ReadString('Menu','64','Filename and path');
-  N125.Caption:=langini.ReadString('Menu','65','Codepage');
-  N134.Caption:=langini.ReadString('Menu','66','Default');
-  N129.Caption:=langini.ReadString('Menu','67','ANSI');
-  N133.Caption:=langini.ReadString('Menu','68','Unicode');
+  N99.Caption:=langini.ReadString('Main','44','Time/Date');
+  N101.Caption:=langini.ReadString('Main','45','Options');
+  N103.Caption:=langini.ReadString('Main','46','Tab Settings');
+  N104.Caption:=langini.ReadString('Main','47','Revert');
+  N105.Caption:=langini.ReadString('Main','48','New');
+  N139.Caption:=langini.ReadString('Main','49','Delete');
+  N140.Caption:=langini.ReadString('Main','50','Special');
+  N141.Caption:=langini.ReadString('Main','51','Find mathing brace');
+  N114.Caption:=langini.ReadString('Main','52','Properties');
+  N116.Caption:=langini.ReadString('Main','53','Show Statusbar');
+  N117.Caption:=langini.ReadString('Main','54','Language');
+  CRCap:=langini.ReadString('Main','55','Confirm replace');
+  N119.Caption:=langini.ReadString('Main','56','New Window');
+  N120.Caption:=langini.ReadString('Main','57','Launch');
+  N122.Caption:=langini.ReadString('Main','58','Empty Window');
+  N124.Caption:=langini.ReadString('Main','59','Execute Document');
+  N126.Caption:=langini.ReadString('Main','60','Internal');
+  N127.Caption:=langini.ReadString('Main','61','Recent files');
+  N130.Caption:=langini.ReadString('Main','62','Delete non-existent');
+  N132.Caption:=langini.ReadString('Main','63','Clear list');
+  N102.Caption:=langini.ReadString('Main','64','Filename and path');
+  N125.Caption:=langini.ReadString('Main','65','Codepage');
+  N134.Caption:=langini.ReadString('Main','66','Default');
+  N26.Caption:=langini.ReadString('Main','67','Find...');
+  N27.Caption:=langini.ReadString('Main','68','Find Next');
+  CRLab:=langini.ReadString('Main','69','Replace this occurence of "%s"?');
+  myunk:=langini.ReadString('Main','70','Untitled');
+  mysn1:=langini.ReadString('Main','71','GB');
+  mysn2:=langini.ReadString('Main','72','MB');
+  mysn3:=langini.ReadString('Main','73','KB');
+  mysn4:=langini.ReadString('Main','74','Byte(s)');
+  CRBut1:=langini.ReadString('Main','75','Yes');
+  CRBut2:=langini.ReadString('Main','76','No');
+  CRBut3:=langini.ReadString('Main','77','Cancel');
+  CRBut4:=langini.ReadString('Main','78','Yes to all');
+  N28.Caption:=langini.ReadString('Main','79','Find Previous');
+  N29.Caption:=langini.ReadString('Main','80','Replace...');
   Save.FileName:=myunk+'.txt';
-  langini.Destroy;
+  langini.Free;
   for I := 1 to N117.Count-1 do begin
     if WideCompareStr(N117.Items[i].Hint,mylang)=0 then N117.Items[i].Checked:=True;
   end;
 end;
 
-procedure TEditor.LoadTranslateForm2(lang:WideString);
-var langini:TBirIniFile;
-begin
-  langini:=TBirIniFile.Create(WideExtractFilePath(TntApplication.ExeName)+'lang\'+lang);
-  Preview.Caption:=N7.Caption;
-  Preview.TntButton1.Hint:=langini.ReadString('Preview','Next','Next Page');
-  Preview.TntButton2.Hint:=langini.ReadString('Preview','Previous','Previous Page');
-  Preview.TntButton3.Hint:=langini.ReadString('Preview','Last','Last Page');
-  Preview.TntButton4.Hint:=langini.ReadString('Preview','First','First Page');
-  Preview.TntButton5.Caption:=N8.Caption;
-  langini.Destroy;
-end;
-
-procedure TEditor.LoadTranslateForm6(lang:WideString);
-var langini:TBirIniFile;
-begin
-  langini:=TBirIniFile.Create(WideExtractFilePath(TntApplication.ExeName)+'lang\'+lang);
-  SelIns.Caption:=N90.Caption;
-  SelIns.TntButton1.Caption:=langini.ReadString('Other','OK','OK');
-  SelIns.TntButton2.Caption:=langini.ReadString('Other','Cancel','Cancel');
-  SelIns.TntLabel1.Caption:=langini.ReadString('Other','InsBeforeSel','Insert before selection');
-  SelIns.TntLabel2.Caption:=langini.ReadString('Other','InsAfterSel','Insert after selection');
-  langini.Destroy;
-end;
-
-procedure TEditor.LoadTranslateForm7(lang:WideString);
-var langini:TBirIniFile;
-begin
-  langini:=TBirIniFile.Create(WideExtractFilePath(TntApplication.ExeName)+'lang\'+lang);
-  TabOpt.Caption:=N103.Caption;
-  TabOpt.TntButton1.Caption:=SelIns.TntButton1.Caption;
-  TabOpt.TntButton2.Caption:=SelIns.TntButton2.Caption;
-  TabOpt.TntLabel1.Caption:=langini.ReadString('Other','TabWidth','Tabulator width');
-  langini.Destroy;
-end;
-
 procedure TEditor.AdvancedItemClick(sender: TObject);
-var advtempcmd,advtempparam:WideString;
+var advtempcmd,advtempparam:UnicodeString;
 begin
   with (sender as TTntMenuItem) do begin
     advtempcmd:=ini.ReadString('Advanced','Item'+Hint+'.Command','');
     advtempparam:=ini.ReadString('Advanced','Item'+Hint+'.Params','');
-    advtempparam:=Tnt_WideStringReplace(advtempparam,'%1',MyFileName,[rfReplaceAll],False);
+    advtempparam:=UnicodeStringReplace(advtempparam,'%1',MyFileName,[rfReplaceAll]);
     Tnt_ShellExecuteW(Self.Handle,'open',PWideChar(advtempcmd),PWideChar(advtempparam),nil,SW_SHOWNORMAL);
   end;
 end;
@@ -482,11 +824,8 @@ procedure TEditor.ItemClick(sender: TObject);
 begin
   with (sender as TTntMenuItem) do begin
     mylang:=Hint;
-    if WideFileExists(WideExtractFilePath(TntApplication.ExeName)+'lang\'+Editor.mylang) then begin
+    if WideFileExists(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang) then begin
       LoadTranslate(mylang);
-      LoadTranslateForm2(mylang);
-      LoadTranslateForm6(mylang);
-      LoadTranslateForm7(mylang);
       Checked:=True;
       ini.WriteString('GUI'+myusn,'Lang',mylang);
       ini.UpdateFile;
@@ -500,10 +839,10 @@ begin
 end;
 
 procedure TEditor.ReloadRecentItems;
-var reci:Byte; recs:WideString; RecItem: TTntMenuItem;
+var reci:Byte; recs:UnicodeString; RecItem: TTntMenuItem;
 begin
   for reci:=N127.Count downto 4 do begin
-    N127.Items[reci-1].Destroy;
+    N127.Items[reci-1].Free;
   end;
   for reci:=0 to 9 do begin
     recs:=ini.ReadString('Recent','File'+IntToStr(reci),'');
@@ -541,13 +880,20 @@ procedure TEditor.MyOpenFile(OpenFileName:TWideFileName);
 begin
   if WideExtractFilePath(OpenFileName)='' then OpenFileName:=WideExtractFilePath(TntApplication.ExeName)+OpenFileName;
   Edit.ClearAll;
-  Edit.Lines.LoadFromFile(OpenFileName);
+  LoadFromFile(OpenFileName);
   AddRecentItem(OpenFileName);
   SHAddToRecentDocs(2,PWideChar(OpenFileName));
   prev:=WideFileAge(OpenFileName);
+  if Edit.Lines.SaveFormat=sfUTF16LSB then filefmt:=1
+  else if Edit.Lines.SaveFormat=sfUTF16MSB then filefmt:=2
+  else if Edit.Lines.SaveFormat=sfUTF8 then filefmt:=3
+  else if Edit.Lines.SaveFormat=sfAnsi then filefmt:=4
+  else filefmt:=0;
   case savefmt of
-    1: Edit.Lines.SaveUnicode:=False;
-    2: Edit.Lines.SaveUnicode:=True;
+    1: Edit.Lines.SaveFormat:=sfUTF16LSB;
+    2: Edit.Lines.SaveFormat:=sfUTF16MSB;
+    3: Edit.Lines.SaveFormat:=sfUTF8;
+    4: Edit.Lines.SaveFormat:=sfAnsi;
   end;
   AddLog;
 end;
@@ -555,34 +901,31 @@ end;
 procedure TEditor.MySaveFile(SaveFileName: TWideFileName);
 var HideROMsg:Boolean;
 begin
-  if WideExtractFilePath(SaveFileName)='' then SaveFileName:=WideExtractFilePath(TntApplication.ExeName)+SaveFileName;
-  if WideFileIsReadOnly(SaveFileName) then begin
-    if myusn='' then HideROMsg:=ini.ReadBool('Editor','HideROMsg',false) else HideROMsg:=ini.ReadBool('Editor'+myusn,'HideROMsg',ini.ReadBool('Editor','HideROMsg',false));
-    if HideROMsg then begin
-      WideFileSetReadOnly(SaveFileName,False);
-      Edit.Lines.SaveToFile(SaveFileName);
-      WideFileSetReadOnly(SaveFileName,True);
-    end else begin
-      case WideMessageDlg(Tnt_WideStringReplace(mysg1,'\n',#13#10,[rfReplaceAll],False),mtWarning,[mbYes,mbNo],0) of
-        mrYes:
-          begin
-            WideFileSetReadOnly(SaveFileName,False);
-            Edit.Lines.SaveToFile(SaveFileName);
-            WideFileSetReadOnly(SaveFileName,True);
-          end;
-        mrNo: Exit;
-      end;
-    end;
-  end else Edit.Lines.SaveToFile(SaveFileName);
+ if WideExtractFilePath(SaveFileName)='' then SaveFileName:=WideExtractFilePath(TntApplication.ExeName)+SaveFileName;
+ if WideFileExists(SaveFileName) then begin
+   if WideFileIsReadOnly(SaveFileName) then begin
+     if myusn='' then HideROMsg:=ini.ReadBool('Editor','HideROMsg',false) else HideROMsg:=ini.ReadBool('Editor'+myusn,'HideROMsg',ini.ReadBool('Editor','HideROMsg',false));
+     if HideROMsg then begin
+       WideFileSetReadOnly(SaveFileName,False);
+       SaveToFile(SaveFileName);
+       WideFileSetReadOnly(SaveFileName,True);
+     end else if not ShowMyMessageDlg(0,SaveFileName) then Exit;
+   end else SaveToFile(SaveFileName);
+ end else SaveToFile(SaveFileName);
   AddRecentItem(SaveFileName);
   SHAddToRecentDocs(2,PWideChar(SaveFileName));
   prev:=WideFileAge(SaveFileName);
+  if Edit.Lines.SaveFormat=sfUTF16LSB then filefmt:=1
+  else if Edit.Lines.SaveFormat=sfUTF16MSB then filefmt:=2
+  else if Edit.Lines.SaveFormat=sfUTF8 then filefmt:=3
+  else if Edit.Lines.SaveFormat=sfAnsi then filefmt:=4
+  else filefmt:=0;
 end;
 
 procedure TEditor.WorkParams;
 var
   ToCreate, ToPaste, ToPrint, ToQuit : Boolean;
-  ParamFile                          : WideString;
+  ParamFile                          : UnicodeString;
   i                                  : Integer;
 begin
   for i:=0 to WideParamCount do begin
@@ -604,9 +947,7 @@ begin
       synprint1.Print;
     end;
   end else begin
-    if ToCreate then begin
-      Edit.Lines.SaveToFile(ParamFile);
-    end;
+    if ToCreate then SaveToFile(ParamFile);
   end;
   if ToPaste then Edit.PasteFromClipboard;
   if ToQuit then Application.Terminate;
@@ -620,23 +961,16 @@ end;
 
 procedure TEditor.TntFormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  if Edit.Modified and (not Edit.Lines.Saved) then begin
-    case WideMessageDlg(Tnt_WideStringReplace(mysg5,'\n',#13#10,[rfReplaceAll],False),mtWarning,[mbYes,mbNo,mbCancel],0) of
-      mrYes:
-        begin
-          if WideFileExists(MyFileName) then MySaveFile(MyFileName) else if Save.Execute then MySaveFile(Save.FileName);
-          CanClose:=True;
-        end;
-      mrNo: CanClose:=True;
-      mrCancel: CanClose:=False;
-    end;
+  if Edit.Modified then begin
+    CanClose:=ShowMyMessageDlg(4,'');
   end;
 end;
 
 procedure TEditor.LoadMyApp;
 var
+  loadadv           : Boolean;
   icnum, itc        : Integer;
-  icfile            : WideString;
+  icfile            : UnicodeString;
   langsrw           : TSearchRecW;
   AdvItem, LangItem : TTntMenuItem;
   ic                : TIcon;
@@ -645,40 +979,56 @@ begin
   if ini.ReadBool('System','UserMode',True)
   then begin
     myusn:='.'+MyGetVar('USERNAME');
+    Editor.Height:=ini.ReadInteger('GUI'+myusn,'MainWnd.Height',ini.ReadInteger('GUI','MainWnd.Height',420));
+    Editor.Width:=ini.ReadInteger('GUI'+myusn,'MainWnd.Width',ini.ReadInteger('GUI','MainWnd.Width',600));
+    Editor.Top:=ini.ReadInteger('GUI'+myusn,'MainWnd.Top',ini.ReadInteger('GUI','MainWnd.Top',Round((Screen.Height-Editor.Height)/2)));
+    Editor.Left:=ini.ReadInteger('GUI'+myusn,'MainWnd.Left',ini.ReadInteger('GUI','MainWnd.Left',Round((Screen.Width-Editor.Width)/2)));
+    if ini.ReadBool('GUI'+myusn,'MainWnd.Maximized',ini.ReadBool('GUI','MainWnd.Maximized',False)) then Editor.WindowState:=wsMaximized;
+    loadadv:=ini.ReadBool('GUI'+myusn,'LoadAdvancedMenu',ini.ReadBool('Editor','LoadAdvancedMenu',False));
     mylang:=ini.ReadString('GUI'+myusn,'Lang',ini.ReadString('GUI','Lang',''));
     N47.Checked:=ini.ReadBool('Editor'+myusn,'LineNums',ini.ReadBool('Editor','LineNums',False));
     N48.Checked:=ini.ReadBool('Editor'+myusn,'Wrap',ini.ReadBool('Editor','Wrap',False));
+    N79.Checked:=ini.ReadBool('Editor'+myusn,'SpecSymbols',ini.ReadBool('Editor','SpecSymbols',False));
     N116.Checked:=ini.ReadBool('GUI'+myusn,'StatusBar',ini.ReadBool('GUI','StatusBar',False));
-    N118.Checked:=ini.ReadBool('GUI'+myusn,'ToolBar',ini.ReadBool('GUI','ToolBar',False));
     Edit.TabWidth:=ini.ReadInteger('Editor'+myusn,'TabWidth',ini.ReadInteger('Editor','TabWidth',8));
     Edit.Gutter.Font.Color:=ini.ReadColor('GUI'+myusn,'GutterFontColor',ini.ReadColor('GUI','GutterFontColor',0));
     case ini.ReadInteger('Editor'+myusn,'SaveFmt',ini.ReadInteger('Editor','SaveFmt',0)) of
-      1: N129.Click;
-      2: N133.Click;
-      else N134.Click;
+      1: N106.Click;
+      2: N98.Click;
+      3: N136.Click;
+      4: N97.Click;
+     else N134.Click;
     end;
     bigsize:=ini.ReadInt64('Editor','BigFile',ini.ReadInteger('Editor','BigFile',1048576));
   end else begin
     myusn:='';
+    Editor.Height:=ini.ReadInteger('GUI','MainWnd.Height',420);
+    Editor.Width:=ini.ReadInteger('GUI','MainWnd.Width',600);
+    Editor.Top:=ini.ReadInteger('GUI','MainWnd.Top',Round((Screen.Height-Editor.Height)/2));
+    Editor.Left:=ini.ReadInteger('GUI','MainWnd.Left',Round((Screen.Width-Editor.Width)/2));
+    if ini.ReadBool('GUI','MainWnd.Maximized',False) then Editor.WindowState:=wsMaximized;
+    loadadv:=ini.ReadBool('GUI','LoadAdvancedMenu',False);
     mylang:=ini.ReadString('GUI','Lang','');
     N47.Checked:=ini.ReadBool('Editor','LineNums',False);
     N48.Checked:=ini.ReadBool('Editor','Wrap',False);
+    N79.Checked:=ini.ReadBool('Editor','SpecSymbols',False);
     N116.Checked:=ini.ReadBool('GUI','StatusBar',False);
-    N118.Checked:=ini.ReadBool('GUI','ToolBar',False);
     Edit.TabWidth:=ini.ReadInteger('Editor','TabWidth',8);
     Edit.Gutter.Font.Color:=ini.ReadColor('GUI','GutterFontColor',0);
     case ini.ReadInteger('Editor','SaveFmt',0) of
-      1: N129.Click;
-      2: N133.Click;
+      1: N106.Click;
+      2: N98.Click;
+      3: N136.Click;
+      4: N97.Click;
       else N134.Click;
     end;
     bigsize:=ini.ReadInt64('Editor','BigFile',1048576);
   end;
   Status.Visible:=N116.Checked;
-  TntToolBar1.Visible:=N118.Checked;
-  Edit.Gutter.ShowLineNumbers:=N47.Checked;
+  Edit.Gutter.Visible:=N47.Checked;
   Edit.WordWrap:=N48.Checked;
-  if ini.ReadInteger('Advanced','Count',0)>0 then
+  if N79.Checked then Edit.Options:=Edit.Options+[eoShowSpecialChars] else Edit.Options:=Edit.Options-[eoShowSpecialChars];
+  if (loadadv=True)and(ini.ReadInteger('Advanced','Count',0)>0) then
   for itc:=1 to ini.ReadInteger('Advanced','Count',1) do begin
     AdvItem:=TTntMenuItem.Create(Editor.N40);
     AdvItem.Caption:=ini.ReadString('Advanced','Item'+IntToStr(itc)+'.Caption','');
@@ -694,7 +1044,7 @@ begin
       AdvItem.Bitmap.Width:=ic.Width;
       AdvItem.Bitmap.Height:=ic.Height;
       AdvItem.Bitmap.Canvas.Draw(0,0,ic);
-      ic.Destroy;
+      ic.Free;
     end;
     AdvItem.OnClick:=Editor.AdvancedItemClick;
     Editor.N40.Add(AdvItem);
@@ -707,7 +1057,7 @@ begin
         LangItem:=TTntMenuItem.Create(Editor.N117);
         langini:=TBirIniFile.Create(WideExtractFilePath(TntApplication.ExeName)+'lang\'+langsrw.Name);
         LangItem.Caption:=langini.ReadString('TranslationInfo','Name',WideExtractFileName(langsrw.Name));
-        langini.Destroy;
+        langini.Free;
         LangItem.Hint:=WideExtractFileName(langsrw.Name);
         LangItem.AutoCheck:=True;
         LangItem.Checked:=False;
@@ -723,9 +1073,6 @@ end;
 
 procedure TEditor.TntFormCreate(Sender: TObject);
 begin
-  errm1:='Out of memory.';
-  errm2:='Cannot open file.';
-  mysg4:='Are you sure that you want to open the large file?';
   JvDebugHandler1.LogFileName:=WideExtractFilePath(TntApplication.ExeName)+'error.log';
   ini:=TBirIniFile.Create(WideExtractFilePath(TntApplication.ExeName)+'biredit.ini');
   LoadMyApp;
@@ -735,13 +1082,27 @@ end;
 
 procedure TEditor.TntFormDestroy(Sender: TObject);
 begin
-  ini.WriteBool('Editor'+myusn,'LineNums',Edit.Gutter.ShowLineNumbers);
+  ini.WriteBool('Editor'+myusn,'LineNums',Edit.Gutter.Visible);
   ini.WriteInteger('Editor'+myusn,'TabWidth',Edit.TabWidth);
   ini.WriteBool('Editor'+myusn,'Wrap',Edit.WordWrap);
   ini.WriteBool('GUI'+myusn,'StatusBar',Status.Visible);
-  ini.WriteBool('GUI'+myusn,'ToolBar',TntToolBar1.Visible);
+  if Editor.WindowState=wsMaximized then begin
+    ini.WriteBool('GUI','MainWnd.Maximized',True);
+  end else begin
+    ini.WriteBool('GUI','MainWnd.Maximized',False);
+    ini.WriteInteger('GUI'+myusn,'MainWnd.Height',Editor.Height);
+    ini.WriteInteger('GUI'+myusn,'MainWnd.Left',Editor.Left);
+    ini.WriteInteger('GUI'+myusn,'MainWnd.Top',Editor.Top);
+    ini.WriteInteger('GUI'+myusn,'MainWnd.Width',Editor.Width);
+  end;
   ini.UpdateFile;
-  ini.Destroy;
+  ini.Free;
+end;
+
+procedure TEditor.TntFormResize(Sender: TObject);
+begin
+  ini.WriteBool('GUI','MainWnd.Maximized',Editor.WindowState=wsMaximized);
+  ini.UpdateFile;
 end;
 
 procedure TEditor.N2Click(Sender: TObject);
@@ -765,11 +1126,30 @@ begin
 end;
 
 procedure TEditor.N7Click(Sender: TObject);
+var
+  langini: TBirIniFile;
+  prwdlg: TPreview;
 begin
   synprint1.SynEdit:=Edit;
   synprint1.Wrap:=True;
-  Preview.SynEditPrintPreview.UpdatePreview;
-  Preview.ShowModal;
+  prwdlg:=TPreview.Create(Self);
+  with prwdlg do try
+    if WideFileExists(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang) then begin
+      langini:=TBirIniFile.Create(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang);
+      Caption:=langini.ReadString('PrevDlg','0','Print Preview');
+      TntButton1.Hint:=langini.ReadString('PrevDlg','1','Next Page');
+      TntButton2.Hint:=langini.ReadString('PrevDlg','2','Previous Page');
+      TntButton3.Hint:=langini.ReadString('PrevDlg','3','Last Page');
+      TntButton4.Hint:=langini.ReadString('PrevDlg','4','First Page');
+      TntButton5.Caption:=langini.ReadString('PrevDlg','5','Print');
+      TntButton6.Caption:=langini.ReadString('PrevDlg','6','Close');
+      langini.Free;
+    end;
+    SynEditPrintPreview.UpdatePreview;
+    if ShowModal=mrOk then {do nothing} ;
+  finally
+    prwdlg.Free;
+  end;
 end;
 
 procedure TEditor.N8Click(Sender: TObject);
@@ -781,159 +1161,182 @@ end;
 
 procedure TEditor.N11Click(Sender: TObject);
 begin
-  Edit.Undo;
+  Edit.ExecuteCommand(ecUndo,'A',@Edit.lines);
 end;
 
 procedure TEditor.N12Click(Sender: TObject);
 begin
-  Edit.Redo;
+  Edit.ExecuteCommand(ecRedo,'A',@Edit.lines);
+end;
+
+procedure TEditor.N141Click(Sender: TObject);
+begin
+  Edit.ExecuteCommand(ecMatchBracket,'A',@Edit.lines);
 end;
 
 procedure TEditor.N14Click(Sender: TObject);
 begin
-  Edit.SelectAll;
+  Edit.ExecuteCommand(ecSelectAll,'A',@Edit.lines);
 end;
 
 procedure TEditor.N15Click(Sender: TObject);
 begin
-  Edit.CopyToClipboard;
+  Edit.ExecuteCommand(ecCopy,'A',@Edit.lines);
 end;
 
 procedure TEditor.N16Click(Sender: TObject);
 begin
-  Edit.PasteFromClipboard;
+  Edit.ExecuteCommand(ecPaste,'A',@Edit.lines);
 end;
 
 procedure TEditor.N17Click(Sender: TObject);
 begin
-  Edit.CutToClipboard;
+  Edit.ExecuteCommand(ecCut,'A',@Edit.lines);
 end;
 
 procedure TEditor.N01Click(Sender: TObject);
 begin
-  if Edit.IsBookmark(0)
-  then Edit.ClearBookMark(0)
-  else Edit.SetBookMark(0,Edit.CaretX,Edit.CaretY);
+  SetMarker(0);
 end;
 
 procedure TEditor.N110Click(Sender: TObject);
 begin
-  if Edit.IsBookmark(1)
-  then Edit.ClearBookMark(1)
-  else Edit.SetBookMark(1,Edit.CaretX,Edit.CaretY);
+  SetMarker(1);
+end;
+
+procedure TEditor.N210Click(Sender: TObject);
+begin
+  SetMarker(2);
+end;
+
+procedure TEditor.N26Click(Sender: TObject);
+begin
+  FindExecute;
 end;
 
 procedure TEditor.N27Click(Sender: TObject);
 begin
-  if Edit.IsBookmark(2)
-  then Edit.ClearBookMark(2)
-  else Edit.SetBookMark(2,Edit.CaretX,Edit.CaretY);
+  FindAgainExecute;
 end;
 
-procedure TEditor.N31Click(Sender: TObject);
+procedure TEditor.N28Click(Sender: TObject);
 begin
-  if Edit.IsBookmark(3)
-  then Edit.ClearBookMark(3)
-  else Edit.SetBookMark(3,Edit.CaretX,Edit.CaretY);
-end;
-
-procedure TEditor.N41Click(Sender: TObject);
-begin
-  if Edit.IsBookmark(4)
-  then Edit.ClearBookMark(4)
-  else Edit.SetBookMark(4,Edit.CaretX,Edit.CaretY);
-end;
-
-procedure TEditor.N51Click(Sender: TObject);
-begin
-  if Edit.IsBookmark(5)
-  then Edit.ClearBookMark(5)
-  else Edit.SetBookMark(5,Edit.CaretX,Edit.CaretY);
-end;
-
-procedure TEditor.N61Click(Sender: TObject);
-begin
-  if Edit.IsBookmark(6)
-  then Edit.ClearBookMark(6)
-  else Edit.SetBookMark(6,Edit.CaretX,Edit.CaretY);
-end;
-
-procedure TEditor.N71Click(Sender: TObject);
-begin
-  if Edit.IsBookmark(7)
-  then Edit.ClearBookMark(7)
-  else Edit.SetBookMark(7,Edit.CaretX,Edit.CaretY);
-end;
-
-procedure TEditor.N81Click(Sender: TObject);
-begin
-  if Edit.IsBookmark(8)
-  then Edit.ClearBookMark(8)
-  else Edit.SetBookMark(8,Edit.CaretX,Edit.CaretY);
-end;
-
-procedure TEditor.N91Click(Sender: TObject);
-begin
-  if Edit.IsBookmark(9)
-  then Edit.ClearBookMark(9)
-  else Edit.SetBookMark(9,Edit.CaretX,Edit.CaretY);
-end;
-
-procedure TEditor.N02Click(Sender: TObject);
-begin
-  Edit.GotoBookMark(0);
-end;
-
-procedure TEditor.N111Click(Sender: TObject);
-begin
-  Edit.GotoBookMark(1);
+  FindBackwardsExecute;
 end;
 
 procedure TEditor.N29Click(Sender: TObject);
 begin
-  Edit.GotoBookMark(2);
+  ReplaceExecute;
+end;
+
+procedure TEditor.N31Click(Sender: TObject);
+begin
+  SetMarker(3);
+end;
+
+procedure TEditor.N41Click(Sender: TObject);
+begin
+  SetMarker(4);
+end;
+
+procedure TEditor.N51Click(Sender: TObject);
+begin
+  SetMarker(5);
+end;
+
+procedure TEditor.N61Click(Sender: TObject);
+begin
+  SetMarker(6);
+end;
+
+procedure TEditor.N71Click(Sender: TObject);
+begin
+  SetMarker(7);
+end;
+
+procedure TEditor.N81Click(Sender: TObject);
+begin
+  SetMarker(8);
+end;
+
+procedure TEditor.N91Click(Sender: TObject);
+begin
+  SetMarker(9);
+end;
+
+procedure TEditor.N02Click(Sender: TObject);
+begin
+  GoToMarker(0);
+end;
+
+procedure TEditor.N111Click(Sender: TObject);
+begin
+  GoToMarker(1);
+end;
+
+procedure TEditor.N211Click(Sender: TObject);
+begin
+  GoToMarker(2);
 end;
 
 procedure TEditor.N32Click(Sender: TObject);
 begin
-  Edit.GotoBookMark(3);
+  GoToMarker(3);
 end;
 
 procedure TEditor.N42Click(Sender: TObject);
 begin
-  Edit.GotoBookMark(4);
+  GoToMarker(4);
 end;
 
 procedure TEditor.N52Click(Sender: TObject);
 begin
-  Edit.GotoBookMark(5);
+  GoToMarker(5);
 end;
 
 procedure TEditor.N62Click(Sender: TObject);
 begin
-  Edit.GotoBookMark(6);
+  GoToMarker(6);
 end;
 
 procedure TEditor.N72Click(Sender: TObject);
 begin
-  Edit.GotoBookMark(7);
+  GoToMarker(7);
 end;
 
 procedure TEditor.N82Click(Sender: TObject);
 begin
-  Edit.GotoBookMark(8);
+  GoToMarker(8);
 end;
 
 procedure TEditor.N92Click(Sender: TObject);
 begin
-  Edit.GotoBookMark(9);
+  GoToMarker(9);
+end;
+
+procedure TEditor.N97Click(Sender: TObject);
+begin
+  Edit.Lines.SaveFormat:=sfAnsi;
+  N97.Checked:=True;
+  savefmt:=4;
+  ini.WriteInteger('Editor'+myusn,'SaveFmt',savefmt);
+  ini.UpdateFile;
+end;
+
+procedure TEditor.N98Click(Sender: TObject);
+begin
+  Edit.Lines.SaveFormat:=sfUTF16MSB;
+  N98.Checked:=True;
+  savefmt:=2;
+  ini.WriteInteger('Editor'+myusn,'SaveFmt',savefmt);
+  ini.UpdateFile;
 end;
 
 procedure TEditor.N47Click(Sender: TObject);
 begin
   ini.WriteBool('Editor'+myusn,'LineNums',N47.Checked);
   ini.UpdateFile;
-  Edit.Gutter.ShowLineNumbers:=N47.Checked;
+  Edit.Gutter.Visible:=N47.Checked;
 end;
 
 procedure TEditor.N48Click(Sender: TObject);
@@ -944,13 +1347,39 @@ begin
 end;
 
 procedure TEditor.N50Click(Sender: TObject);
+var aboutdlg: TAbout;
 begin
-  About.ShowModal;
+  aboutdlg:=TAbout.Create(Self);
+  with aboutdlg do try
+    Caption:='About...';
+    btn1.Caption:='OK';
+    TntLabel1.Caption:='BirEdit '+progver;
+    TntLabel2.Caption:='Copyright (C) 2008 Aleksey Tatuyko';
+    TntLabel3.Caption:='http://biredit.fireforge.net/';
+    TntLabel4.Caption:='Build '+progbld;
+    TntMemo1.Text:='Author:'
+    +#13#10+'  Aleksey Tatuyko'
+    +#13#10+#13#10+'Thanks to:'
+    +#13#10+'  CodeGear for Delphi 2007'
+    +#13#10+'  CnPack Team for IDE Wizards'
+    +#13#10+'  JEDI Group for JVCL'
+    +#13#10+#13#10+'Special thanks to:'
+    +#13#10+'  Maël Hörz'
+    +#13#10+'  Martin Waldenburg'
+    +#13#10+'  Michael Hieke'
+    +#13#10+'  Mike Lischke'
+    +#13#10+'  Russell May'
+    +#13#10+'  Troy Wolbrink'
+    +#13#10#13#10#13#10+'The author would like to thank everybody, who use this program.';
+    if ShowModal=mrOK then {do nothing};
+  finally
+    aboutdlg.Free;
+  end;
 end;
 
 procedure TEditor.N57Click(Sender: TObject);
 begin
-  Edit.ClearAll;
+  Edit.ExecuteCommand(ecClearAll,'A',@Edit.lines);
 end;
 
 procedure TEditor.N39Click(Sender: TObject);
@@ -960,100 +1389,131 @@ end;
 
 procedure TEditor.N46Click(Sender: TObject);
 begin
-  Edit.ClearClipboard;
+  ClearClipboard;
+end;
+
+procedure TEditor.AddToClipboard;
+var
+  SText: UnicodeString;
+  ChangeTrim: Boolean;
+begin
+  if Edit.SelAvail
+  then begin
+    ChangeTrim:=(Edit.ActiveSelectionMode=smColumn)and(eoTrimTrailingSpaces in Edit.Options);
+    try
+      if ChangeTrim then Edit.Options:=Edit.Options-[eoTrimTrailingSpaces];
+      SText:=Edit.SelText;
+    finally
+      if ChangeTrim then Edit.Options:=Edit.Options+[eoTrimTrailingSpaces];
+    end;
+    Edit.DoCopyToClipboard(GetClipboardText+SText);
+  end;
+end;
+
+procedure TEditor.ChangeClipboard;
+var
+  SText, Temp: UnicodeString;
+  ChangeTrim: Boolean;
+begin
+  if Edit.SelAvail then
+  begin
+    ChangeTrim:=(Edit.ActiveSelectionMode=smColumn)and(eoTrimTrailingSpaces in Edit.Options);
+    try
+      if ChangeTrim then Edit.Options:=Edit.Options-[eoTrimTrailingSpaces];
+      SText:=Edit.SelText;
+    finally
+      if ChangeTrim then Edit.Options:=Edit.Options+[eoTrimTrailingSpaces];
+    end;
+    Temp:=GetClipboardText;
+    Edit.DoCopyToClipboard(SText);
+    Edit.SelText:=Temp;
+  end;
+end;
+
+procedure TEditor.ClearClipboard;
+begin
+  Clipboard.Open;
+  Clipboard.Clear;
+  Clipboard.Close;
 end;
 
 procedure TEditor.N30Click(Sender: TObject);
 begin
-  Edit.AddToClipboard;
+  AddToClipboard;
 end;
 
 procedure TEditor.N56Click(Sender: TObject);
 begin
-  Edit.ChangeClipboard;
+  ChangeClipboard;
 end;
 
 procedure TEditor.N59Click(Sender: TObject);
 begin
-  Edit.MyDelete;
+  Edit.ExecuteCommand(ecDeleteChar,'A',@Edit.lines);
 end;
 
 procedure TEditor.N60Click(Sender: TObject);
-var x,y:Integer;
 begin
-  x:=Edit.SelStart;
-  y:=Edit.SelEnd;
-  Edit.SelText:=SynWideUpperCase(Edit.SelText);
-  Edit.SelStart:=x;
-  Edit.SelEnd:=y;
+  Edit.ExecuteCommand(ecUpperCaseBlock,'A',@Edit.lines);
 end;
 
 procedure TEditor.N68Click(Sender: TObject);
-var x,y:Integer;
 begin
-  x:=Edit.SelStart;
-  y:=Edit.SelEnd;
-  Edit.SelText:=SynWideLowerCase(Edit.SelText);
-  Edit.SelStart:=x;
-  Edit.SelEnd:=y;
+  Edit.ExecuteCommand(ecLowerCaseBlock,'A',@Edit.lines);
 end;
 
 procedure TEditor.N69Click(Sender: TObject);
-var a,prea:Boolean; i,x,y:Integer; w,sUpper,sLower:WideString;
 begin
-  x:=Edit.SelStart;
-  y:=Edit.SelEnd;
-  a:=true; prea:=true;
-  w:=''; sUpper:=''; sLower:='';
-  w:=Edit.SelText;
-  sUpper:=SynWideUpperCase(w);
-  sLower:=SynWideLowerCase(w);
-  for i:=1 to Length(Edit.SelText) do begin
-    prea:=a;
-    a:=MyIsWordBreakChar(Edit.SelText[i]);
-    if (prea<>a)and(prea=True) then w[i]:=sUpper[i] else w[i]:=sLower[i];
-  end;
-  Edit.SelText:=w;
-  Edit.SelStart:=x;
-  Edit.SelEnd:=y;
+  Edit.ExecuteCommand(ecTitleCase,'A',@Edit.lines);
 end;
 
 procedure TEditor.N70Click(Sender: TObject);
-var x,y:Integer;
 begin
-  x:=Edit.SelStart;
-  y:=Edit.SelEnd;
-  Edit.SelText:=MyToggleCase(Edit.SelText);
-  Edit.SelStart:=x;
-  Edit.SelEnd:=y;
+  Edit.ExecuteCommand(ecToggleCaseBlock,'A',@Edit.lines);
 end;
 
 procedure TEditor.N76Click(Sender: TObject);
-var x,y:Integer; w:WideString;
 begin
- if not(Edit.SelText='') then begin
-  x:=Edit.SelStart;
-  y:=Edit.SelEnd;
-  w:=Edit.SelText;
-  Edit.SelText:=SynWideUpperCase(w[1]) + SynWideLowerCase(Copy(w, 2, Length(w)));
-  Edit.SelStart:=x;
-  Edit.SelEnd:=y;
- end;
+  if not(Edit.SelText='') then Edit.SelText:=SynWideUpperCase(Edit.SelText[1])+SynWideLowerCase(Copy(Edit.SelText,2,Length(Edit.SelText)));
+end;
+
+procedure TEditor.N79Click(Sender: TObject);
+begin
+  ini.WriteBool('Editor'+myusn,'SpecSymbols',N79.Checked);
+  ini.UpdateFile;
+  if N79.Checked then Edit.Options:=Edit.Options+[eoShowSpecialChars] else Edit.Options:=Edit.Options-[eoShowSpecialChars];
 end;
 
 procedure TEditor.N86Click(Sender: TObject);
 begin
-  Edit.MyTab;
+  Edit.ExecuteCommand(ecTab,'A',@Edit.lines);
 end;
 
 procedure TEditor.N87Click(Sender: TObject);
 begin
-  Edit.MyShiftTab;
+  Edit.ExecuteCommand(ecShiftTab,'A',@Edit.lines);
 end;
 
 procedure TEditor.N90Click(Sender: TObject);
+var
+  langini: TBirIniFile;
+  sidlg: TSelIns;
 begin
-  SelIns.ShowModal;
+  sidlg:=TSelIns.Create(Self);
+  with sidlg do try
+    if WideFileExists(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang) then begin
+      langini:=TBirIniFile.Create(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang);
+      Caption:=langini.ReadString('EnclSelDlg','0','Enclose Selection');
+      TntLabel1.Caption:=langini.ReadString('EnclSelDlg','1','Insert before selection');
+      TntLabel2.Caption:=langini.ReadString('EnclSelDlg','2','Insert after selection');
+      TntButton1.Caption:=langini.ReadString('EnclSelDlg','3','OK');
+      TntButton2.Caption:=langini.ReadString('EnclSelDlg','4','Cancel');
+      langini.Free;
+    end;
+    if ShowModal=mrOk then Edit.SelText:=TntEdit1.Text+Edit.SelText+TntEdit2.Text;
+  finally
+    sidlg.Free;
+  end;
 end;
 
 procedure TEditor.N37Click(Sender: TObject);
@@ -1067,7 +1527,7 @@ begin
 end;
 
 procedure TEditor.N99Click(Sender: TObject);
-var hour,min,sec,msec:Word; ShortTimeFmtVar:Integer; thour,tmin,tsec,tmsec,tr:WideString;
+var hour,min,sec,msec:Word; ShortTimeFmtVar:Integer; thour,tmin,tsec,tmsec,tr:UnicodeString;
 begin
   DecodeTime(Time,hour,min,sec,msec);
   if hour<10 then thour:='0'+IntToStr(hour) else thour:=IntToStr(hour);
@@ -1091,12 +1551,19 @@ end;
 procedure TEditor.N104Click(Sender: TObject);
 begin
   Edit.ClearAll;
-  Edit.Lines.LoadFromFile(MyFileName);
+  LoadFromFile(MyFileName);
   prev:=WideFileAge(MyFileName);
+  if Edit.Lines.SaveFormat=sfUTF16LSB then filefmt:=1
+  else if Edit.Lines.SaveFormat=sfUTF16MSB then filefmt:=2
+  else if Edit.Lines.SaveFormat=sfUTF8 then filefmt:=3
+  else if Edit.Lines.SaveFormat=sfAnsi then filefmt:=4
+  else filefmt:=0;
   AddLog;
   case savefmt of
-    1: Edit.Lines.SaveUnicode:=False;
-    2: Edit.Lines.SaveUnicode:=True;
+    1: Edit.Lines.SaveFormat:=sfUTF16LSB;
+    2: Edit.Lines.SaveFormat:=sfUTF16MSB;
+    3: Edit.Lines.SaveFormat:=sfUTF8;
+    4: Edit.Lines.SaveFormat:=sfAnsi;
   end;
 end;
 
@@ -1105,21 +1572,25 @@ begin
   Edit.ClearAll;
   MyFileName:='';
   case savefmt of
-    0,2: Edit.Lines.SaveUnicode:=True;
-    1: Edit.Lines.SaveUnicode:=False;
+    0,1: Edit.Lines.SaveFormat:=sfUTF16LSB;
+    2: Edit.Lines.SaveFormat:=sfUTF16MSB;
+    3: Edit.Lines.SaveFormat:=sfUTF8;
+    4: Edit.Lines.SaveFormat:=sfAnsi;
   end;
+end;
+
+procedure TEditor.N106Click(Sender: TObject);
+begin
+  Edit.Lines.SaveFormat:=sfUTF16LSB;
+  N106.Checked:=True;
+  savefmt:=1;
+  ini.WriteInteger('Editor'+myusn,'SaveFmt',savefmt);
+  ini.UpdateFile;
 end;
 
 procedure TEditor.N114Click(Sender: TObject);
 begin
   MyShowFilePropertiesW(MyFileName);
-end;
-
-procedure TEditor.N118Click(Sender: TObject);
-begin
-  ini.WriteBool('GUI'+myusn,'ToolBar',N118.Checked);
-  ini.UpdateFile;
-  TntToolBar1.Visible:=N118.Checked;
 end;
 
 procedure TEditor.N116Click(Sender: TObject);
@@ -1132,43 +1603,34 @@ end;
 procedure TEditor.JvTimer1Timer(Sender: TObject);
 begin
   Status.Panels.Items[0].Text:=IntToStr(Edit.CaretY)+':'+IntToStr(Edit.CaretX);
-  if Edit.Lines.SaveUnicode then Status.Panels.Items[1].Text:='Unicode' else Status.Panels.Items[1].Text:='ANSI';
+  if Edit.Lines.SaveFormat=sfAnsi
+  then Status.Panels.Items[1].Text:='ANSI'
+  else if Edit.Lines.SaveFormat=sfUTF8 then Status.Panels.Items[1].Text:='UTF-8'
+  else if Edit.Lines.SaveFormat=sfUTF16MSB then Status.Panels.Items[1].Text:='UTF-16 BE'
+  else if Edit.Lines.SaveFormat=sfUTF16LSB then Status.Panels.Items[1].Text:='UTF-16 LE';       
   if Edit.InsertMode then Status.Panels.Items[2].Text:='Insert' else Status.Panels.Items[2].Text:='Overwrite';
 end;
 
 procedure TEditor.JvTimer3Timer(Sender: TObject);
 begin
   if WideFileExists(MyFileName) then begin
-    if (WideFileAge(MyFileName)<>prev)and(prev<>0)
-    then begin
-      case WideMessageDlg(Tnt_WideStringReplace(mysg2,'\n',#13#10,[rfReplaceAll],False),mtWarning,[mbYes,mbNo],0) of
-      mrYes:
-        begin
-          N104.Click;
-        end;
-      end;
+    if (WideFileAge(MyFileName)<>prev)and(prev<>0) then begin
+      ShowMyMessageDlg(1,'');
+      prev:=WideFileAge(MyFileName);
     end;
-    prev:=WideFileAge(MyFileName);
   end else begin
     if (prevnoex=False)and not(MyFileName='') then begin
-      case WideMessageDlg(Tnt_WideStringReplace(mysg3,'\n',#13#10,[rfReplaceAll],False),mtWarning,[mbYes,mbNo],0) of
-      mrYes:
-        begin
-          Edit.Lines.SaveToFile(MyFileName);
-          prev:=WideFileAge(MyFileName);
-         end;
-      end;
+      ShowMyMessageDlg(2,MyFileName);
       prevnoex:=True;
     end;
   end;
 end;
 
 procedure TEditor.JvTimer4Timer(Sender: TObject);
-var fe,fm:Boolean; capt:WideString;
+var fe,fm:Boolean; capt:UnicodeString;
 begin
-  fe:=False;
   fe:=WideFileExists(MyFileName);
-  fm:=Edit.Modified and (not Edit.Lines.Saved);
+  fm:=Edit.Modified;
   N4.Enabled:=fe;
   N80.Enabled:=fe;
   N100.Enabled:=fe;
@@ -1199,6 +1661,7 @@ begin
     end;
     //ToDo: if i>0 then do command ['biredit.exe "file[i]"']
     //ToDo: if i>5 then 'Are you sure do you want open these files?'
+    //wait for support Delphi 2009 in JVCL. Filenames is not in unicode
   end;
 end;
 
@@ -1219,17 +1682,13 @@ end;
 
 procedure TEditor.N126Click(Sender: TObject);
 begin
-  //internal localization return
-  //all strings in English
   N126.Checked:=True;
-  errm1:='Out of memory.';
-  errm2:='Cannot open file.';
-  mysg1:='File has ''read-only'' attribute.\nSave changes to file?';
-  mysg2:='Current file has changed in other program.\nReopen the file?';
-  mysg3:='File is no more exists.\nSave the file?';
-  mysg4:='Are you sure that you want to open the big file?';
-  mysg5:='File has changed.\nSave the file?';
-  myunk:='Untitled';
+  CRLab:='Replace this occurence of "%s"?';
+  CRCap:='Confirm replace';
+  CRBut1:='Yes';
+  CRBut2:='No';
+  CRBut3:='Cancel';
+  CRBut4:='Yes to all';
   mysn1:='GB';
   mysn2:='MB';
   mysn3:='KB';
@@ -1254,11 +1713,13 @@ begin
   N23.Caption:=N15.Caption;
   N24.Caption:=N16.Caption;
   N25.Caption:=N14.Caption;
-  N26.Caption:='Set';
-  N28.Caption:='Go To';
+  N26.Caption:='Find...';
+  N27.Caption:='Find Next';
+  N28.Caption:='Find Previous';
+  N29.Caption:='Replace...';
   N30.Caption:='Copy Add';
-  N33.Caption:=N26.Caption;
-  N34.Caption:=N28.Caption;
+  N33.Caption:='Set';
+  N34.Caption:='Go To';
   N37.Caption:='Dublicate Selection';
   N38.Caption:='Bookmarks';
   N39.Caption:='Copy All';
@@ -1279,9 +1740,9 @@ begin
   N68.Caption:='Lowercase';
   N69.Caption:='Title Case';
   N70.Caption:='Invert Case';
-  N75.Caption:=N38.Caption;
   N76.Caption:='Sentence Case';
   N77.Caption:='Insert';
+  N79.Caption:='Special Symbols';
   N80.Caption:='Open With...';
   N85.Caption:=N59.Caption;
   N86.Caption:='Indent';
@@ -1300,7 +1761,6 @@ begin
   N114.Caption:='Properties';
   N116.Caption:='Show Statusbar';
   N117.Caption:='Language';
-  N118.Caption:='Show Toolbar';
   N119.Caption:='New Window';
   N120.Caption:='Launch';
   N122.Caption:='Empty Window';
@@ -1308,27 +1768,14 @@ begin
   N125.Caption:='Codepage';
   N126.Caption:='Internal';
   N127.Caption:='Recent files';
-  N129.Caption:='ANSI';
   N130.Caption:='Delete non-existent';
   N132.Caption:='Clear list';
-  N133.Caption:='Unicode';
   N134.Caption:='Default';
+  N138.Caption:='Line';
+  N139.Caption:='Delete';
+  N140.Caption:='Special';
+  N141.Caption:='Find mathing brace';
   Save.FileName:='Untitled.txt';
-  Preview.Caption:=N7.Caption;
-  Preview.TntButton1.Hint:='Next Page';
-  Preview.TntButton2.Hint:='Previous Page';
-  Preview.TntButton3.Hint:='Last Page';
-  Preview.TntButton4.Hint:='First Page';
-  Preview.TntButton5.Caption:=N8.Caption;
-  SelIns.Caption:=N90.Caption;
-  SelIns.TntButton1.Caption:='OK';
-  SelIns.TntButton2.Caption:='Cancel';
-  SelIns.TntLabel1.Caption:='Insert before selection';
-  SelIns.TntLabel2.Caption:='Insert after selection';
-  TabOpt.Caption:=N103.Caption;
-  TabOpt.TntButton1.Caption:=SelIns.TntButton1.Caption;
-  TabOpt.TntButton2.Caption:=SelIns.TntButton2.Caption;
-  TabOpt.TntLabel1.Caption:='Tabulator width';
   mylang:='';
   ini.WriteString('GUI'+myusn,'Lang','');
   ini.UpdateFile;
@@ -1366,34 +1813,57 @@ begin
 end;
 
 procedure TEditor.N103Click(Sender: TObject);
+var
+  langini: TBirIniFile;
+  todlg: TTabOpt;
 begin
-  TabOpt.ShowModal;
-end;
-
-procedure TEditor.N129Click(Sender: TObject);
-begin
-  N129.Checked:=True;
-  Edit.Lines.SaveUnicode:=False;
-  savefmt:=1;
-  ini.WriteInteger('Editor'+myusn,'SaveFmt',savefmt);
-  ini.UpdateFile;
-end;
-
-procedure TEditor.N133Click(Sender: TObject);
-begin
-  N133.Checked:=True;
-  Edit.Lines.SaveUnicode:=True;
-  savefmt:=2;
-  ini.WriteInteger('Editor'+myusn,'SaveFmt',savefmt);
-  ini.UpdateFile;
+  todlg:=TTabOpt.Create(Self);
+  with todlg do try
+    JvSpinEdit1.AsInteger:=Edit.TabWidth;
+    if WideFileExists(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang) then begin
+      langini:=TBirIniFile.Create(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang);
+      Caption:=langini.ReadString('TabOptDlg','0','Tab Settings');
+      TntLabel1.Caption:=langini.ReadString('TabOptDlg','1','Tabulator width');
+      TntButton1.Caption:=langini.ReadString('TabOptDlg','2','OK');
+      TntButton2.Caption:=langini.ReadString('TabOptDlg','3','Cancel');
+      langini.Free;
+    end;
+    if ShowModal=mrOk then begin
+      Edit.TabWidth:=JvSpinEdit1.AsInteger;
+      ini.WriteInteger('Editor'+myusn,'TabWidth',Edit.TabWidth);
+      ini.UpdateFile;
+    end;
+  finally
+    todlg.Free;
+  end;
 end;
 
 procedure TEditor.N134Click(Sender: TObject);
 begin
   N134.Checked:=True;
   savefmt:=0;
+  case filefmt of
+    0,1: Edit.Lines.SaveFormat:=sfUTF16LSB;
+    2: Edit.Lines.SaveFormat:=sfUTF16MSB;
+    3: Edit.Lines.SaveFormat:=sfUTF8;
+    4: Edit.Lines.SaveFormat:=sfAnsi;
+  end;
   ini.WriteInteger('Editor'+myusn,'SaveFmt',savefmt);
   ini.UpdateFile;
+end;
+
+procedure TEditor.N136Click(Sender: TObject);
+begin
+  Edit.Lines.SaveFormat:=sfUTF8;
+  N136.Checked:=True;
+  savefmt:=3;
+  ini.WriteInteger('Editor'+myusn,'SaveFmt',savefmt);
+  ini.UpdateFile;
+end;
+
+procedure TEditor.N139Click(Sender: TObject);
+begin
+  Edit.ExecuteCommand(ecDeleteLine,'A',@Edit.lines);
 end;
 
 end.
