@@ -14,6 +14,7 @@ object SearchForm: TSearchForm
   OldCreateOrder = False
   Position = poOwnerFormCenter
   OnCloseQuery = FormCloseQuery
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object SearchForLbl: TLabel

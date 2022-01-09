@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uFileAssocDlg.pas by Alexey Tatuyko, released 2010-01-07.
+The Original Code is uFileAssocDlg.pas by Alexey Tatuyko, released 2010-04-03.
 All Rights Reserved.
 
-$Id: uFileAssocDlg.pas, v 1.3.4.627 2010/01/07 03:48:00 ta2i4 Exp $
+$Id: uFileAssocDlg.pas, v 2.0.0.23 2010/04/03 05:00:00 ta2i4 Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.fireforge.net/
@@ -48,6 +48,7 @@ type
     procedure N1Click(Sender: TObject);
     procedure N2Click(Sender: TObject);
     procedure N3Click(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   end;
 
 var
@@ -57,14 +58,35 @@ implementation
 
 {$R *.dfm}
 
-procedure TFAssoc.N1Click(Sender: TObject);
+procedure TFAssoc.FormDestroy(Sender: TObject);
 begin
-  chklst1.CheckAll(cbChecked);
+  FAssoc := nil;
+end;
+
+procedure TFAssoc.N1Click(Sender: TObject);
+{$IFNDEF VER210}
+var
+  i: Integer;
+{$ENDIF}
+begin
+  {$IFNDEF VER210}
+    for i := 0 to chklst1.Count - 1 do chklst1.Checked[i] := True;
+  {$ELSE}
+    chklst1.CheckAll(cbChecked);
+  {$ENDIF}
 end;
 
 procedure TFAssoc.N2Click(Sender: TObject);
+{$IFNDEF VER210}
+var
+  i: Integer;
+{$ENDIF}
 begin
-  chklst1.CheckAll(cbUnchecked);
+  {$IFNDEF VER210}
+    for i := 0 to chklst1.Count - 1 do chklst1.Checked[i] := False;
+  {$ELSE}
+    chklst1.CheckAll(cbUnchecked);
+  {$ENDIF}
 end;
 
 procedure TFAssoc.N3Click(Sender: TObject);

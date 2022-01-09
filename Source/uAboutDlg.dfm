@@ -14,6 +14,7 @@ object About: TAbout
   KeyPreview = True
   OldCreateOrder = False
   Position = poOwnerFormCenter
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object Image1: TImage
@@ -38,9 +39,9 @@ object About: TAbout
   object lbl2: TLabel
     Left = 60
     Top = 29
-    Width = 86
+    Width = 80
     Height = 13
-    Caption = 'Version 1.3.4.627'
+    Caption = 'version 2.0.0.25'
   end
   object btn1: TButton
     Left = 414
@@ -89,10 +90,6 @@ object About: TAbout
     object Tab2: TTabSheet
       Caption = 'Thanks'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Memo3: TMemo
         Left = 0
         Top = 0
@@ -102,9 +99,9 @@ object About: TAbout
         Lines.Strings = (
           'Third party libs used:'
           
-            '- FastMM v4.95 2009/12/14 SVN (http://sourceforge.net/projects/f' +
+            '- FastMM v4.95 2010/03/24 SVN (http://sourceforge.net/projects/f' +
             'astmm/)'
-          '- JVCL v3.38 (http://sourceforge.net/projects/jvcl/)'
+          '- JVCL v3.39 (http://sourceforge.net/projects/jvcl/)'
           
             '- SynEdit 2009/12/14  SVN (http://sourceforge.net/projects/syned' +
             'it/)'
@@ -119,10 +116,6 @@ object About: TAbout
     object Tab3: TTabSheet
       Caption = 'License'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Memo1: TMemo
         Left = 0
         Top = 0

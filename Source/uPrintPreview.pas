@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uPrintPreview.pas by Alexey Tatuyko, released 2010-01-01.
+The Original Code is uPrintPreview.pas by Alexey Tatuyko, released 2010-03-24.
 All Rights Reserved.
 
-$Id: uPrintPreview.pas, v 1.3.4.621 2010/01/01 12:00:00 ta2i4 Exp $
+$Id: uPrintPreview.pas, v 2.0.0.20 2010/03/24 02:56:00 ta2i4 Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.fireforge.net/
@@ -33,9 +33,8 @@ unit uPrintPreview;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, SynEditPrintPreview, ComCtrls, ImgList, Menus, ToolWin, ActnList,
-  AppEvnts, Printers;
+  SysUtils, Classes, Controls, Forms, SynEditPrintPreview, ComCtrls, ImgList,
+  Menus, ToolWin, ActnList, AppEvnts, Printers;
 
 type
   TPreviewDlg = class(TForm)
@@ -81,14 +80,13 @@ type
     procedure PrintCmdExecute(Sender: TObject);
     procedure CloseCmdExecute(Sender: TObject);
     procedure N1Click(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   end;
 
 var
   PreviewDlg: TPreviewDlg;
 
 implementation
-
-uses uMainFrm;
 
 {$R *.dfm}
 
@@ -152,6 +150,11 @@ end;
 procedure TPreviewDlg.FirstCmdExecute(Sender: TObject);
 begin
   EditPreview.FirstPage;
+end;
+
+procedure TPreviewDlg.FormDestroy(Sender: TObject);
+begin
+  PreviewDlg := nil;
 end;
 
 procedure TPreviewDlg.FormShow(Sender: TObject);

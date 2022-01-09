@@ -13,6 +13,7 @@ object PreviewDlg: TPreviewDlg
   OldCreateOrder = False
   Position = poOwnerFormCenter
   WindowState = wsMaximized
+  OnDestroy = FormDestroy
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -21,7 +22,6 @@ object PreviewDlg: TPreviewDlg
     Top = 23
     Width = 242
     Height = 311
-    SynEditPrint = Main.synprint1
     OnMouseDown = EditPreviewMouseDown
     OnPreviewPage = EditPreviewPreviewPage
   end
@@ -131,7 +131,7 @@ object PreviewDlg: TPreviewDlg
     Left = 282
     Top = 38
     Bitmap = {
-      494C010107000900040011001100FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010107000900140011001100FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000440000002200000001002000000000002024
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

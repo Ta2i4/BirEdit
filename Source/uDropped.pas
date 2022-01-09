@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uDropped.pas by Alexey Tatuyko, released 2010-01-01.
+The Original Code is uDropped.pas by Alexey Tatuyko, released 2010-04-03.
 All Rights Reserved.
 
-$Id: uDropped.pas, v 1.3.4.621 2010/01/01 11:55:00 ta2i4 Exp $
+$Id: uDropped.pas, v 2.0.0.23 2010/04/03 05:00:00 ta2i4 Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.fireforge.net/
@@ -52,6 +52,7 @@ type
     procedure N3Click(Sender: TObject);
     procedure JvTmrTimer(Sender: TObject);
     procedure dragdrop1Drop(Sender: TObject; Pos: TPoint; Value: TStrings);
+    procedure FormDestroy(Sender: TObject);
   end;
 
 var
@@ -77,7 +78,7 @@ var
       if (mys.Name = '.') or (mys.Name = '..') then Continue;
       if not ((mys.Attr and faDirectory) <> 0)
       then tmpstrs.Add(MyDir + mys.Name) else
-      if Main.sudir then MyScanDir(MyDir + mys.Name);
+      if bor.sdsf then MyScanDir(MyDir + mys.Name);
     until FindNext(mys) <> 0;
   end;
 
@@ -89,7 +90,7 @@ begin
       tmpstrs.Text := Value.Text;
       for I := tmpstrs.Count - 1 downto 0 do begin
         if (DirectoryExists(tmpstrs.Strings[i])) then begin
-          if Main.sddir
+          if bor.sdfl
           then MyScanDir(tmpstrs.Strings[i]);
           tmpstrs.Delete(i);
         end else
@@ -99,9 +100,14 @@ begin
       if ChkLst.Items.IndexOf(tmpstrs.Strings[i]) > -1 then tmpstrs.Delete(i);
       if tmpstrs.Count > 0 then ChkLst.Items.AddStrings(tmpstrs);
     finally
-      tmpstrs.Free;
+	  FreeAndNil(tmpstrs);
     end;
   end;
+end;
+
+procedure TDropDlg.FormDestroy(Sender: TObject);
+begin
+  DropDlg := nil;
 end;
 
 procedure TDropDlg.FormKeyDown(Sender: TObject; var Key: Word;
@@ -128,13 +134,29 @@ begin
 end;
 
 procedure TDropDlg.N1Click(Sender: TObject);
+{$IFNDEF VER210}
+var
+  i: Integer;
+{$ENDIF}
 begin
-  ChkLst.CheckAll(cbChecked);
+  {$IFNDEF VER210}
+    for i := 0 to ChkLst.Count - 1 do ChkLst.Checked[i] := True;
+  {$ELSE}
+    ChkLst.CheckAll(cbChecked);
+  {$ENDIF}
 end;
 
 procedure TDropDlg.N2Click(Sender: TObject);
+{$IFNDEF VER210}
+var
+  i: Integer;
+{$ENDIF}
 begin
-  ChkLst.CheckAll(cbUnchecked);
+  {$IFNDEF VER210}
+    for i := 0 to ChkLst.Count - 1 do ChkLst.Checked[i] := False;
+  {$ELSE}
+    ChkLst.CheckAll(cbUnchecked);
+  {$ENDIF}
 end;
 
 procedure TDropDlg.N3Click(Sender: TObject);

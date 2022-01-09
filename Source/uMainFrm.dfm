@@ -1,8 +1,8 @@
 object Main: TMain
   Left = 353
   Top = 233
-  Caption = 'Untitled - BirEdit'
-  ClientHeight = 400
+  Caption = 'BirEdit'
+  ClientHeight = 376
   ClientWidth = 600
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -12,6 +12,7 @@ object Main: TMain
   Font.Style = []
   Menu = MainMenu
   OldCreateOrder = False
+  OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -20,7 +21,7 @@ object Main: TMain
     Left = 0
     Top = 0
     Width = 600
-    Height = 381
+    Height = 357
     Align = alClient
     ActiveLineColor = clInfoBk
     Font.Charset = DEFAULT_CHARSET
@@ -40,12 +41,10 @@ object Main: TMain
     Gutter.Gradient = True
     Options = [eoAutoIndent, eoDisableScrollArrows, eoDragDropEditing, eoEnhanceEndKey, eoGroupUndo, eoHideShowScrollbars, eoRightMouseMovesCursor, eoScrollHintFollows, eoShowScrollHint, eoSmartTabDelete, eoSmartTabs, eoTrimTrailingSpaces]
     ScrollHintFormat = shfTopToBottom
-    OnDropFiles = EditDropFiles
-    OnReplaceText = EditReplaceText
   end
   object Status: TStatusBar
     Left = 0
-    Top = 381
+    Top = 357
     Width = 600
     Height = 19
     Panels = <
@@ -469,6 +468,10 @@ object Main: TMain
         OnClick = N102Click
       end
     end
+    object N52: TMenuItem
+      Caption = 'Plugins'
+      Visible = False
+    end
     object N101: TMenuItem
       Caption = 'Options'
       object N174: TMenuItem
@@ -858,81 +861,10 @@ object Main: TMain
       end
     end
   end
-  object Open: TOpenDialog
-    Filter = 
-      'All files (*.*)|*.*|C/C++ files (*.c;*.cpp;*.cc;*.h;*.hpp;*.hh;*' +
-      '.cxx;*.hxx;*.cu)|*.c;*.cpp;*.cc;*.h;*.hpp;*.hh;*.cxx;*.hxx;*.cu|' +
-      'Eiffel (*.e;*.ace)|*.e;*.ace|Fortran files (*.for)|*.for|Java fi' +
-      'les (*.java)|*.java|Modula-3 files (*.m3)|*.m3|Pascal files (*.p' +
-      'as;*.pp;*.dpr;*.dpk;*.inc)|*.pas;*.pp;*.dpr;*.dpk;*.inc|Visual B' +
-      'asic files (*.bas)|*.bas|COBOL files (*.cbl;*.cob)|*.cbl;*.cob|C' +
-      '# files (*.cs)|*.cs|Cascading Stylesheets (*.css)|*.css|HTML Doc' +
-      'uments (*.htm;*.html)|*.htm;*.html|Javascript files (*.js)|*.js|' +
-      'PHP files (*.php;*.php3;*.phtml;*.inc)|*.php;*.php3;*.phtml;*.in' +
-      'c|VBScript files (*.vbs)|*.vbs|XML files (*.xml;*.xsd;*.xsl;*.xs' +
-      'lt;*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd|Vrml97/X3D World (*.wrl' +
-      ';*.wrml;*.vrl;*.vrml;*.x3d)|*.wrl;*.wrml;*.vrl;*.vrml;*.x3d|AWK ' +
-      'Scripts (*.awk)|*.awk|MS-DOS Batch files (*.bat;*.cmd)|*.bat;*.c' +
-      'md|KiXtart Scripts (*.kix)|*.kix|Perl files (*.pl;*.pm;*.cgi)|*.' +
-      'pl;*.pm;*.cgi|Python files (*.py)|*.py|Tcl/Tk files (*.tcl)|*.tc' +
-      'l|GW-TEL Scripts (*.gws)|*.gws|Ruby files (*.rb;*.rbw)|*.rb;*.rb' +
-      'w|UNIX Shell Scripts (*.sh)|*.sh|CA-Clipper files (*.prg;*.ch;*.' +
-      'inc)|*.prg;*.ch;*.inc|Cache files (*.mac;*.inc;*.int)|*.mac;*.in' +
-      'c;*.int|Foxpro files (*.prg)|*.prg|SQL files (*.sql)|*.sql|Seman' +
-      'ta DD files (*.sdd)|*.sdd|DSP files (*.dsp;*.inc)|*.dsp;*.inc|x8' +
-      '6 Assembly files (*.asm)|*.asm|68HC11 Assembler files (*.hc11;*.' +
-      'asm;*.asc)|*.hc11;*.asm;*.asc|Structured Text files (*.st)|*.st|' +
-      'GEMBASE files (*.dml;*.gem)|*.dml;*.gem|Modelica files (*.mo)|*.' +
-      'mo|Standard ML files (*.sml)|*.sml|Borland Form files (*.dfm;*.x' +
-      'fm)|*.dfm;*.xfm|INI files (*.ini)|*.ini|Inno Setup Scripts (*.is' +
-      's)|*.iss|Baan 4GL files (*.cln)|*.cln|Galaxy files (*.gtv;*.galr' +
-      'ep;*.txt)|*.gtv;*.galrep;*.txt|Progress files (*.w;*.p;*.i)|*.w;' +
-      '*.p;*.i|Msg files (*.msg)|*.msg|CORBA IDL files (*.idl)|*.idl|CP' +
-      'M Reports (*.rdf;*.rif;*.rmf;*.rxf)|*.rdf;*.rif;*.rmf;*.rxf|TeX ' +
-      'files (*.tex)|*.tex|Haskell files (*.hs;*.lhs)|*.hs;*.lhs|LEGO L' +
-      'Draw files (*.ldr)|*.ldr|DOT Graph Drawing Description (*.dot)|*' +
-      '.dot|Resource files (*.rc)|*.rc'
-    Left = 200
-    Top = 184
-  end
-  object synprint1: TSynEditPrint
-    Copies = 1
-    Header.FrameTypes = [ftBox, ftShaded]
-    Header.DefaultFont.Charset = DEFAULT_CHARSET
-    Header.DefaultFont.Color = clBlack
-    Header.DefaultFont.Height = -13
-    Header.DefaultFont.Name = 'Arial'
-    Header.DefaultFont.Style = []
-    Footer.DefaultFont.Charset = DEFAULT_CHARSET
-    Footer.DefaultFont.Color = clBlack
-    Footer.DefaultFont.Height = -13
-    Footer.DefaultFont.Name = 'Arial'
-    Footer.DefaultFont.Style = []
-    Margins.Left = 10.000000000000000000
-    Margins.Right = 10.000000000000000000
-    Margins.Top = 10.000000000000000000
-    Margins.Bottom = 10.000000000000000000
-    Margins.Header = 15.000000000000000000
-    Margins.Footer = 15.000000000000000000
-    Margins.LeftHFTextIndent = 2.000000000000000000
-    Margins.RightHFTextIndent = 2.000000000000000000
-    Margins.HFInternalMargin = 0.500000000000000000
-    Margins.MirrorMargins = False
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -67
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    Colors = True
-    TabWidth = 8
-    Color = clWhite
-    Left = 208
-    Top = 32
-  end
   object Popup1: TPopupMenu
     OnPopup = Popup1Popup
-    Left = 304
-    Top = 64
+    Left = 256
+    Top = 72
     object N19: TMenuItem
       Caption = 'Undo'
       OnClick = N11Click
@@ -1024,409 +956,12 @@ object Main: TMain
     Left = 56
     Top = 16
   end
-  object FontDialog: TFontDialog
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -13
-    Font.Name = 'Courier New'
-    Font.Style = []
-    Options = [fdEffects, fdFixedPitchOnly]
-    Left = 208
-    Top = 120
-  end
-  object JvTrayIcon1: TJvTrayIcon
-    IconIndex = 0
-    Visibility = [tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide, tvAutoHideIcon, tvRestoreClick]
-    Left = 480
-    Top = 64
-  end
-  object Save: TSaveTextFileDialog
-    FileName = 'Untitled.txt'
-    Filter = 
-      'All files (*.*)|*.*|C/C++ files (*.c;*.cpp;*.cc;*.h;*.hpp;*.hh;*' +
-      '.cxx;*.hxx;*.cu)|*.c;*.cpp;*.cc;*.h;*.hpp;*.hh;*.cxx;*.hxx;*.cu|' +
-      'Eiffel (*.e;*.ace)|*.e;*.ace|Fortran files (*.for)|*.for|Java fi' +
-      'les (*.java)|*.java|Modula-3 files (*.m3)|*.m3|Pascal files (*.p' +
-      'as;*.pp;*.dpr;*.dpk;*.inc)|*.pas;*.pp;*.dpr;*.dpk;*.inc|Visual B' +
-      'asic files (*.bas)|*.bas|COBOL files (*.cbl;*.cob)|*.cbl;*.cob|C' +
-      '# files (*.cs)|*.cs|Cascading Stylesheets (*.css)|*.css|HTML Doc' +
-      'uments (*.htm;*.html)|*.htm;*.html|Javascript files (*.js)|*.js|' +
-      'PHP files (*.php;*.php3;*.phtml;*.inc)|*.php;*.php3;*.phtml;*.in' +
-      'c|VBScript files (*.vbs)|*.vbs|XML files (*.xml;*.xsd;*.xsl;*.xs' +
-      'lt;*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd|Vrml97/X3D World (*.wrl' +
-      ';*.wrml;*.vrl;*.vrml;*.x3d)|*.wrl;*.wrml;*.vrl;*.vrml;*.x3d|AWK ' +
-      'Scripts (*.awk)|*.awk|MS-DOS Batch files (*.bat;*.cmd)|*.bat;*.c' +
-      'md|KiXtart Scripts (*.kix)|*.kix|Perl files (*.pl;*.pm;*.cgi)|*.' +
-      'pl;*.pm;*.cgi|Python files (*.py)|*.py|Tcl/Tk files (*.tcl)|*.tc' +
-      'l|GW-TEL Scripts (*.gws)|*.gws|Ruby files (*.rb;*.rbw)|*.rb;*.rb' +
-      'w|UNIX Shell Scripts (*.sh)|*.sh|CA-Clipper files (*.prg;*.ch;*.' +
-      'inc)|*.prg;*.ch;*.inc|Cache files (*.mac;*.inc;*.int)|*.mac;*.in' +
-      'c;*.int|Foxpro files (*.prg)|*.prg|SQL files (*.sql)|*.sql|Seman' +
-      'ta DD files (*.sdd)|*.sdd|DSP files (*.dsp;*.inc)|*.dsp;*.inc|x8' +
-      '6 Assembly files (*.asm)|*.asm|68HC11 Assembler files (*.hc11;*.' +
-      'asm;*.asc)|*.hc11;*.asm;*.asc|Structured Text files (*.st)|*.st|' +
-      'GEMBASE files (*.dml;*.gem)|*.dml;*.gem|Modelica files (*.mo)|*.' +
-      'mo|Standard ML files (*.sml)|*.sml|Borland Form files (*.dfm;*.x' +
-      'fm)|*.dfm;*.xfm|INI files (*.ini)|*.ini|Inno Setup Scripts (*.is' +
-      's)|*.iss|Baan 4GL files (*.cln)|*.cln|Galaxy files (*.gtv;*.galr' +
-      'ep;*.txt)|*.gtv;*.galrep;*.txt|Progress files (*.w;*.p;*.i)|*.w;' +
-      '*.p;*.i|Msg files (*.msg)|*.msg|CORBA IDL files (*.idl)|*.idl|CP' +
-      'M Reports (*.rdf;*.rif;*.rmf;*.rxf)|*.rdf;*.rif;*.rmf;*.rxf|TeX ' +
-      'files (*.tex)|*.tex|Haskell files (*.hs;*.lhs)|*.hs;*.lhs|LEGO L' +
-      'Draw files (*.ldr)|*.ldr|DOT Graph Drawing Description (*.dot)|*' +
-      '.dot|Resource files (*.rc)|*.rc'
-    Options = [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing]
-    Encodings.Strings = (
-      'Ansi'
-      'ASCII'
-      'UTF-16 little endian'
-      'UTF-16 big endian'
-      'UTF-8'
-      'UTF-7')
-    Left = 232
-    Top = 184
-  end
-  object dlg1: TJvRunDialog
-    Left = 520
-    Top = 32
-  end
   object Recent: TJvMRUManager
     Duplicates = dupIgnore
-    IniStorage = FormIni
     RecentMenu = N127
     ShowAccelChar = False
     OnClick = RecentClick
-    Left = 440
-    Top = 120
-  end
-  object AppIni: TJvAppIniFileStorage
-    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
-    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
-    StorageOptions.BooleanAsString = False
-    StorageOptions.EnumerationAsString = False
-    StorageOptions.TypedIntegerAsString = False
-    StorageOptions.DateTimeAsString = False
-    StorageOptions.DefaultIfReadConvertError = True
-    AutoFlush = True
-    FileName = 'biredit.ini'
-    Location = flUserFolder
-    DefaultSection = 'General'
-    SubStorages = <>
-    SynchronizeFlushReload = True
-    Left = 520
-    Top = 120
-  end
-  object FormIni: TJvFormStorage
-    AppStorage = AppIni
-    AppStoragePath = 'General\'
-    Options = [fpSize, fpLocation]
-    VersionCheck = fpvcNocheck
-    StoredValues = <>
-    Left = 480
-    Top = 120
-  end
-  object SynCpp: TSynCppSyn
-    Left = 8
-    Top = 232
-  end
-  object SynEif: TSynEiffelSyn
-    Left = 40
-    Top = 232
-  end
-  object SynFor: TSynFortranSyn
-    Left = 72
-    Top = 232
-  end
-  object SynDef: TSynGeneralSyn
-    Comments = []
-    DetectPreprocessor = False
-    IdentifierChars = '_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-    Left = 8
-    Top = 192
-  end
-  object SynJava: TSynJavaSyn
-    Left = 104
-    Top = 232
-  end
-  object SynMod: TSynM3Syn
-    Left = 136
-    Top = 232
-  end
-  object SynPas: TSynPasSyn
-    Left = 168
-    Top = 232
-  end
-  object SynBas: TSynVBSyn
-    Left = 200
-    Top = 232
-  end
-  object SynCobol: TSynCobolSyn
-    AreaAStartPos = 7
-    AreaBStartPos = 11
-    CodeEndPos = 71
-    Left = 232
-    Top = 232
-  end
-  object SynCS: TSynCSSyn
-    Left = 264
-    Top = 232
-  end
-  object SynCss: TSynCssSyn
-    Left = 296
-    Top = 232
-  end
-  object SynHtml: TSynHTMLSyn
-    Left = 328
-    Top = 232
-  end
-  object SynJS: TSynJScriptSyn
-    Left = 360
-    Top = 232
-  end
-  object SynPhp: TSynPHPSyn
-    Left = 392
-    Top = 232
-  end
-  object SynVbs: TSynVBScriptSyn
-    Left = 424
-    Top = 232
-  end
-  object SynXml: TSynXMLSyn
-    WantBracesParsed = False
-    Left = 456
-    Top = 232
-  end
-  object SynVrml: TSynVrml97Syn
-    Left = 488
-    Top = 232
-  end
-  object SynAwk: TSynAWKSyn
-    Left = 520
-    Top = 232
-  end
-  object SynBat: TSynBatSyn
-    Left = 552
-    Top = 232
-  end
-  object SynKix: TSynKixSyn
-    Left = 8
-    Top = 264
-  end
-  object SynPerl: TSynPerlSyn
-    Left = 40
-    Top = 264
-  end
-  object SynPy: TSynPythonSyn
-    Left = 72
-    Top = 264
-  end
-  object SynTcl: TSynTclTkSyn
-    OptionsAttri.Background = clNone
-    OptionsAttri.Foreground = clNone
-    PathAttri.Background = clNone
-    PathAttri.Foreground = clNone
-    VariableAttri.Background = clNone
-    VariableAttri.Foreground = clNone
-    Left = 104
-    Top = 264
-  end
-  object SynGws: TSynGWScriptSyn
-    Left = 136
-    Top = 264
-  end
-  object SynRuby: TSynRubySyn
-    Left = 168
-    Top = 264
-  end
-  object SynUSh: TSynUNIXShellScriptSyn
-    Left = 200
-    Top = 264
-  end
-  object SynCac: TSynCACSyn
-    Left = 232
-    Top = 264
-  end
-  object SynCch: TSynCacheSyn
-    Left = 264
-    Top = 264
-  end
-  object SynFox: TSynFoxproSyn
-    Left = 296
-    Top = 264
-  end
-  object SynSql: TSynSQLSyn
-    Left = 328
-    Top = 264
-  end
-  object SynSdd: TSynSDDSyn
-    Left = 360
-    Top = 264
-  end
-  object SynDsp: TSynADSP21xxSyn
-    Left = 392
-    Top = 264
-  end
-  object SynAsm: TSynAsmSyn
-    Left = 424
-    Top = 264
-  end
-  object SynHc: TSynHC11Syn
-    Left = 456
-    Top = 264
-  end
-  object SynSt: TSynSTSyn
-    Left = 488
-    Top = 264
-  end
-  object SynGem: TSynDmlSyn
-    Left = 520
-    Top = 264
-  end
-  object SynModa: TSynModelicaSyn
-    Left = 552
-    Top = 264
-  end
-  object SynSml: TSynSMLSyn
-    Left = 8
-    Top = 296
-  end
-  object SynDfm: TSynDfmSyn
-    Left = 40
-    Top = 296
-  end
-  object SynIni: TSynIniSyn
-    Left = 72
-    Top = 296
-  end
-  object SynInno: TSynInnoSyn
-    Left = 104
-    Top = 296
-  end
-  object SynBaan: TSynBaanSyn
-    Left = 136
-    Top = 296
-  end
-  object SynGal: TSynGalaxySyn
-    KeyWords.Strings = (
-      '#end'
-      '#galaxy'
-      'a'
-      'anonymous'
-      'autounload'
-      'b'
-      'battleprotocol'
-      'c'
-      'cap'
-      'cargo'
-      'col'
-      'compress'
-      'd'
-      'drive'
-      'e'
-      'emp'
-      'f'
-      'fleet'
-      'fleettables'
-      'g'
-      'galaxytv'
-      'gplus'
-      'groupforecast'
-      'h'
-      'i'
-      'j'
-      'l'
-      'm'
-      'machinereport'
-      'mat'
-      'n'
-      'namecase'
-      'no'
-      'o'
-      'options'
-      'p'
-      'planetforecast'
-      'prodtable'
-      'produce'
-      'q'
-      'r'
-      'routesforecast'
-      's'
-      'send'
-      'shields'
-      'shiptypeforecast'
-      'sortgroups'
-      't'
-      'twocol'
-      'u'
-      'underscores'
-      'v'
-      'w'
-      'war'
-      'weapons'
-      'x'
-      'y'
-      'z')
-    Left = 168
-    Top = 296
-  end
-  object SynPrg: TSynProgressSyn
-    Left = 200
-    Top = 296
-  end
-  object SynMsg: TSynMsgSyn
-    Left = 232
-    Top = 296
-  end
-  object SynIdl: TSynIdlSyn
-    Left = 264
-    Top = 296
-  end
-  object SynCpm: TSynCPMSyn
-    Left = 296
-    Top = 296
-  end
-  object SynTex: TSynTeXSyn
-    Left = 328
-    Top = 296
-  end
-  object SynHas: TSynHaskellSyn
-    Left = 360
-    Top = 296
-  end
-  object SynLdr: TSynLDRSyn
-    Left = 392
-    Top = 296
-  end
-  object SynDot: TSynDOTSyn
-    Left = 424
-    Top = 296
-  end
-  object SynRc: TSynRCSyn
-    Left = 456
-    Top = 296
-  end
-  object PrintDialog: TPrintDialog
-    Left = 16
-    Top = 128
-  end
-  object PrinterSetupDialog: TPrinterSetupDialog
-    Left = 48
-    Top = 128
-  end
-  object PageDlg: TPageSetupDialog
-    MinMarginLeft = 0
-    MinMarginTop = 0
-    MinMarginRight = 0
-    MinMarginBottom = 0
-    MarginLeft = 2500
-    MarginTop = 2500
-    MarginRight = 2500
-    MarginBottom = 2500
-    Options = [psoMargins]
-    PageWidth = 21000
-    PageHeight = 29700
-    Units = pmMillimeters
-    Left = 304
-    Top = 120
+    Left = 448
+    Top = 64
   end
 end

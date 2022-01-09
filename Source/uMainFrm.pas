@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uMainFrm.pas by Alexey Tatuyko, released 2010-01-07.
+The Original Code is uMainFrm.pas by Alexey Tatuyko, released 2010-04-03.
 All Rights Reserved.
 
-$Id: uMainFrm.pas, v 1.3.4.627 2010/01/07 03:50:00 ta2i4 Exp $
+$Id: uMainFrm.pas, v 2.0.0.23 2010/04/03 05:01:00 ta2i4 Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.fireforge.net/
@@ -35,10 +35,13 @@ interface
 uses
   Windows, Messages, ComCtrls, Dialogs, Menus, Classes, Controls, Forms,
   Graphics, SysUtils, ExtCtrls, ShellAPI, Clipbrd, IniFiles, CheckLst, ExtDlgs,
-  StdCtrls, ActnList, Printers, Registry,
-  JvTimer, JvComponentBase, JvDragDrop, JvTrayIcon, JvBaseDlg, JvWinDialogs,
-  JvMRUManager, JvAppStorage, JvAppIniStorage, JvFormPlacement,
-  SynEdit, SynEditPrint, SynEditTypes, SynEditRegexSearch, SynEditSearch,
+  StdCtrls, ActnList, Printers, Registry, ShlObj,
+  {$IFNDEF UNICODE}WideStrings,{$ENDIF}
+  JvTimer, JvComponentBase, JvDragDrop, JvTrayIcon, JvWinDialogs,
+  JvMRUManager,
+  SynEdit, {$IFNDEF UNICODE}SynUnicode,{$ENDIF}
+  SynEditPrint, SynEditTypes, SynEditPrintTypes, SynEditRegexSearch,
+  SynEditSearch,
   SynEditMiscClasses, SynEditHighlighter, SynHighlighterCpp,
   SynHighlighterEiffel, SynHighlighterFortran, SynHighlighterJava,
   SynHighlighterGeneral, SynHighlighterM3, SynHighlighterVB,
@@ -57,13 +60,11 @@ uses
   SynHighlighterGalaxy, SynHighlighterBaan;
 
 type
-  TMain = class(TForm, IJvAppStorageHandler)
+  TMain = class(TForm)
     Edit: TSynEdit;
     MainMenu: TMainMenu;
     Popup1: TPopupMenu;
-    Open: TOpenDialog;
     Status: TStatusBar;
-    synprint1: TSynEditPrint;
     N1: TMenuItem;
     N2: TMenuItem;
     N3: TMenuItem;
@@ -238,73 +239,13 @@ type
     JvDragDrop1: TJvDragDrop;
     SynEditRegexSearch1: TSynEditRegexSearch;
     SynEditSearch1: TSynEditSearch;
-    FontDialog: TFontDialog;
-    JvTrayIcon1: TJvTrayIcon;
-    Save: TSaveTextFileDialog;
-    dlg1: TJvRunDialog;
     Recent: TJvMRUManager;
-    AppIni: TJvAppIniFileStorage;
-    FormIni: TJvFormStorage;
-    SynCpp: TSynCppSyn;
-    SynEif: TSynEiffelSyn;
-    SynFor: TSynFortranSyn;
-    SynDef: TSynGeneralSyn;
-    SynJava: TSynJavaSyn;
-    SynMod: TSynM3Syn;
-    SynPas: TSynPasSyn;
-    SynBas: TSynVBSyn;
-    SynCobol: TSynCobolSyn;
-    SynCS: TSynCSSyn;
-    SynCss: TSynCssSyn;
-    SynHtml: TSynHTMLSyn;
-    SynJS: TSynJScriptSyn;
-    SynPhp: TSynPHPSyn;
-    SynVbs: TSynVBScriptSyn;
-    SynXml: TSynXMLSyn;
-    SynVrml: TSynVrml97Syn;
-    SynAwk: TSynAWKSyn;
-    SynBat: TSynBatSyn;
-    SynKix: TSynKixSyn;
-    SynPerl: TSynPerlSyn;
-    SynPy: TSynPythonSyn;
-    SynTcl: TSynTclTkSyn;
-    SynGws: TSynGWScriptSyn;
-    SynRuby: TSynRubySyn;
-    SynUSh: TSynUNIXShellScriptSyn;
-    SynCac: TSynCACSyn;
-    SynCch: TSynCacheSyn;
-    SynFox: TSynFoxproSyn;
-    SynSql: TSynSQLSyn;
-    SynSdd: TSynSDDSyn;
-    SynDsp: TSynADSP21xxSyn;
-    SynAsm: TSynAsmSyn;
-    SynHc: TSynHC11Syn;
-    SynSt: TSynSTSyn;
-    SynGem: TSynDmlSyn;
-    SynModa: TSynModelicaSyn;
-    SynSml: TSynSMLSyn;
-    SynDfm: TSynDfmSyn;
-    SynIni: TSynIniSyn;
-    SynInno: TSynInnoSyn;
-    SynBaan: TSynBaanSyn;
-    SynGal: TSynGalaxySyn;
-    SynPrg: TSynProgressSyn;
-    SynMsg: TSynMsgSyn;
-    SynIdl: TSynIdlSyn;
-    SynCpm: TSynCPMSyn;
-    SynTex: TSynTeXSyn;
-    SynHas: TSynHaskellSyn;
-    SynLdr: TSynLDRSyn;
-    SynDot: TSynDOTSyn;
-    SynRc: TSynRCSyn;
-    PrintDialog: TPrintDialog;
-    PrinterSetupDialog: TPrinterSetupDialog;
-    PageDlg: TPageSetupDialog;
     N171: TMenuItem;
     N173: TMenuItem;
     N174: TMenuItem;
     N175: TMenuItem;
     N176: TMenuItem;
+    N52: TMenuItem;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure JvDragDrop1Drop(Sender: TObject; Pos: TPoint;
@@ -356,14 +297,11 @@ type
     procedure N48Click(Sender: TObject);
     procedure N51Click(Sender: TObject);
     procedure N32Click(Sender: TObject);
-    procedure EditReplaceText(Sender: TObject; const ASearch, AReplace: string;
-      Line, Column: Integer; var Action: TSynReplaceAction);
     procedure N38Click(Sender: TObject);
     procedure N18Click(Sender: TObject);
     procedure N33Click(Sender: TObject);
     procedure RecentClick(Sender: TObject; const RecentName, Caption: string;
       UserData: Integer);
-    procedure EditDropFiles(Sender: TObject; X, Y: Integer; AFiles: TStrings);
     procedure N71Click(Sender: TObject);
     procedure N72Click(Sender: TObject);
     procedure N161Click(Sender: TObject);
@@ -384,20 +322,26 @@ type
     procedure N173Click(Sender: TObject);
     procedure N174Click(Sender: TObject);
     procedure N175Click(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     fSearchFromCaret, gbSearchBackwards, gbSearchCaseSensitive,
-    gbSearchFromCaret, gbSearchRegex, gbSearchSelectionOnly, prevnoex, psafc,
-    gbSearchWholeWords, gbTempSearchBackwards, usesyn: Boolean;
-    prev, curcp: Integer;
-    myfsize: Int64;
+    gbSearchFromCaret, gbSearchRegex, gbSearchSelectionOnly, prevnoex,
+    gbSearchWholeWords, gbTempSearchBackwards: Boolean;
     gsReplaceText, gsReplaceTextHistory, gsSearchText, gsSearchTextHistory,
     MyFileName, appath: string;
-    procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage;
-                                   const BasePath: string);
-    procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage;
-                                   const BasePath: string);
+    prev, curcp: Integer;
+    myfsize: Int64;
+    BEPlugList: TStrings;
+    BESyn: TSynCustomHighlighter;
+    jvtic: TJvTrayIcon;
+    function MyGetAppDataPath: string;
+    function SaveDlgExec: Boolean;
+    procedure MyLoadSettings;
+    procedure MySaveSettings;
+    procedure ShowTrayIcon;
     procedure AddToClipboard;
     procedure ChangeClipboard;
+    procedure ClickPlugItem(Sender: TObject);
     procedure DoSearchReplaceText(AReplace, ABackwards: Boolean);
     procedure ShowSearchReplaceDialog(AReplace: Boolean);
     procedure FindExecute;
@@ -405,26 +349,95 @@ type
     procedure FindBackwardsExecute;
     procedure ItemClick(Sender: TObject);
     procedure LoadAppLoc;
+    procedure LoadPlugsList;
     procedure LoadTranslate(const lang: string);
     procedure MyLoadLoc(AWnd: TForm; mysect: string; dftitle: Boolean);
-    procedure MyOpenFile(OpenFileName: TFileName; Encoding: TEncoding; fd: Byte);
     procedure MySaveFile(SaveFileName: TFileName; seId, fid: Integer);
     procedure ReplaceExecute;
     procedure ReplaceAgainExecute;
     procedure ReplaceBackwardsExecute;
     procedure WorkParams;
-    procedure MyLoadFromFile(const FileName: TFileName; Encoding: TEncoding);
-    procedure MySaveToFileEnc(const FileName: TFileName; Encoding: TEncoding);
     procedure MySaveToFile(const FileName: TFileName; seid, fid: Integer);
-    procedure MySetSynByFid(fid: Byte);
+    procedure MySetSynByFid(fid: ShortInt);
     procedure MySetSynByExt(fExt: string);
     procedure MyScanDropFiles(const fValues: TStrings);
     procedure MyShowDroppedDlg(const fValues: TStrings);
     procedure MyOpenDropped(const FileName: TFileName);
-  public
-    sddir, sudir: Boolean;
-    mylang: string;
+    {$IFDEF UNICODE}
+    procedure EditDropFiles(Sender: TObject; X, Y: Integer; AFiles: TStrings);
+    procedure EditReplaceText(Sender: TObject; const ASearch, AReplace: string;
+      Line, Column: Integer; var Action: TSynReplaceAction);
+    procedure MyLoadFromFile(const FileName: TFileName; Encoding: TEncoding);
+    procedure MyOpenFile(OpenFileName: TFileName; Encoding: TEncoding;
+                           fd: Byte);
+    procedure MySaveToFileEnc(const FileName: TFileName; Encoding: TEncoding);
+    {$ELSE}
+    procedure EditDropFiles(Sender: TObject; X, Y: Integer;
+                              AFiles: TUnicodeStrings);
+    procedure EditReplaceText(Sender: TObject; const ASearch,
+                                AReplace: WideString; Line, Column: Integer;
+                                var Action: TSynReplaceAction);
+    procedure MyLoadFromFile(const FileName: TFileName; Encoding: Byte);
+    procedure MyOpenFile(OpenFileName: TFileName; Encoding, fd: Byte);
+    procedure MySaveToFileEnc(const FileName: TFileName; Encoding: Byte);
+    {$ENDIF}
+    procedure MyOpenFileWosf(OpenFileName: TFileName; fd: Byte);
+    procedure DoUnAssoc;
   end;
+
+const
+   BEFileFilter: array [0..51] of string = ('All files (*.*)|*.*',
+   '|C/C++ files (*.c;*.cpp;*.cc;*.h;*.hpp;*.hh;*.cxx;*.hxx;*.cu)|*.c;*.cpp;*.cc;*.h;*.hpp;*.hh;*.cxx;*.hxx;*.cu',
+   '|Eiffel (*.e;*.ace)|*.e;*.ace', '|Fortran files (*.for)|*.for',
+   '|Java files (*.java)|*.java', '|Modula-3 files (*.m3)|*.m3',
+   '|Pascal files (*.pas;*.pp;*.dpr;*.dpk;*.inc)|*.pas;*.pp;*.dpr;*.dpk;*.inc',
+   '|Visual Basic files (*.bas)|*.bas',
+   '|COBOL files (*.cbl;*.cob)|*.cbl;*.cob', '|C# files (*.cs)|*.cs',
+   '|Cascading Stylesheets (*.css)|*.css',
+   '|HTML Documents (*.htm;*.html)|*.htm;*.html',
+   '|Javascript files (*.js)|*.js',
+   '|PHP files (*.php;*.php3;*.phtml;*.inc)|*.php;*.php3;*.phtml;*.inc',
+   '|VBScript files (*.vbs)|*.vbs',
+   '|XML files (*.xml;*.xsd;*.xsl;*.xslt;*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd',
+   '|Vrml97/X3D World (*.wrl;*.wrml;*.vrl;*.vrml;*.x3d)|*.wrl;*.wrml;*.vrl;*.vrml;*.x3d',
+   '|AWK Scripts (*.awk)|*.awk',
+   '|MS-DOS Batch files (*.bat;*.cmd)|*.bat;*.cmd',
+   '|KiXtart Scripts (*.kix)|*.kix',
+   '|Perl files (*.pl;*.pm;*.cgi)|*.pl;*.pm;*.cgi',
+   '|Python files (*.py)|*.py', '|Tcl/Tk files (*.tcl)|*.tcl',
+   '|GW-TEL Scripts (*.gws)|*.gws', '|Ruby files (*.rb;*.rbw)|*.rb;*.rbw',
+   '|UNIX Shell Scripts (*.sh)|*.sh',
+   '|CA-Clipper files (*.prg;*.ch;*.inc)|*.prg;*.ch;*.inc',
+   '|Cache files (*.mac;*.inc;*.int)|*.mac;*.inc;*.int',
+   '|Foxpro files (*.prg)|*.prg', '|SQL files (*.sql)|*.sql',
+   '|Semanta DD files (*.sdd)|*.sdd', '|DSP files (*.dsp;*.inc)|*.dsp;*.inc',
+   '|x86 Assembly files (*.asm)|*.asm',
+   '|68HC11 Assembler files (*.hc11;*.asm;*.asc)|*.hc11;*.asm;*.asc',
+   '|Structured Text files (*.st)|*.st',
+   '|GEMBASE files (*.dml;*.gem)|*.dml;*.gem',
+   '|Modelica files (*.mo)|*.mo', '|Standard ML files (*.sml)|*.sml',
+   '|Borland Form files (*.dfm;*.xfm)|*.dfm;*.xfm', '|INI files (*.ini)|*.ini',
+   '|Inno Setup Scripts (*.iss)|*.iss', '|Baan 4GL files (*.cln)|*.cln',
+   '|Galaxy files (*.gtv;*.galrep;*.txt)|*.gtv;*.galrep;*.txt',
+   '|Progress files (*.w;*.p;*.i)|*.w;*.p;*.i', '|Msg files (*.msg)|*.msg',
+   '|CORBA IDL files (*.idl)|*.idl',
+   '|CPM Reports (*.rdf;*.rif;*.rmf;*.rxf)|*.rdf;*.rif;*.rmf;*.rxf',
+   '|TeX files (*.tex)|*.tex', '|Haskell files (*.hs;*.lhs)|*.hs;*.lhs',
+   '|LEGO LDraw files (*.ldr)|*.ldr',
+   '|DOT Graph Drawing Description (*.dot)|*.dot',
+   '|Resource files (*.rc)|*.rc');
+
+   BEFileExtensions: array [0..91] of string = ('.ace', '.asc', '.asm', '.awk',
+   '.bas', '.bat', '.c', '.cbl', '.cc', '.cgi', '.ch', '.cln', '.cmd', '.cob',
+   '.cpp', '.cs', '.css', '.cu', '.cxx', '.dfm', '.dml', '.dot', '.dpk', '.dpr',
+   '.dsp', '.dtd', '.e', '.for', '.galrep', '.gem', '.gtv', '.gws', '.h',
+   '.hc11', '.hh', '.hpp', '.hs', '.htm', '.html', '.hxx', '.i', '.idl', '.inc',
+   '.ini', '.int', '.iss', '.java', '.js', '.kix', '.ldr', '.lhs', '.m3',
+   '.mac', '.mo', '.msg', '.p', '.pas', '.php', '.php3', '.phtml', '.pl', '.pm',
+   '.pp', '.prg', '.py', '.rb', '.rbw', '.rc', '.rdf', '.rif', '.rmf', '.rxf',
+   '.sdd', '.sh', '.sml', '.sql', '.st', '.tcl', '.tex', '.txt', '.vbs', '.vrl',
+   '.vrml', '.w', '.wrl', '.wrml', '.x3d', '.xfm', '.xml', '.xsd', '.xsl',
+   '.xslt');
 
 var
   CRCap: string = 'Confirm replace';
@@ -447,7 +460,87 @@ var
   mysn4: string = 'Byte(s)';
   mysn5: string = 'read only';
   Main: TMain;
-  ExcValsEdit, ExcValsGut, ExcValsPrint, ExcValsPrintM: TStrings;
+
+  bor: record
+    drag,                    //  enable JvDragAndDrop
+    port,                    //  enable portable mode
+    ptac,                    //  paste text after caret
+    sdfl,                    //  scan dropped folders
+    sdsf,                    //  scan dropped sub-folders
+    ssbp,                    //  show status bar
+    synh,                    //  use syntax highlight
+    tray,                    //  show tray icon
+    mn_wnst,                 //  TForm.WindowState
+    ed_insm,                 //  TSynEdit.InsertMode
+    ed_reon,                 //  TSynEdit.ReadOnly
+    ed_shft,                 //  TSynEdit.ScrollHintFormat
+    ed_wrap,                 //  TSynEdit.WordWrap
+    eg_asiz,                 //  TSynEdit.Gutter.AutoSize
+    eg_grad,                 //  TSynEdit.Gutter.Gradient
+    eg_ldzr,                 //  TSynEdit.Gutter.LeadingZeros
+    eg_shln,                 //  TSynEdit.Gutter.ShowLineNumbers
+    eg_ufst,                 //  TSynEdit.Gutter.UseFontStyle
+    eg_vsbl,                 //  TSynEdit.Gutter.Visible
+    eg_zrst,                 //  TSynEdit.Gutter.ZeroStart
+    ew_vsbl,                 //  TSynEdit.WordWrapGlyph.Visible
+    pr_clrs,                 //  TSynEditPrint.Colors
+    pr_high,                 //  TSynEditPrint.Highlight
+    pr_lnum,                 //  TSynEditPrint.LineNumbers
+    pr_lnim: Boolean;        //  TSynEditPrint.LineNumbersInMargin
+    ed_insc,                 //  TSynEdit.InsertCaret
+    ed_owrc,                 //  TSynEdit.OverwriteCaret
+    ed_selm,                 //  TSynEdit.SelectionMode
+    ef_chrs,                 //  TSynEdit.Font.Charset
+    ef_ptch,                 //  TSynEdit.Font.Pitch
+    ef_styl,                 //  TSynEdit.Font.Style
+    eg_bstl,                 //  TSynEdit.Gutter.BorderStyle
+    eg_fchr,                 //  TSynEdit.Gutter.Font.Charset
+    eg_fptc,                 //  TSynEdit.Gutter.Font.Pitch
+    eg_fstl: Byte;           //  TSynEdit.Gutter.Font.Style
+    lang,                    //  GUI language
+    ef_name,                 //  TSynEdit.Font.Name
+    eg_fnam: string;         //  TSynEdit.Gutter.Font.Name
+    mn_hght,                 //  TForm.Height
+    mn_left,                 //  TForm.Left
+    mn_wdth,                 //  TForm.Width
+    mn__top,                 //  TForm.Top
+    rfcl,                    //  recent files count limit
+    ed_alic,                 //  TSynEdit.ActiveLineColor
+    ed_colr,                 //  TSynEdit.Color
+    ed_exls,                 //  TSynEdit.ExtraLineSpacing
+    ed_mxsw,                 //  TSynEdit.MaxScrollWidth
+    ed_mxun,                 //  TSynEdit.MaxUndo
+    ed_opts,                 //  TSynEdit.Options
+    ed_recl,                 //  TSynEdit.RightEdgeColor
+    ed_redg,                 //  TSynEdit.RightEdge
+    ed_shcl,                 //  TSynEdit.ScrollHintColor
+    ed_tabw,                 //  TSynEdit.TabWidth
+    ef_colr,                 //  TSynEdit.Font.Color
+    ef_hght,                 //  TSynEdit.Font.Height
+    ef_ornt,                 //  TSynEdit.Font.Orientation
+    ef_size,                 //  TSynEdit.Font.Size
+    eg_bclr,                 //  TSynEdit.Gutter.Color
+    eg_colr,                 //  TSynEdit.Gutter.DigitCount
+    eg_dcnt,                 //  TSynEdit.Gutter.BorderColor
+    eg_gecl,                 //  TSynEdit.Gutter.GradientEndColor
+    eg_gscl,                 //  TSynEdit.Gutter.GradientStartColor
+    eg_gstp,                 //  TSynEdit.Gutter.GradientSteps
+    eg_lnst,                 //  TSynEdit.Gutter.LineNumberStart
+    eg_wdth,                 //  TSynEdit.Gutter.Width
+    eg_fclr,                 //  TSynEdit.Gutter.Font.Color
+    eg_fhgt,                 //  TSynEdit.Gutter.Font.Height
+    eg_fort,                 //  TSynEdit.Gutter.Font.Orientation
+    eg_fsiz,                 //  TSynEdit.Gutter.Font.Size
+    es_back,                 //  TSynEdit.SelectedColor.Background
+    es_frnt,                 //  TSynEdit.SelectedColor.Foreground
+    ew_mscl,                 //  TSynEdit.WordWrapGlyph.MaskColor
+    pr_colr,                 //  TSynEditPrint.Color
+    pr_cops: Integer;        //  TSynEditPrint.Copies
+    pr_mbtm,                 //  TSynEditPrint.Margins.Bottom
+    pr_mlft,                 //  TSynEditPrint.Margins.Left
+    pr_mrgt,                 //  TSynEditPrint.Margins.Right
+    pr_mtop: Extended;       //  TSynEditPrint.Margins.Top
+  end;
 
 implementation
 
@@ -457,7 +550,7 @@ uses
 
 {$R *.DFM}
 
-function MyBytesToStr(const mfSize: UInt64): string;
+function MyBytesToStr(const mfSize: Int64): string;
 const
   i64TB = 1099511627776;
   i64GB = 1073741824;
@@ -470,7 +563,7 @@ begin
   if mfSize >= i64MB then Result := Format('%.2f ' + mysn2, [mfSize / i64MB])
   else if mfSize >= i64KB
   then Result := Format('%.2f ' + mysn3, [mfSize / i64KB])
-  else Result := UIntToStr(mfSize) + ' ' + mysn4;
+  else Result := IntToStr(mfSize) + ' ' + mysn4;
 end;
 
 function MyExtByFilter(const fId: Integer; const fName: TFileName): TFileName;
@@ -575,6 +668,7 @@ end;
 
 procedure TMain.MyOpenDifferCP(Sender: TObject);
 begin
+  {$IFDEF UNICODE}
   case N44.IndexOf(Sender as TMenuItem) of
     0: MyOpenFile(MyFileName, nil, 1);
     1: MyOpenFile(MyFileName, TEncoding.Default, 1);
@@ -584,36 +678,41 @@ begin
     5: MyOpenFile(MyFileName, TEncoding.UTF8, 1);
     6: MyOpenFile(MyFileName, TEncoding.UTF7, 1);
   end;
+  {$ELSE}
+  case N44.IndexOf(Sender as TMenuItem) of
+    0: MyOpenFile(MyFileName, 4, 1);
+    1: MyOpenFile(MyFileName, 3, 1);
+    3..5: MyOpenFile(MyFileName, N44.IndexOf(Sender as TMenuItem) - 3, 1);
+  end;
+  {$ENDIF}
 end;
 
 procedure TMain.MySetSelMode(Sender: TObject);
 begin
   Edit.SelectionMode := TSynSelectionMode(N40.IndexOf(Sender as TMenuItem));
-  N40.Items[N40.IndexOf(Sender as TMenuItem)].Checked := True;
-  WriteToAppStorage(AppIni, AppIni.DefaultSection);
+  bor.ed_selm := Byte(Edit.SelectionMode);
+  N40.Items[bor.ed_selm].Checked := True;
+  MySaveSettings;
 end;
 
 procedure TMain.MySetSyn(Sender: TObject);
 begin
-  MySetSynByFid(N74.IndexOf(Sender as TMenuItem) + 1);
+  MySetSynByFid(N74.IndexOf(Sender as TMenuItem));
 end;
 
 procedure TMain.MyOpenDropped(const FileName: TFileName);
 begin
   if Edit.Modified then begin
-    case Application.MessageBox(PChar(mysg7), 'BirEdit', MB_YESNOCANCEL + MB_ICONQUESTION) of
+    case MessageBox(Self.Handle, PChar(mysg7), 'BirEdit', MB_YESNOCANCEL
+                      + MB_ICONQUESTION) of
       IDYES:
         if FileExists(MyFileName) then begin
           MySaveFile(MyFileName, curcp, 1);
-          MyOpenFile(FileName, nil, 1);
-        end else if Save.Execute then begin
-          Save.FileName := MyExtByFilter(Save.FilterIndex, Save.FileName);
-          MySaveFile(Save.FileName, Save.EncodingIndex, Save.FilterIndex);
-          MyOpenFile(FileName, nil, 1);
-        end;
-      IDNO: MyOpenFile(FileName, nil, 1);
+          MyOpenFileWosf(FileName, 1);
+        end else if SaveDlgExec then MyOpenFileWosf(FileName, 1);
+      IDNO: MyOpenFileWosf(FileName, 1);
     end;
-  end else MyOpenFile(FileName, nil, 1);
+  end else MyOpenFileWosf(FileName, 1);
 end;
 
 procedure TMain.MyShowDroppedDlg(const fValues: TStrings);
@@ -630,7 +729,7 @@ begin
       for I := 0 to ChkLst.Count - 1 do if ChkLst.Checked[i] = True then begin
         Inc(cnt);
         if cnt = 1 then MyOpenDropped(ChkLst.Items.Strings[i])
-        else ShellExecute(Self.Handle, 'open', PChar(Application.ExeName),
+        else ShellExecute(Self.Handle, 'open', PChar(ParamStr(0)),
                     PChar('"' + ChkLst.Items.Strings[i] + '"'),
                     PChar('"' + ExtractFilePath(ChkLst.Items.Strings[i]) + '"'),
                     SW_SHOWNORMAL);
@@ -655,8 +754,9 @@ var
       if (mys.Name = '.') or (mys.Name = '..') then Continue;
       if not ((mys.Attr and faDirectory) <> 0)
       then tmpstrs.Add(MyDir + mys.Name) else
-      if sudir then MyScanDir(MyDir + mys.Name);
+      if bor.sdsf then MyScanDir(MyDir + mys.Name);
     until FindNext(mys) <> 0;
+    FindClose(mys);
   end;
 
 begin
@@ -668,7 +768,7 @@ begin
       tmpstrs.Text := fValues.Text;
       for I := tmpstrs.Count - 1 downto 0 do begin
         if DirectoryExists(tmpstrs.Strings[i]) then begin
-          if sddir
+          if bor.sdfl
           then MyScanDir(tmpstrs.Strings[i]);
           tmpstrs.Delete(i);
         end else if not (FileExists(tmpstrs.Strings[i])) then tmpstrs.Delete(i);
@@ -676,16 +776,35 @@ begin
       if tmpstrs.Count = 1 then MyOpenDropped(tmpstrs.Strings[0]) else
       if tmpstrs.Count > 1 then MyShowDroppedDlg(tmpstrs);
     finally
-      tmpstrs.Free;
+      FreeAndNil(tmpstrs);
     end;
   end;
 end;
 
+{$IFDEF UNICODE}
 procedure TMain.EditDropFiles(Sender: TObject; X, Y: Integer; AFiles: TStrings);
+{$ELSE}
+procedure TMain.EditDropFiles(Sender: TObject; X, Y: Integer;
+                                AFiles: TUnicodeStrings);
+var
+  tstrs: TStrings;
+{$ENDIF}
 begin
+  {$IFDEF UNICODE}
   MyScanDropFiles(AFiles);
+  {$ELSE}
+  tstrs := TStringList.Create;
+  try
+    AFiles.SaveFormat := sfAnsi;
+    tstrs.Text := AFiles.Text;
+    MyScanDropFiles(tstrs);
+  finally
+    tstrs.Free;
+  end;
+  {$ENDIF}
 end;
 
+{$IFDEF UNICODE}
 procedure TMain.MyLoadFromFile(const FileName: TFileName; Encoding: TEncoding);
 var
   Size, LineBreakLen: Integer;
@@ -736,33 +855,121 @@ begin
     myfsize := Stream.Size;
     MyFileName := FileName;
   finally
-    Stream.Free;
+    FreeAndNil(Stream);
   end;
 end;
+{$ELSE}
+procedure TMain.MyLoadFromFile(const FileName: TFileName; Encoding: Byte);
+var
+  ByteOrderMask: array[0..5] of Byte;
+  Size, BytesRead: Integer;
+  SA: AnsiString;
+  SW: UnicodeString;
+  Stream: TStream;
+begin
+  Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
+  try
+    Edit.Lines.BeginUpdate;
+    try
+      Size := Stream.Size - Stream.Position;
+      BytesRead := Stream.Read(ByteOrderMask[0], SizeOf(ByteOrderMask));
+      if not (Encoding in [0..3]) then begin
+        if (BytesRead >= 2) and (ByteOrderMask[0] = UTF16BOMLE[0])
+               and (ByteOrderMask[1] = UTF16BOMLE[1])
+        then Encoding := 0;
+        if (BytesRead >= 2) and (ByteOrderMask[0] = UTF16BOMBE[0])
+               and (ByteOrderMask[1] = UTF16BOMBE[1])
+        then Encoding := 1;
+        if (BytesRead >= 3) and (ByteOrderMask[0] = UTF8BOM[0])
+               and (ByteOrderMask[1] = UTF8BOM[1])
+               and (ByteOrderMask[2] = UTF8BOM[2])
+        then Encoding := 2;
+        if not (Encoding in [0..3]) then Encoding := 3;
+      end;
+      case Encoding of
+        0: begin
+             SetLength(SW, (Size - 2) div SizeOf(WideChar));
+             Assert((Size and 1) <> 1,
+                      'Number of chars must be a multiple of 2');
+             if BytesRead > 2 then begin
+               System.Move(ByteOrderMask[2], SW[1], BytesRead - 2); 
+               if Size > BytesRead then Stream.Read(SW[3], Size - BytesRead);
+             end;
+             Edit.Lines.SetTextStr(SW);
+           end;
+        1: begin
+             SetLength(SW, (Size - 2) div SizeOf(WideChar));
+             Assert((Size and 1) <> 1,
+                     'Number of chars must be a multiple of 2');
+             if BytesRead > 2 then begin
+               System.Move(ByteOrderMask[2], SW[1] ,BytesRead - 2);
+               if Size > BytesRead then Stream.Read(SW[3], Size - BytesRead);
+               StrSwapByteOrder(PWideChar(SW));
+             end;
+             Edit.Lines.SetTextStr(SW);
+           end;
+        2: begin
+             SetLength(SA, (Size - 3) div SizeOf(AnsiChar));
+             if BytesRead > 3 then begin
+               System.Move(ByteOrderMask[3], SA[1], BytesRead - 3);
+               if Size > BytesRead then Stream.Read(SA[4], Size - BytesRead);
+               SW := UTF8Decode(SA);
+             end;
+             Edit.Lines.SetTextStr(SW);
+           end;
+        else begin
+          SetLength(SA, Size div SizeOf(AnsiChar));
+          if BytesRead > 0 then begin
+            System.Move(ByteOrderMask[0], SA[1], BytesRead);
+            if Size > BytesRead then Stream.Read(SA[7], Size - BytesRead);
+          end;
+          Edit.Lines.SetTextStr(SA);
+        end;
+      end;
+      curcp := Encoding;
+    finally
+      Edit.Lines.EndUpdate;
+    end;
+    myfsize := Stream.Size;
+    MyFileName := FileName;
+  finally
+    FreeAndNil(Stream);
+  end;
+end;
+{$ENDIF}
 
+{$IFDEF UNICODE}
 procedure TMain.MyOpenFile(OpenFileName: TFileName; Encoding: TEncoding; fd: Byte);
+{$ELSE}
+procedure TMain.MyOpenFile(OpenFileName: TFileName; Encoding: Byte; fd: Byte);
+{$ENDIF}
 begin
   if ExtractFilePath(OpenFileName) = ''
   then OpenFileName := appath + OpenFileName;
   Edit.ClearAll;
   try
     MyLoadFromFile(OpenFileName, Encoding);
-    if usesyn then begin
-      if (fd > 1) and (fd <=52) then MySetSynByFid(fd)
+    if bor.synh then begin
+      if (fd > 1) and (fd <=52) then MySetSynByFid(fd - 1)
       else MySetSynByExt(ExtractFileExt(OpenFileName));
-    end else Edit.Highlighter := nil;
+    end else MySetSynByFid(-1);
   except
-    Application.MessageBox(PChar(mysg1), 'BirEdit', MB_OK+MB_ICONSTOP);
+    MessageBox(Self.Handle, PChar(mysg1), 'BirEdit', MB_OK+MB_ICONSTOP);
     MyFileName := '';
     myfsize := 0;
+    {$IFDEF UNICODE}
     curcp := 0;
-    if usesyn then MySetSynByFid(1) else Edit.Highlighter := nil;
+    {$ELSE}
+    curcp := 3;
+    {$ENDIF}
+    if bor.synh then MySetSynByFid(0) else MySetSynByFid(-1);
   end;
   Status.Panels.Items[2].Text := MyBytesToStr(myfsize);
   Recent.Add(OpenFileName, 0);
   prev := FileAge(OpenFileName);
 end;
 
+{$IFDEF UNICODE}
 procedure TMain.MySaveToFileEnc(const FileName: TFileName; Encoding: TEncoding);
 var
   Stream: TStream;
@@ -772,15 +979,33 @@ begin
     Edit.Lines.SaveToStream(Stream, Encoding);
     MyFileName := FileName;
     myfsize := Stream.Size;
-    Edit.Modified:=False;
+    Edit.Modified := False;
   finally
-    Stream.Free;
+    FreeAndNil(Stream);
   end;
 end;
+{$ELSE}
+procedure TMain.MySaveToFileEnc(const FileName: TFileName; Encoding: Byte);
+var
+  Stream: TStream;
+begin
+  Stream := TFileStream.Create(FileName, fmCreate);
+  try
+    Edit.Lines.SaveFormat := TSaveFormat(Encoding);
+    Edit.Lines.SaveToStream(Stream);
+    MyFileName := FileName;
+    myfsize := Stream.Size;
+    Edit.Modified := False;
+  finally
+    FreeAndNil(Stream);
+  end;
+end;
+{$ENDIF}
 
 procedure TMain.MySaveToFile(const FileName: TFileName; seid, fid: Integer);
 begin
   try
+    {$IFDEF UNICODE}
     case seid of
       1: MySaveToFileEnc(FileName, TEncoding.ASCII);
       2: MySaveToFileEnc(FileName, TEncoding.Unicode);
@@ -789,15 +1014,22 @@ begin
       5: MySaveToFileEnc(FileName, TEncoding.UTF7);
       else MySaveToFileEnc(FileName, nil);
     end;
+    {$ELSE}
+    MySaveToFileEnc(FileName, seid);
+    {$ENDIF}
     curcp := seid;
-    if usesyn then begin
-      if (fid > 1) and (fid <= 52) then MySetSynByFid(fid)
+    if bor.synh then begin
+      if (fid > 1) and (fid <= 52) then MySetSynByFid(fid - 1)
       else MySetSynByExt(ExtractFileExt(FileName));
-    end else Edit.Highlighter := nil;
+    end else MySetSynByFid(-1);
   except
+    {$IFDEF UNICODE}
     curcp := 0;
+    {$ELSE}
+    curcp := 3;
+    {$ENDIF}
     Edit.Modified := True;
-    if usesyn then MySetSynByFid(1) else Edit.Highlighter := nil;
+    if bor.synh then MySetSynByFid(0) else MySetSynByFid(-1);
   end;
   Status.Panels.Items[2].Text := MyBytesToStr(myfsize);
 end;
@@ -808,8 +1040,8 @@ begin
   then SaveFileName := appath + SaveFileName;
   if FileExists(SaveFileName) then begin
     if FileIsReadOnly(SaveFileName) then begin
-      if Application.MessageBox(PChar(mysg3), 'BirEdit',
-                                  MB_YESNO + MB_ICONQUESTION) = IDYES
+      if MessageBox(Self.Handle, PChar(mysg3), 'BirEdit', MB_YESNO
+                      + MB_ICONQUESTION) = IDYES
       then begin
         if FileSetReadOnly(SaveFileName, False)
         then MySaveToFile(SaveFileName, seId, fid);
@@ -819,6 +1051,44 @@ begin
   end else MySaveToFile(SaveFileName, seId, fid);
   Recent.Add(SaveFileName, 0);
   prev := FileAge(SaveFileName);
+end;
+
+function TMain.SaveDlgExec: Boolean;
+var
+  i: Byte;
+  dlg: TSaveTextFileDialog;
+begin
+  Result := False;
+  dlg := TSaveTextFileDialog.Create(Self);
+  try
+    dlg.Ctl3D := True;
+    dlg.Options := [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing];
+    dlg.Encodings.Clear;
+    {$IFDEF UNICODE}
+    dlg.Encodings.Add('Ansi');
+    dlg.Encodings.Add('ASCII');
+    dlg.Encodings.Add('UTF-16 little endian');
+    dlg.Encodings.Add('UTF-16 big endian');
+    dlg.Encodings.Add('UTF-8');
+    dlg.Encodings.Add('UTF-7');
+    {$ELSE}
+    dlg.Encodings.Add('UTF-16 little endian');
+    dlg.Encodings.Add('UTF-16 big endian');
+    dlg.Encodings.Add('UTF-8');
+    dlg.Encodings.Add('Ansi');
+    {$ENDIF}
+    dlg.EncodingIndex := 0;
+    for I := 0 to 51 do dlg.Filter := dlg.Filter + BEFileFilter[i];
+    dlg.FilterIndex := 0;
+    dlg.FileName := myunk + '.txt';
+    if dlg.Execute then begin
+      dlg.FileName := MyExtByFilter(dlg.FilterIndex, dlg.FileName);
+      MySaveFile(dlg.FileName, dlg.EncodingIndex, dlg.FilterIndex);
+      Result := True;
+    end;
+  finally
+    FreeAndNil(dlg);
+  end;
 end;
 
 procedure TMain.MyLoadLoc(AWnd: TForm; mysect: string; dftitle: Boolean);
@@ -844,9 +1114,9 @@ var
   i, j: Integer;
   lnini: TIniFile;
 begin
-  if FileExists(appath + 'lang\' +mylang)
+  if FileExists(appath + 'lang\' + bor.lang)
   then begin
-    lnini := TIniFile.Create(appath + 'lang\' + mylang);
+    lnini := TIniFile.Create(appath + 'lang\' + bor.lang);
     if dftitle then AWnd.Caption := lnini.ReadString(mysect, '2', AWnd.Caption)
     else AWnd.Caption := lnini.ReadString(mysect, '1', AWnd.Caption);
     if AWnd.ComponentCount <> 0 then begin
@@ -891,7 +1161,7 @@ begin
         end;
       end;
     end;
-    lnini.Free;
+    FreeAndNil(lnini);
   end;
 end;
 
@@ -941,7 +1211,8 @@ begin
 end;
 
 procedure TMain.DoSearchReplaceText(AReplace, ABackwards: Boolean);
-var Options: TSynSearchOptions;
+var
+  Options: TSynSearchOptions;
 begin
   if AReplace then Options := [ssoPrompt, ssoReplace, ssoReplaceAll]
   else Options := [];
@@ -953,7 +1224,7 @@ begin
   if gbSearchRegex then Edit.SearchEngine := SynEditRegexSearch1
   else Edit.SearchEngine := SynEditSearch1;
   if Edit.SearchReplace(gsSearchText, gsReplaceText, Options) = 0 then begin
-    Application.MessageBox(PChar(mysg2), 'BirEdit', MB_OK+MB_ICONINFORMATION);
+    MessageBox(Self.Handle, PChar(mysg2), 'BirEdit', MB_OK+MB_ICONINFORMATION);
     if ssoBackwards in Options then Edit.BlockEnd := Edit.BlockBegin
     else Edit.BlockBegin := Edit.BlockEnd;
     Edit.CaretXY := Edit.BlockBegin;
@@ -961,8 +1232,13 @@ begin
   if ConfirmReplace <> nil then ConfirmReplace.Free;
 end;
 
+{$IFDEF UNICODE}
 procedure TMain.EditReplaceText(Sender: TObject; const ASearch,
   AReplace: string; Line, Column: Integer; var Action: TSynReplaceAction);
+{$ELSE}
+procedure TMain.EditReplaceText(Sender: TObject; const ASearch,
+  AReplace: WideString; Line, Column: Integer; var Action: TSynReplaceAction);
+{$ENDIF}
 var
   APos: TPoint;
   EditRect: TRect;
@@ -976,7 +1252,7 @@ begin
     EditRect.TopLeft := ClientToScreen(EditRect.TopLeft);
     EditRect.BottomRight := ClientToScreen(EditRect.BottomRight);
     if ConfirmReplace = nil
-    then ConfirmReplace := TConfirmReplace.Create(Application);
+    then ConfirmReplace := TConfirmReplace.Create(Self);
     with ConfirmReplace do begin
       Caption := CRCap;
       Button1.Caption := CRBut1;
@@ -1163,6 +1439,7 @@ begin
   N174.Caption := langini.ReadString('Main', '103', 'Associations');
   N173.Caption := langini.ReadString('Main', '104', 'Word wrap');
   N175.Caption := langini.ReadString('Main', '105', 'Open all');
+  N52.Caption := langini.ReadString('Main', '106', 'Plugins');
   N19.Caption := N11.Caption;
   N20.Caption := N12.Caption;
   N22.Caption := N17.Caption;
@@ -1176,10 +1453,10 @@ begin
   N95.Caption := N57.Caption;
   N96.Caption := N46.Caption;
   N171.Caption := N78.Caption;
-  Save.FileName := myunk + '.txt';
-  langini.Free;
-  for I := 1 to N117.Count - 1 do if CompareStr(N117.Items[i].Hint, mylang) = 0
-  then N117.Items[i].Checked := True;
+  FreeAndNil(langini);
+  for I := 1 to N117.Count - 1 do 
+    if CompareStr(N117.Items[i].Hint, bor.lang) = 0
+    then N117.Items[i].Checked := True;
 end;
 
 procedure TMain.N126Click(Sender: TObject);
@@ -1242,6 +1519,7 @@ begin
   N49.Caption := 'Help';
   N50.Caption := 'About...';
   N51.Caption := 'Font...';
+  N52.Caption := 'Plugins';
   N53.Caption := 'Auto';
   N56.Caption := 'Swap';
   N57.Caption := 'Clear all';
@@ -1305,234 +1583,497 @@ begin
   N95.Caption := N57.Caption;
   N96.Caption := N46.Caption;
   N171.Caption := N78.Caption;
-  Save.FileName := myunk + '.txt';
-  mylang := '';
+  bor.lang := '';
+  MySaveSettings;
 end;
 
 procedure TMain.ItemClick(Sender: TObject);
 begin
   with (Sender as TMenuItem) do begin
-    mylang := Hint;
-    if FileExists(appath + 'lang\' + mylang) then begin
-      LoadTranslate(mylang);
+    bor.lang := Hint;
+    if FileExists(appath + 'lang\' + bor.lang) then begin
+      LoadTranslate(bor.lang);
       Checked := True;
     end;
+    MySaveSettings;
   end;
 end;
 
-procedure TMain.MySetSynByFid(fid: Byte);
+procedure TMain.MySetSynByFid(fid: ShortInt);
 begin
+  if BESyn <> nil then FreeAndNil(BESyn);
   case fid of
+    0: begin
+         BESyn := TSynGeneralSyn.Create(Self);
+         try
+           BESyn.LoadFromFile(appath + 'syn\default.ini');
+           Edit.Highlighter := BESyn;
+         except
+           FreeAndNil(BESyn);
+         end;
+       end;
+    1: begin
+         BESyn := TSynCppSyn.Create(Self);
+         try
+           BESyn.LoadFromFile(appath + 'syn\cpp.ini');
+           Edit.Highlighter := BESyn;
+         except
+           FreeAndNil(BESyn);
+         end;
+       end;
     2: begin
-         SynCpp.LoadFromFile(appath + 'syn\cpp.ini');
-         Edit.Highlighter := SynCpp;
+         BESyn := TSynEiffelSyn.Create(Self);
+         try
+           BESyn.LoadFromFile(appath + 'syn\eiffel.ini');
+           Edit.Highlighter := BESyn;
+         except
+           FreeAndNil(BESyn);
+         end;
        end;
     3: begin
-         SynEif.LoadFromFile(appath + 'syn\eiffel.ini');
-         Edit.Highlighter := SynEif;
+         BESyn := TSynFortranSyn.Create(Self);
+         try
+           BESyn.LoadFromFile(appath + 'syn\fortran.ini');
+           Edit.Highlighter := BESyn;
+         except
+           FreeAndNil(BESyn);
+         end;
        end;
     4: begin
-         SynFor.LoadFromFile(appath + 'syn\fortran.ini');
-         Edit.Highlighter := SynFor;
+         BESyn := TSynJavaSyn.Create(Self);
+         try
+           BESyn.LoadFromFile(appath + 'syn\java.ini');
+           Edit.Highlighter := BESyn;
+         except
+           FreeAndNil(BESyn);
+         end;
        end;
     5: begin
-         SynJava.LoadFromFile(appath + 'syn\java.ini');
-         Edit.Highlighter := SynJava;
+         BESyn := TSynM3Syn.Create(Self);
+         try
+           BESyn.LoadFromFile(appath + 'syn\modula.ini');
+           Edit.Highlighter := BESyn;
+         except
+           FreeAndNil(BESyn);
+         end;
        end;
     6: begin
-         SynMod.LoadFromFile(appath + 'syn\modula.ini');
-         Edit.Highlighter := SynMod;
+         BESyn := TSynPasSyn.Create(Self);
+         try
+           BESyn.LoadFromFile(appath + 'syn\pascal.ini');
+           Edit.Highlighter := BESyn;
+         except
+           FreeAndNil(BESyn);
+         end;
        end;
     7: begin
-         SynPas.LoadFromFile(appath + 'syn\pascal.ini');
-         Edit.Highlighter := SynPas;
+         BESyn := TSynVBSyn.Create(Self);
+         try
+           BESyn.LoadFromFile(appath + 'syn\vbasic.ini');
+           Edit.Highlighter := BESyn;
+         except
+           FreeAndNil(BESyn);
+         end;
        end;
     8: begin
-         SynBas.LoadFromFile(appath + 'syn\vbasic.ini');
-         Edit.Highlighter := SynBas;
+         BESyn := TSynCobolSyn.Create(Self);
+         try
+           BESyn.LoadFromFile(appath + 'syn\cobol.ini');
+           Edit.Highlighter := BESyn;
+         except
+           FreeAndNil(BESyn);
+         end;
        end;
     9: begin
-         SynCobol.LoadFromFile(appath + 'syn\cobol.ini');
-         Edit.Highlighter := SynCobol;
+         BESyn := TSynCSSyn.Create(Self);
+         try
+           BESyn.LoadFromFile(appath + 'syn\cs.ini');
+           Edit.Highlighter := BESyn;
+         except
+           FreeAndNil(BESyn);
+         end;
        end;
     10: begin
-         SynCs.LoadFromFile(appath + 'syn\cs.ini');
-         Edit.Highlighter := SynCs;
+          BESyn := TSynCssSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\css.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     11: begin
-         SynCss.LoadFromFile(appath + 'syn\css.ini');
-         Edit.Highlighter := SynCss;
+          BESyn := TSynHTMLSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\html.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     12: begin
-         SynHtml.LoadFromFile(appath + 'syn\html.ini');
-         Edit.Highlighter := SynHtml;
+          BESyn := TSynJScriptSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\jscript.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     13: begin
-         SynJS.LoadFromFile(appath + 'syn\jscript.ini');
-         Edit.Highlighter := SynJS;
+          BESyn := TSynPHPSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\php.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     14: begin
-         SynPhp.LoadFromFile(appath + 'syn\php.ini');
-         Edit.Highlighter := SynPhp;
+          BESyn := TSynVBScriptSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\vbscript.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     15: begin
-         SynVbs.LoadFromFile(appath + 'syn\vbscript.ini');
-         Edit.Highlighter := SynVbs;
+          BESyn := TSynXMLSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\xml.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     16: begin
-         SynXml.LoadFromFile(appath + 'syn\xml.ini');
-         Edit.Highlighter := SynXml;
+          BESyn := TSynVrml97Syn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\vrml.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     17: begin
-         SynVrml.LoadFromFile(appath + 'syn\vrml.ini');
-         Edit.Highlighter := SynVrml;
+          BESyn := TSynAWKSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\awk.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     18: begin
-         SynAwk.LoadFromFile(appath + 'syn\awk.ini');
-         Edit.Highlighter := SynAwk;
+          BESyn := TSynBatSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\bat.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     19: begin
-         SynBat.LoadFromFile(appath + 'syn\bat.ini');
-         Edit.Highlighter := SynBat;
+          BESyn := TSynKixSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\kixtart.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     20: begin
-         SynKix.LoadFromFile(appath + 'syn\kixtart.ini');
-         Edit.Highlighter := SynKix;
+          BESyn := TSynPerlSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\perl.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     21: begin
-         SynPerl.LoadFromFile(appath + 'syn\perl.ini');
-         Edit.Highlighter := SynPerl;
+          BESyn := TSynPythonSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\python.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     22: begin
-         SynPy.LoadFromFile(appath + 'syn\python.ini');
-         Edit.Highlighter := SynPy;
+          BESyn := TSynTclTkSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\tcltk.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     23: begin
-         SynTcl.LoadFromFile(appath + 'syn\tcltk.ini');
-         Edit.Highlighter := SynTcl;
+          BESyn := TSynGWScriptSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\gwtel.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     24: begin
-         SynGws.LoadFromFile(appath + 'syn\gwtel.ini');
-         Edit.Highlighter := SynGws;
+          BESyn := TSynRubySyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\ruby.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     25: begin
-         SynRuby.LoadFromFile(appath + 'syn\ruby.ini');
-         Edit.Highlighter := SynRuby;
+          BESyn := TSynUNIXShellScriptSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\ushell.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     26: begin
-         SynUSh.LoadFromFile(appath + 'syn\ushell.ini');
-         Edit.Highlighter := SynUSh;
+          BESyn := TSynCACSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\caclpr.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     27: begin
-         SynCac.LoadFromFile(appath + 'syn\caclpr.ini');
-         Edit.Highlighter := SynCac;
+          BESyn := TSynCacheSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\cache.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     28: begin
-         SynCch.LoadFromFile(appath + 'syn\cache.ini');
-         Edit.Highlighter := SynCch;
+          BESyn := TSynFoxproSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\foxpro.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     29: begin
-         SynFox.LoadFromFile(appath + 'syn\foxpro.ini');
-         Edit.Highlighter := SynFox;
+          BESyn := TSynSQLSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\sql.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     30: begin
-         SynSql.LoadFromFile(appath + 'syn\sql.ini');
-         Edit.Highlighter := SynSql;
+          BESyn := TSynSDDSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\sdd.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     31: begin
-         SynSdd.LoadFromFile(appath + 'syn\sdd.ini');
-         Edit.Highlighter := SynSdd;
+          BESyn := TSynADSP21xxSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\dsp.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     32: begin
-         SynDsp.LoadFromFile(appath + 'syn\dsp.ini');
-         Edit.Highlighter := SynDsp;
+          BESyn := TSynAsmSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\asm.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     33: begin
-         SynAsm.LoadFromFile(appath + 'syn\asm.ini');
-         Edit.Highlighter := SynAsm;
+          BESyn := TSynHC11Syn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\hc11asm.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     34: begin
-         SynHc.LoadFromFile(appath + 'syn\hc11asm.ini');
-         Edit.Highlighter := SynHc;
+          BESyn := TSynSTSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\stext.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     35: begin
-         SynSt.LoadFromFile(appath + 'syn\stext.ini');
-         Edit.Highlighter := SynSt;
+          BESyn := TSynDmlSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\gembase.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     36: begin
-         SynGem.LoadFromFile(appath + 'syn\gembase.ini');
-         Edit.Highlighter := SynGem;
+          BESyn := TSynModelicaSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\modelic.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     37: begin
-         SynModa.LoadFromFile(appath + 'syn\modelic.ini');
-         Edit.Highlighter := SynModa;
+          BESyn := TSynSMLSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\sml.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     38: begin
-         SynSml.LoadFromFile(appath + 'syn\sml.ini');
-         Edit.Highlighter := SynSml;
+          BESyn := TSynDfmSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\dfm.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     39: begin
-         SynDfm.LoadFromFile(appath + 'syn\dfm.ini');
-         Edit.Highlighter := SynDfm;
+          BESyn := TSynIniSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\ini.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     40: begin
-         SynIni.LoadFromFile(appath + 'syn\ini.ini');
-         Edit.Highlighter := SynIni;
+          BESyn := TSynInnoSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\inno.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     41: begin
-         SynInno.LoadFromFile(appath + 'syn\inno.ini');
-         Edit.Highlighter := SynInno;
+          BESyn := TSynBaanSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\baan.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     42: begin
-         SynBaan.LoadFromFile(appath + 'syn\baan.ini');
-         Edit.Highlighter := SynBaan;
+          BESyn := TSynGalaxySyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\galaxy.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     43: begin
-         SynGal.LoadFromFile(appath + 'syn\galaxy.ini');
-         Edit.Highlighter := SynGal;
+          BESyn := TSynProgressSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\progress.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     44: begin
-         SynPrg.LoadFromFile(appath + 'syn\progress.ini');
-         Edit.Highlighter := SynPrg;
+          BESyn := TSynMsgSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\msg.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     45: begin
-         SynMsg.LoadFromFile(appath + 'syn\msg.ini');
-         Edit.Highlighter := SynMsg;
+          BESyn := TSynIdlSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\corba.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     46: begin
-         SynIdl.LoadFromFile(appath + 'syn\corba.ini');
-         Edit.Highlighter := SynIdl;
+          BESyn := TSynCPMSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\cpmrep.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     47: begin
-         SynCpm.LoadFromFile(appath + 'syn\cpmrep.ini');
-         Edit.Highlighter := SynCpm;
+          BESyn := TSynTeXSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\tex.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     48: begin
-         SynTex.LoadFromFile(appath + 'syn\tex.ini');
-         Edit.Highlighter := SynTex;
+          BESyn := TSynHaskellSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\haskell.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     49: begin
-         SynHas.LoadFromFile(appath + 'syn\haskell.ini');
-         Edit.Highlighter := SynHas;
+          BESyn := TSynLDRSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\legoldr.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     50: begin
-         SynLdr.LoadFromFile(appath + 'syn\legoldr.ini');
-         Edit.Highlighter := SynLdr;
+          BESyn := TSynDOTSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\dotgraph.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
     51: begin
-         SynDot.LoadFromFile(appath + 'syn\dotgraph.ini');
-         Edit.Highlighter := SynDot;
+          BESyn := TSynRCSyn.Create(Self);
+          try
+            BESyn.LoadFromFile(appath + 'syn\res.ini');
+            Edit.Highlighter := BESyn;
+          except
+            FreeAndNil(BESyn);
+          end;
         end;
-    52: begin
-         SynRc.LoadFromFile(appath + 'syn\res.ini');
-         Edit.Highlighter := SynRc;
-        end;
-    else begin
-      SynDef.LoadFromFile(appath + 'default.ini');
-      Edit.Highlighter := SynDef;
-    end;
+    else Edit.Highlighter := nil;
   end;
-  N74.Items[fid - 1].Checked := True;
+  if fid > -1 then N74.Items[fid].Checked := True;
 end;
 
 procedure TMain.MySetSynByExt(fExt: string);
@@ -1543,77 +2084,79 @@ begin
   flExt := WideLowerCase(fExt);
   flLen := Length(flExt);
   case flLen of
-    2: if (flExt = '.c') or (flExt = '.h') then MySetSynByFid(2) else
-       if flExt = '.e' then MySetSynByFid(3) else
+    2: if (flExt = '.c') or (flExt = '.h') then MySetSynByFid(1) else
+       if flExt = '.e' then MySetSynByFid(2) else
        if (flExt = '.w') or (flExt = '.p') or (flExt = '.i')
-       then MySetSynByFid(44) else MySetSynByFid(1);
+       then MySetSynByFid(43) else MySetSynByFid(0);
     3: if (flExt = '.cc') or (flExt = '.hh') or (flExt = '.cu')
-       then MySetSynByFid(2) else if flExt = '.m3' then MySetSynByFid(6) else
-       if flExt = '.pp' then MySetSynByFid(7) else if flExt = '.cs'
-       then MySetSynByFid(10) else if flExt = '.js' then MySetSynByFid(13) else
-       if (flExt = '.pl') or (flExt = '.pm') then MySetSynByFid(21) else
-       if flExt = '.py' then MySetSynByFid(22) else if flExt = '.rb'
-       then MySetSynByFid(25) else if flExt = '.sh' then MySetSynByFid(26) else
-       if flExt = '.ch' then MySetSynByFid(27) else if flExt = '.st'
-       then MySetSynByFid(35) else if flExt = '.mo' then MySetSynByFid(37) else
-       if flExt = '.hs' then MySetSynByFid(49) else if flExt = '.rc'
-       then MySetSynByFid(52) else MySetSynByFid(1);
+       then MySetSynByFid(1) else if flExt = '.m3' then MySetSynByFid(5) else
+       if flExt = '.pp' then MySetSynByFid(6) else if flExt = '.cs'
+       then MySetSynByFid(9) else if flExt = '.js' then MySetSynByFid(12) else
+       if (flExt = '.pl') or (flExt = '.pm') then MySetSynByFid(20) else
+       if flExt = '.py' then MySetSynByFid(21) else if flExt = '.rb'
+       then MySetSynByFid(24) else if flExt = '.sh' then MySetSynByFid(25) else
+       if flExt = '.ch' then MySetSynByFid(26) else if flExt = '.st'
+       then MySetSynByFid(34) else if flExt = '.mo' then MySetSynByFid(36) else
+       if flExt = '.hs' then MySetSynByFid(48) else if flExt = '.rc'
+       then MySetSynByFid(51) else MySetSynByFid(0);
     4: if (flExt = '.cpp') or (flExt = '.hpp') or (flExt = '.cxx')
             or (flExt = '.hxx')
-       then MySetSynByFid(2) else if flExt = '.ace' then MySetSynByFid(3) else
-       if flExt = '.for' then MySetSynByFid(4) else
+       then MySetSynByFid(1) else if flExt = '.ace' then MySetSynByFid(2) else
+       if flExt = '.for' then MySetSynByFid(3) else
        if (flExt = '.pas') or (flExt = '.dpr') or (flExt = '.dpk')
             or (flExt = '.inc')
-       then MySetSynByFid(7) else if flExt = '.bas' then MySetSynByFid(8) else
-       if (flExt = '.cbl') or (flExt = '.cob') then MySetSynByFid(9) else
-       if flExt = '.css' then MySetSynByFid(11) else if flExt = '.htm'
-       then MySetSynByFid(12) else if flExt = '.php' then MySetSynByFid(14) else
-       if flExt = '.vbs' then MySetSynByFid(15) else
+       then MySetSynByFid(6) else if flExt = '.bas' then MySetSynByFid(7) else
+       if (flExt = '.cbl') or (flExt = '.cob') then MySetSynByFid(8) else
+       if flExt = '.css' then MySetSynByFid(10) else if flExt = '.htm'
+       then MySetSynByFid(11) else if flExt = '.php' then MySetSynByFid(13) else
+       if flExt = '.vbs' then MySetSynByFid(14) else
        if (flExt = '.xml') or (flExt = '.xsd') or (flExt = '.dtd')
             or (flExt = '.hxx')
-       then MySetSynByFid(16) else
+       then MySetSynByFid(15) else
        if (flExt = '.wrl') or (flExt = '.vrl') or (flExt = '.x3d')
-       then MySetSynByFid(17) else if flExt = '.awk' then MySetSynByFid(18) else
-       if (flExt = '.bat') or (flExt = '.cmd') then MySetSynByFid(19) else
-       if flExt = '.kix' then MySetSynByFid(20) else if flExt = '.cgi'
-       then MySetSynByFid(21) else if flExt = '.tcl' then MySetSynByFid(23) else
-       if flExt = '.gws' then MySetSynByFid(24) else if flExt = '.rbw'
-       then MySetSynByFid(25) else if (flExt = '.mac') or (flExt = '.int')
-       then MySetSynByFid(28) else if flExt = '.prg' then MySetSynByFid(29) else
-       if flExt = '.sql' then MySetSynByFid(30) else if flExt = '.sdd'
-       then MySetSynByFid(31) else if flExt = '.dsp' then MySetSynByFid(32) else
-       if flExt = '.asm' then MySetSynByFid(33) else if flExt = '.asc'
-       then MySetSynByFid(34) else if (flExt = '.dml') or (flExt = '.gem')
-       then MySetSynByFid(36) else if flExt = '.sml' then MySetSynByFid(38) else
-       if (flExt = '.dfm') or (flExt = '.xfm') then MySetSynByFid(39) else
-       if flExt = '.ini' then MySetSynByFid(40) else if flExt = '.iss'
-       then MySetSynByFid(41) else if flExt = '.cln' then MySetSynByFid(42) else
-       if flExt = '.gtv' then MySetSynByFid(43) else if flExt = '.msg'
-       then MySetSynByFid(45) else if flExt = '.idl' then MySetSynByFid(46) else
+       then MySetSynByFid(16) else if flExt = '.awk' then MySetSynByFid(17) else
+       if (flExt = '.bat') or (flExt = '.cmd') then MySetSynByFid(18) else
+       if flExt = '.kix' then MySetSynByFid(19) else if flExt = '.cgi'
+       then MySetSynByFid(20) else if flExt = '.tcl' then MySetSynByFid(22) else
+       if flExt = '.gws' then MySetSynByFid(23) else if flExt = '.rbw'
+       then MySetSynByFid(24) else if (flExt = '.mac') or (flExt = '.int')
+       then MySetSynByFid(27) else if flExt = '.prg' then MySetSynByFid(28) else
+       if flExt = '.sql' then MySetSynByFid(29) else if flExt = '.sdd'
+       then MySetSynByFid(30) else if flExt = '.dsp' then MySetSynByFid(31) else
+       if flExt = '.asm' then MySetSynByFid(32) else if flExt = '.asc'
+       then MySetSynByFid(33) else if (flExt = '.dml') or (flExt = '.gem')
+       then MySetSynByFid(35) else if flExt = '.sml' then MySetSynByFid(37) else
+       if (flExt = '.dfm') or (flExt = '.xfm') then MySetSynByFid(38) else
+       if flExt = '.ini' then MySetSynByFid(39) else if flExt = '.iss'
+       then MySetSynByFid(40) else if flExt = '.cln' then MySetSynByFid(41) else
+       if flExt = '.gtv' then MySetSynByFid(42) else if flExt = '.msg'
+       then MySetSynByFid(44) else if flExt = '.idl' then MySetSynByFid(45) else
        if (flExt = '.rdf') or (flExt = '.rif') or (flExt = '.rmf')
             or (flExt = '.rxf')
-       then MySetSynByFid(47) else if flExt = '.tex' then MySetSynByFid(48) else
-       if flExt = '.lhs' then MySetSynByFid(49) else if flExt = '.ldr'
-       then MySetSynByFid(50) else if flExt = '.dot' then MySetSynByFid(51)
-       else MySetSynByFid(1);
-    5: if flExt = '.java' then MySetSynByFid(5) else if flExt = '.html'
-       then MySetSynByFid(12) else if flExt = '.php3' then MySetSynByFid(14)
-       else if flExt = '.xslt' then MySetSynByFid(16) else
-       if (flExt = '.wrml') or (flExt = '.vrml') then MySetSynByFid(17) else
-       if flExt = '.hc11' then MySetSynByFid(34) else MySetSynByFid(1);
-    6: if flExt = '.phtml' then MySetSynByFid(14) else MySetSynByFid(1);
-    7: if flExt = '.galrep' then MySetSynByFid(43) else MySetSynByFid(1);
-    else MySetSynByFid(1);
+       then MySetSynByFid(46) else if flExt = '.tex' then MySetSynByFid(47) else
+       if flExt = '.lhs' then MySetSynByFid(48) else if flExt = '.ldr'
+       then MySetSynByFid(49) else if flExt = '.dot' then MySetSynByFid(50)
+       else MySetSynByFid(0);
+    5: if flExt = '.java' then MySetSynByFid(4) else if flExt = '.html'
+       then MySetSynByFid(11) else if flExt = '.php3' then MySetSynByFid(13)
+       else if flExt = '.xslt' then MySetSynByFid(15) else
+       if (flExt = '.wrml') or (flExt = '.vrml') then MySetSynByFid(16) else
+       if flExt = '.hc11' then MySetSynByFid(33) else MySetSynByFid(0);
+    6: if flExt = '.phtml' then MySetSynByFid(13) else MySetSynByFid(0);
+    7: if flExt = '.galrep' then MySetSynByFid(42) else MySetSynByFid(0);
+    else MySetSynByFid(0);
   end;
 end;
 
 procedure TMain.WorkParams;
 var
-  ToCreate, ToPaste, ToPrint, ToQuit: Boolean;
-  ParamFile:                          TFileName;
-  i:                                  Integer;
+  ToCreate, ToDeAssoc, ToPaste, ToPrint, ToQuit: Boolean;
+  i: Integer;
+  ParamFile: TFileName;
+  spr: TSynEditPrint;
 begin
   ToCreate := False;
+  ToDeAssoc := False;
   ToPaste := False;
   ToPrint := False;
   ToQuit := False;
@@ -1625,38 +2168,159 @@ begin
         then ToPrint := Printer.Printers.Count > 0;
         if CompareText(ParamStr(i), '/c') = 0 then ToPaste := True;
         if CompareText(ParamStr(i), '/q') = 0 then ToQuit := True;
+        if CompareText(ParamStr(i), '/u') = 0 then ToDeAssoc := True;
       end else if FileExists(ParamStr(i)) then ParamFile := ParamStr(i);
     end;
   end;
+  if ToDeAssoc then DoUnAssoc;
   if ExtractFilePath(ParamFile) = '' then ParamFile := appath + ParamFile;
   if FileExists(ParamFile) then begin
-    MyOpenFile(ParamFile, nil, 1);
+    MyOpenFileWosf(ParamFile, 1);
     if ToPrint then begin
-      synprint1.SynEdit := Edit;
-      synprint1.Title := MyFileName;
-      synprint1.Wrap := True;
-      synprint1.Print;
+      spr := TSynEditPrint.Create(Self);
+      try
+        spr.Color := bor.pr_colr;
+        spr.Colors := bor.pr_clrs;
+        spr.Copies := bor.pr_cops;
+        spr.Font.Assign(Edit.Font);
+        spr.Header.DefaultFont.Name := 'Courier New';
+        spr.Header.DefaultFont.Charset := DEFAULT_CHARSET;
+        spr.Header.DefaultFont.Color := clWindowText;
+        spr.Header.DefaultFont.Size := 8;
+        spr.Header.DefaultFont.Style := [];
+        spr.Header.DefaultFont.Height := -11;
+        spr.Header.DefaultFont.Orientation := 0;
+        spr.Header.DefaultFont.Pitch := fpDefault;
+        spr.Header.FrameTypes := [ftBox, ftShaded];
+        spr.Header.LineColor := clBlack;
+        spr.Header.MirrorPosition := False;
+        spr.Header.RomanNumbers := False;
+        spr.Header.ShadedColor := clSilver;
+        spr.Footer.DefaultFont.Assign(spr.Header.DefaultFont);
+        spr.Footer.FrameTypes := [ftLine];
+        spr.Footer.LineColor := clBlack;
+        spr.Footer.MirrorPosition := False;
+        spr.Footer.RomanNumbers := False;
+        spr.Footer.ShadedColor := clSilver;
+        spr.Highlight := bor.pr_high;
+        spr.LineNumbers := bor.pr_lnum;
+        spr.LineNumbersInMargin := bor.pr_lnim;
+        spr.Margins.Bottom := bor.pr_mbtm;
+        spr.Margins.Left := bor.pr_mlft;
+        spr.Margins.Right := bor.pr_mrgt;
+        spr.Margins.Top := bor.pr_mtop;
+        spr.PageOffset := 0;
+        spr.SelectedOnly := False;
+        spr.TabWidth := bor.ed_tabw;
+        spr.SynEdit := Edit;
+        spr.Title := MyFileName;
+        spr.Wrap := True;
+        spr.Print;
+      finally
+        FreeAndNil(spr);
+        if CallTerminateProcs then PostQuitMessage(0);
+      end;
     end;
-  end else if ToCreate then MySaveFile(ParamFile, 0, 1);
+  end else if ToCreate
+  then
+  {$IFDEF UNICODE}
+    MySaveFile(ParamFile, 0, 1);
+  {$ELSE}
+    MySaveFile(ParamFile, 3, 1);
+  {$ENDIF}
   if ToPaste then Edit.PasteFromClipboard;
-  if ToQuit then Application.Terminate;
+  if ToQuit then if CallTerminateProcs then PostQuitMessage(0);
+end;
+
+procedure TMain.LoadPlugsList;
+var
+  {$IFDEF UNICODE}
+  beplugname: function: PChar;
+  {$ELSE}
+  beplugname: function: PWideChar;
+  {$ENDIF}
+  beplugflnm: string;
+  behnd: THandle;
+  beplugitem: TMenuItem;
+  beplugsrch: TSearchRec;
+begin
+  BEPlugList := TStringList.Create;
+  if FindFirst(appath + 'plugins\*.dll', faAnyFile, beplugsrch) = 0 then repeat
+    if (beplugsrch.Name = '.') or (beplugsrch.Name = '..') then Continue;
+    if not (beplugsrch.Attr and faDirectory) <> 0 then begin
+      beplugflnm := appath + 'plugins\' + beplugsrch.Name;
+      beplugitem := TMenuItem.Create(N52);
+      behnd := LoadLibrary(PChar(beplugflnm));
+      if behnd <> 0 then begin
+        @beplugname := GetProcAddress(behnd, 'BirEditPlugName');
+        if @beplugname <> nil then beplugitem.Caption := beplugname else Exit;
+        beplugitem.OnClick := ClickPlugItem;
+        N52.Add(beplugitem);
+        BEPlugList.Add(beplugflnm);
+      end;
+      FreeLibrary(behnd);
+    end;
+  until FindNext(beplugsrch) <> 0;
+  FindClose(beplugsrch);
+  N52.Visible := BEPlugList.Count > 0;
+end;
+
+procedure TMain.ClickPlugItem(Sender: TObject);
+var
+  beplugexec: function(AObject: TObject): Boolean;
+  beplugflnm, beplgtst: string;
+  behnd: THandle;
+  {$IFDEF UNICODE}
+  beplugtype: function: PChar;
+  beplugtext: TStrings;
+  {$ELSE}
+  beplugtype: function: PWideChar;
+  beplugtext: TWideStrings;
+  {$ENDIF}
+begin
+  with Sender as TMenuItem do beplugflnm := BEPlugList.Strings[MenuIndex];
+  behnd := LoadLibrary(PChar(beplugflnm));
+  if behnd <> 0 then begin
+    @beplugtype := GetProcAddress(behnd, 'BirEditPlugType');
+    @beplugexec := GetProcAddress(behnd, 'BirEditPlugExec');
+    if beplugtype = 'BE_EDIT_SELTEXT' then begin
+      {$IFDEF UNICODE}
+      beplugtext := TStringList.Create;
+      {$ELSE}
+      beplugtext := TWideStringList.Create;
+      {$ENDIF}
+      try
+        beplugexec(beplugtext);
+        beplgtst := beplugtext.Text;
+        if Copy(beplgtst, Length(beplgtst) - Length(#13#10) + 1, Length(#13#10))
+             = #13#10
+        then SetLength(beplgtst, Length(beplgtst) - Length(#13#10));
+        Edit.SelText := beplgtst;
+      finally
+        FreeAndNil(beplugtext);
+      end;
+    end;
+  end;
+  FreeLibrary(behnd);
+end;
+
+procedure TMain.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  if BEPlugList <> nil then FreeAndNil(BEPlugList);
+  MySaveSettings;
 end;
 
 procedure TMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   if Edit.Modified then begin
-    case Application.MessageBox(PChar(mysg7), 'BirEdit',
-                                  MB_YESNOCANCEL + MB_ICONQUESTION) of
+    case MessageBox(Self.Handle, PChar(mysg7), 'BirEdit', MB_YESNOCANCEL
+                      + MB_ICONQUESTION) of
       IDCANCEL: CanClose := False;
       IDYES:
         if FileExists(MyFileName) then begin
           MySaveFile(MyFileName, curcp, 1);
           CanClose := True;
-        end else if Save.Execute then begin
-          Save.FileName := MyExtByFilter(Save.FilterIndex, Save.FileName);
-          MySaveFile(Save.FileName, Save.EncodingIndex, Save.FilterIndex);
-          CanClose := True;
-        end else CanClose := False;
+        end else CanClose := SaveDlgExec;
       IDNO: CanClose := True;
     end;
   end else CanClose := True;
@@ -1668,14 +2332,13 @@ var
   LangItem: TMenuItem;
   langini:  TIniFile;
 begin
-  if FindFirst(appath + 'lang\' + '*.lng', faAnyFile, langsrw) = 0 then begin
-    repeat
+  if FindFirst(appath + 'lang\' + '*.lng', faAnyFile, langsrw) = 0 then repeat
       if (langsrw.Attr and faDirectory) <> 0 then Continue else begin
         LangItem := TMenuItem.Create(N117);
         langini := TIniFile.Create(appath + 'lang\' + langsrw.Name);
         LangItem.Caption := langini.ReadString('TranslationInfo', 'Name',
                                                  ExtractFileName(langsrw.Name));
-        langini.Free;
+        FreeAndNil(langini);
         LangItem.Hint := ExtractFileName(langsrw.Name);
         LangItem.AutoCheck := True;
         LangItem.Checked := False;
@@ -1683,102 +2346,373 @@ begin
         LangItem.OnClick := ItemClick;
         N117.Add(LangItem);
       end;
-    until FindNext(langsrw) <> 0;
-  end;
+  until FindNext(langsrw) <> 0;
   FindClose(langsrw);
-  if FileExists(appath + 'lang\' + mylang) then LoadTranslate(mylang);
+  if FileExists(appath + 'lang\' + bor.lang) then LoadTranslate(bor.lang);
+end;
+
+function TMain.MyGetAppDataPath: string;
+var
+  filt: PItemIDList;
+  fbuf: array [0..MAX_PATH] of Char;
+begin
+  Result := appath;
+  if SHGetSpecialFolderLocation(Handle, CSIDL_APPDATA, filt) = S_OK then begin
+    SHGetPathFromIDList(filt, fbuf);
+    GlobalFreePtr(filt);
+    if DirectoryExists(fbuf)
+    then Result := IncludeTrailingPathDelimiter(fbuf);
+  end;
+end;
+
+procedure TMain.MyLoadSettings;
+var
+  i, itemp: Integer;
+  ipath, itstr: string;
+  beini: TIniFile;
+  shlist: TStrings;
+begin
+  beini := TIniFile.Create(appath + 'profile.ini');
+  itemp := beini.ReadInteger('settings', 'saveplace', 2);
+  FreeAndNil(beini);
+  bor.port := itemp = 2;
+  if itemp = 0 then ipath := MyGetAppDataPath else ipath := appath;
+  beini := TIniFile.Create(ipath + 'biredit.ini');
+  try
+    bor.mn_hght := beini.ReadInteger('wndpos', 'height', 450);
+    bor.mn_wdth := beini.ReadInteger('wndpos', 'width', 600);
+    bor.mn_left := beini.ReadInteger('wndpos', 'left',
+                               Round((Screen.WorkAreaWidth - bor.mn_wdth) / 2));
+    bor.mn__top := beini.ReadInteger('wndpos', 'top',
+                              Round((Screen.WorkAreaHeight - bor.mn_hght) / 2));
+    bor.mn_wnst := beini.ReadBool('wndpos', 'maximized', False);
+    bor.drag := beini.ReadBool('general', 'acceptdrag', True);
+    bor.ptac := beini.ReadBool('general', 'pasteaftercaret', False);
+    bor.sdfl := beini.ReadBool('general', 'scandropfolders', True);
+    bor.sdsf := beini.ReadBool('general', 'scansubfolders', True);
+    bor.ssbp := beini.ReadBool('general', 'statusbar', True);
+    bor.synh := beini.ReadBool('general', 'synhighlight', False);
+    bor.tray := beini.ReadBool('general', 'hidetotray', False);
+    bor.rfcl := beini.ReadInteger('general', 'recent', 10);
+    bor.lang := beini.ReadString('general', 'language', '');
+    bor.ed_insm := beini.ReadBool('editor', 'insertmode', True);
+    bor.ed_reon := beini.ReadBool('editor', 'readonly', False);
+    bor.ed_shft := beini.ReadBool('editor', 'scrollhintformat', True);
+    bor.ed_wrap := beini.ReadBool('editor', 'wordwrap', False);
+    bor.ed_insc := beini.ReadInteger('editor', 'insertcaret', 0);
+    bor.ed_owrc := beini.ReadInteger('editor', 'overwritecaret', 3);
+    bor.ed_selm := beini.ReadInteger('editor', 'selectionmode', 0);
+    bor.ed_alic := beini.ReadInteger('editor', 'activelinecolor', clInfoBk);
+    bor.ed_colr := beini.ReadInteger('editor', 'color', clWindow);
+    bor.ed_exls := beini.ReadInteger('editor', 'extralinespacing', 0);
+    bor.ed_mxsw := beini.ReadInteger('editor', 'maxscrollwidth', 1024);
+    bor.ed_mxun := beini.ReadInteger('editor', 'maxundo', 1024);
+    bor.ed_opts := beini.ReadInteger('editor', 'options', 74007962);
+    bor.ed_recl := beini.ReadInteger('editor', 'rightedgecolor', clSilver);
+    bor.ed_redg := beini.ReadInteger('editor', 'rightedge', 80);
+    bor.ed_shcl := beini.ReadInteger('editor', 'scrollhintcolor', clInfoBk);
+    bor.ed_tabw := beini.ReadInteger('editor', 'tabwidth', 8);
+    bor.ef_chrs := beini.ReadInteger('font', 'charset', DEFAULT_CHARSET);
+    bor.ef_ptch := beini.ReadInteger('font', 'pitch', 0);
+    bor.ef_styl := beini.ReadInteger('font', 'style', 0);
+    bor.ef_colr := beini.ReadInteger('font', 'color', clWindowText);
+    bor.ef_hght := beini.ReadInteger('font', 'height', -13);
+    bor.ef_ornt := beini.ReadInteger('font', 'orientation', 0);
+    bor.ef_size := beini.ReadInteger('font', 'size', 10);
+    bor.ef_name := beini.ReadString('font', 'name', 'Courier New');
+    bor.eg_asiz := beini.ReadBool('gutter', 'autosize', True);
+    bor.eg_grad := beini.ReadBool('gutter', 'gradient', True);
+    bor.eg_ldzr := beini.ReadBool('gutter', 'leadingzeros', False);
+    bor.eg_shln := beini.ReadBool('gutter', 'showlinenumbers', True);
+    bor.eg_ufst := beini.ReadBool('gutter', 'usefontstyle', True);
+    bor.eg_vsbl := beini.ReadBool('gutter', 'visible', True);
+    bor.eg_zrst := beini.ReadBool('gutter', 'zerostart', False);
+    bor.eg_bstl := beini.ReadInteger('gutter', 'borderstyle', 1);
+    bor.eg_bclr := beini.ReadInteger('gutter', 'bordercolor', clWindow);
+    bor.eg_colr := beini.ReadInteger('gutter', 'color', clBtnFace);
+    bor.eg_dcnt := beini.ReadInteger('gutter', 'digitcount', 4);
+    bor.eg_gecl := beini.ReadInteger('gutter', 'gradientendcolor', clBtnFace);
+    bor.eg_gscl := beini.ReadInteger('gutter', 'gradientstartcolor', clWindow);
+    bor.eg_gstp := beini.ReadInteger('gutter', 'gradientsteps', 48);
+    bor.eg_lnst := beini.ReadInteger('gutter', 'linenumberstart', 1);
+    bor.eg_wdth := beini.ReadInteger('gutter', 'width', 30);
+    bor.eg_fchr := beini.ReadInteger('gutterfont', 'charset', DEFAULT_CHARSET);
+    bor.eg_fptc := beini.ReadInteger('gutterfont', 'pitch', 0);
+    bor.eg_fstl := beini.ReadInteger('gutterfont', 'style', 0);
+    bor.eg_fclr := beini.ReadInteger('gutterfont', 'color', clBlack);
+    bor.eg_fhgt := beini.ReadInteger('gutterfont', 'height', -11);
+    bor.eg_fort := beini.ReadInteger('gutterfont', 'orientation', 0);
+    bor.eg_fsiz := beini.ReadInteger('gutterfont', 'size', 8);
+    bor.eg_fnam := beini.ReadString('gutterfont', 'name', 'Courier New');
+    bor.es_back := beini.ReadInteger('editor', 'selback', clHighlight);
+    bor.es_frnt := beini.ReadInteger('editor', 'selfore', clHighlightText);
+    bor.ew_vsbl := beini.ReadBool('wrapglyph', 'visible', True);
+    bor.ew_mscl := beini.ReadInteger('wrapglyph', 'maskcolor', clNone);
+    bor.pr_clrs := beini.ReadBool('print', 'colors', True);
+    bor.pr_high := beini.ReadBool('print', 'highlight', True);
+    bor.pr_lnum := beini.ReadBool('print', 'linenumbers', False);
+    bor.pr_lnim := beini.ReadBool('print', 'numbersinmargin', False);
+    bor.pr_mbtm := beini.ReadFloat('printmargins', 'bottom', 10);
+    bor.pr_mlft := beini.ReadFloat('printmargins', 'left', 10);
+    bor.pr_mrgt := beini.ReadFloat('printmargins', 'right', 10);
+    bor.pr_mtop := beini.ReadFloat('printmargins', 'top', 10);
+    bor.pr_colr := beini.ReadInteger('wrapglyph', 'color', clWhite);
+    bor.pr_cops := beini.ReadInteger('wrapglyph', 'copies', 1);
+    itemp := beini.ReadInteger('searchhistory', 'count', 0);
+    if itemp > 0 then begin
+      shlist := TStringList.Create;
+      try
+        for I := 0 to itemp - 1 do begin
+          itstr := beini.ReadString('searchhistory', IntToStr(i), '');
+          if itstr <> '' then shlist.Add(itstr);
+        end;
+        gsSearchTextHistory := shlist.Text;
+      finally
+        FreeAndNil(shlist);
+      end;
+    end;
+    itemp := beini.ReadInteger('replacehistory', 'count', 0);
+    if itemp > 0 then begin
+      shlist := TStringList.Create;
+      try
+        for I := 0 to itemp - 1 do begin
+          itstr := beini.ReadString('replacehistory', IntToStr(i), '');
+          if itstr <> '' then shlist.Add(itstr);
+        end;
+        gsReplaceTextHistory := shlist.Text;
+      finally
+        FreeAndNil(shlist);
+      end;
+    end;
+    itemp := beini.ReadInteger('recenthistory', 'count', 0);
+    if itemp > 0 then
+      for I := itemp - 1 downto 0
+        do begin
+         Recent.Add(beini.ReadString('recenthistory', IntToStr(i), ''), 0);
+        end;
+  finally
+    FreeAndNil(beini);
+  end;
+  SetBounds(bor.mn_left, bor.mn__top, bor.mn_wdth, bor.mn_hght);
+  if bor.mn_wnst then WindowState := wsMaximized;
+  JvDragDrop1.AcceptDrag := bor.drag;
+  Status.Visible := bor.ssbp;
+  if bor.synh then MySetSynByFid(0) else N74.Enabled := False;
+  Recent.Capacity := bor.rfcl;
+  if bor.tray then ShowTrayIcon;
+  Edit.ActiveLineColor := bor.ed_alic;
+  Edit.Color := bor.ed_colr;
+  Edit.ExtraLineSpacing := bor.ed_exls;
+  Edit.InsertCaret := TSynEditCaretType(bor.ed_insc);
+  Edit.InsertMode := bor.ed_insm;
+  Edit.MaxScrollWidth := bor.ed_mxsw;
+  Edit.MaxUndo := bor.ed_mxun;
+  Edit.Options := TSynEditorOptions(bor.ed_opts);
+  if bor.drag then Edit.Options := Edit.Options - [eoDropFiles];
+  Edit.OverwriteCaret := TSynEditCaretType(bor.ed_owrc);
+  Edit.ReadOnly := bor.ed_reon;
+  Edit.RightEdgeColor := bor.ed_recl;
+  Edit.RightEdge := bor.ed_redg;
+  Edit.ScrollHintColor := bor.ed_shcl;
+  Edit.ScrollHintFormat := TScrollHintFormat(bor.ed_shft);
+  Edit.SelectionMode := TSynSelectionMode(bor.ed_selm);
+  Edit.TabWidth := bor.ed_tabw;
+  Edit.WordWrap := bor.ed_wrap;
+  Edit.Font.Name := bor.ef_name;
+  Edit.Font.Charset := bor.ef_chrs;
+  Edit.Font.Size := bor.ef_size;
+  Edit.Font.Color := bor.ef_colr;
+  Edit.Font.Height := bor.ef_hght;
+  Edit.Font.Orientation := bor.ef_ornt;
+  Edit.Font.Pitch := TFontPitch(bor.ef_ptch);
+  Edit.Font.Style := TFontStyles(bor.ef_styl);
+  Edit.Gutter.AutoSize := bor.eg_asiz;
+  Edit.Gutter.BorderColor := bor.eg_bclr;
+  Edit.Gutter.BorderStyle := TSynGutterBorderStyle(bor.eg_bstl);
+  Edit.Gutter.Color := bor.eg_colr;
+  Edit.Gutter.DigitCount := bor.eg_dcnt;
+  Edit.Gutter.Gradient := bor.eg_grad;
+  Edit.Gutter.GradientEndColor := bor.eg_gecl;
+  Edit.Gutter.GradientStartColor := bor.eg_gscl;
+  Edit.Gutter.GradientSteps := bor.eg_gstp;
+  Edit.Gutter.LeadingZeros := bor.eg_ldzr;
+  Edit.Gutter.LineNumberStart := bor.eg_lnst;
+  Edit.Gutter.ShowLineNumbers := bor.eg_shln;
+  Edit.Gutter.UseFontStyle := bor.eg_ufst;
+  Edit.Gutter.Visible := bor.eg_vsbl;
+  Edit.Gutter.Width := bor.eg_wdth;
+  Edit.Gutter.ZeroStart := bor.eg_zrst;
+  Edit.Gutter.Font.Name := bor.eg_fnam;
+  Edit.Gutter.Font.Charset := bor.eg_fchr;
+  Edit.Gutter.Font.Size := bor.eg_fsiz;
+  Edit.Gutter.Font.Color := bor.eg_fclr;
+  Edit.Gutter.Font.Height := bor.eg_fhgt;
+  Edit.Gutter.Font.Orientation := bor.eg_fort;
+  Edit.Gutter.Font.Pitch := TFontPitch(bor.eg_fptc);
+  Edit.Gutter.Font.Style := TFontStyles(bor.eg_fstl);
+  Edit.SelectedColor.Background := bor.es_back;
+  Edit.SelectedColor.Foreground := bor.es_frnt;
+  Edit.WordWrapGlyph.MaskColor := bor.ew_mscl;
+  Edit.WordWrapGlyph.Visible := bor.ew_vsbl;
+  N162.Checked := Edit.ReadOnly;
+  N173.Checked := Edit.WordWrap;
+  N40.Items[Byte(Edit.SelectionMode)].Checked := True;
+  if bor.port then N174.Enabled := False;
+end;
+
+procedure TMain.MySaveSettings;
+var
+  i, itemp: Integer;
+  ipath: string;
+  beini: TIniFile;
+  shlist: TStrings;
+begin
+  beini := TIniFile.Create(appath + 'profile.ini');
+  itemp := beini.ReadInteger('settings', 'saveplace', 2);
+  FreeAndNil(beini);
+  if itemp = 0 then ipath := MyGetAppDataPath else ipath := appath;
+  beini := TIniFile.Create(ipath + 'biredit.ini');
+  try
+    if WindowState = wsNormal then begin
+      bor.mn_hght := Height;
+      bor.mn_left := Left;
+      bor.mn_wdth := Width;
+      bor.mn__top := Top;
+      beini.WriteInteger('wndpos', 'height', bor.mn_hght);
+      beini.WriteInteger('wndpos', 'left', bor.mn_left);
+      beini.WriteInteger('wndpos', 'top', bor.mn__top);
+      beini.WriteInteger('wndpos', 'width', bor.mn_wdth);
+    end else begin
+      bor.mn_wnst := WindowState = wsMaximized;
+      beini.WriteBool('wndpos', 'maximized', bor.mn_wnst);
+    end;
+    bor.mn_wnst := beini.ReadBool('wndpos', 'maximized', False);
+    beini.WriteBool('general', 'acceptdrag', bor.drag);
+    beini.WriteBool('general', 'pasteaftercaret', bor.ptac);
+    beini.WriteBool('general', 'scandropfolders', bor.sdfl);
+    beini.WriteBool('general', 'scansubfolders', bor.sdsf);
+    beini.WriteBool('general', 'statusbar', bor.ssbp);
+    beini.WriteBool('general', 'synhighlight', bor.synh);
+    beini.WriteBool('general', 'hidetotray', bor.tray);
+    beini.WriteInteger('general', 'recent', bor.rfcl);
+    beini.WriteString('general', 'language', bor.lang);
+    beini.WriteBool('editor', 'insertmode', bor.ed_insm);
+    beini.WriteBool('editor', 'readonly', bor.ed_reon);
+    beini.WriteBool('editor', 'scrollhintformat', bor.ed_shft);
+    beini.WriteBool('editor', 'wordwrap', bor.ed_wrap);
+    beini.WriteInteger('editor', 'insertcaret', bor.ed_insc);
+    beini.WriteInteger('editor', 'overwritecaret', bor.ed_owrc);
+    beini.WriteInteger('editor', 'selectionmode', bor.ed_selm);
+    {bor.ed_alic := beini.ReadInteger('editor', 'activelinecolor', clInfoBk);
+    bor.ed_colr := beini.ReadInteger('editor', 'color', clWindow);}
+    beini.WriteInteger('editor', 'extralinespacing', bor.ed_exls);
+    beini.WriteInteger('editor', 'maxscrollwidth', bor.ed_mxsw);
+    beini.WriteInteger('editor', 'maxundo', bor.ed_mxun);
+    beini.WriteInteger('editor', 'options', bor.ed_opts);
+    //bor.ed_recl := beini.ReadInteger('editor', 'rightedgecolor', clSilver);
+    beini.WriteInteger('editor', 'rightedge', bor.ed_redg);
+    //bor.ed_shcl := beini.ReadInteger('editor', 'scrollhintcolor', clInfoBk);
+    beini.WriteInteger('editor', 'tabwidth', bor.ed_tabw);
+    beini.WriteInteger('font', 'charset', bor.ef_chrs);
+    beini.WriteInteger('font', 'pitch', bor.ef_ptch);
+    beini.WriteInteger('font', 'style', bor.ef_styl);
+    beini.WriteInteger('font', 'color', bor.ef_colr);
+    beini.WriteInteger('font', 'height', bor.ef_hght);
+    beini.WriteInteger('font', 'orientation', bor.ef_ornt);
+    beini.WriteInteger('font', 'size', bor.ef_size);
+    beini.WriteString('font', 'name', bor.ef_name);
+    beini.WriteBool('gutter', 'autosize', bor.eg_asiz);
+    beini.WriteBool('gutter', 'gradient', bor.eg_grad);
+    beini.WriteBool('gutter', 'leadingzeros', bor.eg_ldzr);
+    beini.WriteBool('gutter', 'showlinenumbers', bor.eg_shln);
+    beini.WriteBool('gutter', 'usefontstyle', bor.eg_ufst);
+    beini.WriteBool('gutter', 'visible', bor.eg_vsbl);
+    beini.WriteBool('gutter', 'zerostart', bor.eg_zrst);
+    {bor.eg_bstl := beini.ReadInteger('gutter', 'borderstyle', 1);
+    bor.eg_bclr := beini.ReadInteger('gutter', 'bordercolor', clWindow);
+    bor.eg_colr := beini.ReadInteger('gutter', 'color', clBtnFace);}
+    beini.WriteInteger('gutter', 'digitcount', bor.eg_dcnt);
+    {bor.eg_gecl := beini.ReadInteger('gutter', 'gradientendcolor', clBtnFace);
+    bor.eg_gscl := beini.ReadInteger('gutter', 'gradientstartcolor', clWindow);}
+    beini.WriteInteger('gutter', 'gradientsteps', bor.eg_gstp);
+    beini.WriteInteger('gutter', 'linenumberstart', bor.eg_lnst);
+    {bor.eg_wdth := beini.ReadInteger('gutter', 'width', 30);
+    bor.eg_fchr := beini.ReadInteger('gutterfont', 'charset', DEFAULT_CHARSET);
+    bor.eg_fptc := beini.ReadInteger('gutterfont', 'pitch', 0);
+    bor.eg_fstl := beini.ReadInteger('gutterfont', 'style', 0);
+    bor.eg_fclr := beini.ReadInteger('gutterfont', 'color', clBlack);
+    bor.eg_fhgt := beini.ReadInteger('gutterfont', 'height', -11);
+    bor.eg_fort := beini.ReadInteger('gutterfont', 'orientation', 0);
+    bor.eg_fsiz := beini.ReadInteger('gutterfont', 'size', 8);
+    bor.eg_fnam := beini.ReadString('gutterfont', 'name', 'Courier New');
+    bor.es_back := beini.ReadInteger('editor', 'selback', clHighlight);
+    bor.es_frnt := beini.ReadInteger('editor', 'selfore', clHighlightText);
+    bor.ew_vsbl := beini.ReadBool('wrapglyph', 'visible', True);
+    bor.ew_mscl := beini.ReadInteger('wrapglyph', 'maskcolor', clNone);}
+    beini.WriteBool('print', 'colors', bor.pr_clrs);
+    beini.WriteBool('print', 'highlight', bor.pr_high);
+    beini.WriteBool('print', 'linenumbers', bor.pr_lnum);
+    //beini.WriteBool('print', 'numbersinmargin', bor.pr_lnim);
+    beini.WriteFloat('printmargins', 'bottom', bor.pr_mbtm);
+    beini.WriteFloat('printmargins', 'left', bor.pr_mlft);
+    beini.WriteFloat('printmargins', 'right', bor.pr_mrgt);
+    beini.WriteFloat('printmargins', 'top', bor.pr_mtop);
+    beini.WriteInteger('wrapglyph', 'color', bor.pr_colr);
+    beini.WriteInteger('wrapglyph', 'copies', bor.pr_cops);
+    shlist := TStringList.Create;
+    try
+      shlist.Text := gsSearchTextHistory;
+      beini.EraseSection('searchhistory');
+      beini.WriteInteger('searchhistory', 'count', shlist.Count);
+      if shlist.Count > 0 then for I := 0 to shlist.Count - 1
+      do beini.WriteString('searchhistory', IntToStr(i), shlist.Strings[i]);
+      shlist.Clear;
+      shlist.Text := gsReplaceTextHistory;
+      beini.EraseSection('replacehistory');
+      beini.WriteInteger('replacehistory', 'count', shlist.Count);
+      if shlist.Count > 0 then for I := 0 to shlist.Count - 1
+      do beini.WriteString('replacehistory', IntToStr(i), shlist.Strings[i]);
+    finally
+      FreeAndNil(shlist);
+    end;
+    beini.WriteInteger('recenthistory', 'count', Recent.Strings.Count);
+    for I := 0 to Recent.Strings.Count - 1
+      do beini.WriteString('recenthistory', IntToStr(i), Recent.Strings[i]);
+  finally
+    FreeAndNil(beini);
+  end;
 end;
 
 procedure TMain.FormCreate(Sender: TObject);
 begin
-  appath := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName));
+  {$IFNDEF UNICODE}
+  N58.Visible := False;
+  N64.Visible := False;
+  curcp := 3;
+  {$ELSE}
   curcp := 0;
-  JvTrayIcon1.Icon := Application.Icon;
-  dlg1.Icon := Application.Icon;
-end;
-
-procedure TMain.ReadFromAppStorage(AppStorage: TJvCustomAppStorage;
-                                     const BasePath: string);
-var
-  shlist: TStringList;
-begin
-  JvDragDrop1.AcceptDrag := AppIni.ReadBoolean(AppIni.ConcatPaths([BasePath,
-                                        'AcceptDrag']), JvDragDrop1.AcceptDrag);
-  JvTrayIcon1.Active := AppIni.ReadBoolean(AppIni.ConcatPaths([BasePath,
-                                            'HideToTray']), JvTrayIcon1.Active);
-  psafc := AppIni.ReadBoolean(AppIni.ConcatPaths([BasePath, 'PasteAfterCaret']),
-                                False);
-  sddir := AppIni.ReadBoolean(AppIni.ConcatPaths([BasePath, 'ScanDropFolders']),
-                                False);
-  sudir := AppIni.ReadBoolean(AppIni.ConcatPaths([BasePath, 'ScanSubFolders']),
-                                False);
-  Status.Visible := AppIni.ReadBoolean(AppIni.ConcatPaths([BasePath,
-                                                 'StatusBar']), Status.Visible);
-  usesyn := AppIni.ReadBoolean(AppIni.ConcatPaths([BasePath, 'SynHighlight']),
-                                                    False);
-  if usesyn then begin
-    MySetSynByFid(1);
-  end else begin
-    N74.Enabled := False;
-  end;
-  Recent.Capacity :=
-                    AppIni.ReadInteger(AppIni.ConcatPaths([BasePath, 'Recent']),
-                                         Recent.Capacity);
-  mylang:= AppIni.ReadString(AppIni.ConcatPaths([BasePath, 'Language']), '');
-  AppIni.ReadPersistent('Editor', Edit, True, True, ExcValsEdit);
-  AppIni.ReadPersistent('Editor\Gutter', Edit.Gutter, True, True, ExcValsGut);
-  AppIni.ReadPersistent('Print', synprint1, True, True, ExcValsPrint);
-  AppIni.ReadPersistent('Print\Margins', synprint1.Margins, True, True,
-                          ExcValsPrintM);
-  shlist := TStringList.Create;
-  try
-    AppIni.ReadStringList('Editor\SearchHistory', shlist);
-    gsSearchTextHistory := shlist.Text;
-    AppIni.ReadStringList('Editor\ReplaceHistory', shlist);
-    gsReplaceTextHistory := shlist.Text;
-  finally
-    shlist.Free;
-  end;
-  N162.Checked := Edit.ReadOnly;
-  N173.Checked := Edit.WordWrap;
+  {$ENDIF}
+  Edit.OnDropFiles := EditDropFiles;
+  Edit.OnReplaceText := EditReplaceText;
+  appath := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)));
+  MyLoadSettings;
   LoadAppLoc;
   WorkParams;
+  LoadPlugsList;
 end;
 
-procedure TMain.WriteToAppStorage(AppStorage: TJvCustomAppStorage;
-                                    const BasePath: string);
-var
-  shlist: TStringList;
+procedure TMain.ShowTrayIcon;
 begin
-  AppIni.WriteBoolean(AppIni.ConcatPaths([BasePath, 'AcceptDrag']),
-                         JvDragDrop1.AcceptDrag);
-  AppIni.WriteBoolean(AppIni.ConcatPaths([BasePath, 'HideToTray']),
-                         JvTrayIcon1.Active);
-  AppIni.WriteBoolean(AppIni.ConcatPaths([BasePath, 'PasteAfterCaret']), psafc);
-  AppIni.WriteBoolean(AppIni.ConcatPaths([BasePath, 'ScanDropFolders']), sddir);
-  AppIni.WriteBoolean(AppIni.ConcatPaths([BasePath, 'ScanSubFolders']), sudir);
-  AppIni.WriteBoolean(AppIni.ConcatPaths([BasePath, 'StatusBar']),
-                         Status.Visible);
-  AppIni.WriteBoolean(AppIni.ConcatPaths([BasePath, 'SynHighlight']), usesyn);
-  AppIni.WriteInteger(AppIni.ConcatPaths([BasePath, 'Recent']),
-                        Recent.Capacity);
-  AppIni.WriteString(AppIni.ConcatPaths([BasePath, 'Language']), mylang);
-  AppIni.WritePersistent('Editor', Edit, True, ExcValsEdit);
-  AppIni.WritePersistent('Editor\Gutter', Edit.Gutter, True, ExcValsGut);
-  AppIni.WritePersistent('Print', synprint1, True, ExcValsPrint);
-  AppIni.WritePersistent('Print\Margins', synprint1.Margins, True,
-                           ExcValsPrintM);
-  shlist := TStringList.Create;
-  try
-    shlist.Text := gsSearchTextHistory;
-    AppIni.DeleteSubTree('Editor\SearchHistory');
-    AppIni.WriteStringList('Editor\SearchHistory', shlist);
-    shlist.Text := gsReplaceTextHistory;
-    AppIni.DeleteSubTree('Editor\ReplaceHistory');
-    AppIni.WriteStringList('Editor\ReplaceHistory', shlist);
-  finally
-    shlist.Free;
-  end;
+  jvtic := TJvTrayIcon.Create(Self);
+  jvtic.Animated := False;
+  jvtic.Snap := False;
+  jvtic.SwingForthAndBack := False;
+  jvtic.Delay := 100;
+  jvtic.Icon := Application.Icon;
+  jvtic.IconIndex := 0;
+  jvtic.Visibility := [tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide,
+                         tvAutoHideIcon, tvRestoreClick];
+  jvtic.Active := True;
 end;
 
 procedure TMain.RecentClick(Sender: TObject; const RecentName, Caption: string;
@@ -1786,23 +2720,19 @@ procedure TMain.RecentClick(Sender: TObject; const RecentName, Caption: string;
 
   procedure MyOpen;
   begin
-    if FileExists(RecentName) then MyOpenFile(RecentName, nil, 1)
-    else Application.MessageBox(PChar(mysg1), 'BirEdit', MB_OK+MB_ICONSTOP);
+    if FileExists(RecentName) then MyOpenFileWosf(RecentName, 1)
+    else MessageBox(Self.Handle, PChar(mysg1), 'BirEdit', MB_OK+MB_ICONSTOP);
   end;
 
 begin
   if Edit.Modified then begin
-    case Application.MessageBox(PChar(mysg7), 'BirEdit',
-                                  MB_YESNOCANCEL + MB_ICONQUESTION) of
+    case MessageBox(Self.Handle, PChar(mysg7), 'BirEdit', MB_YESNOCANCEL
+                      + MB_ICONQUESTION) of
       IDYES:
         if FileExists(MyFileName) then begin
           MySaveFile(MyFileName, curcp, 1);
           MyOpen;
-        end else if Save.Execute then begin
-          Save.FileName := MyExtByFilter(Save.FilterIndex, Save.FileName);
-          MySaveFile(Save.FileName, Save.EncodingIndex, Save.FilterIndex);
-          MyOpen;
-        end;
+        end else if SaveDlgExec then MyOpen;
       IDNO: MyOpen;
     end;
   end else MyOpen;
@@ -1816,23 +2746,31 @@ end;
 procedure TMain.N3Click(Sender: TObject);
 
   procedure MyOpen;
+  var
+    i: Byte;
+    dlg: TOpenDialog;
   begin
-    if Open.Execute then MyOpenFile(Open.FileName, nil, Open.FilterIndex);
+    dlg := TOpenDialog.Create(Self);
+    try
+      dlg.Ctl3D := True;
+      dlg.Options := [ofHideReadOnly, ofEnableSizing];
+      for I := 0 to 51 do dlg.Filter := dlg.Filter + BEFileFilter[i];
+      dlg.FilterIndex := 1;
+      if dlg.Execute then MyOpenFileWosf(dlg.FileName, dlg.FilterIndex);
+    finally
+      FreeAndNil(dlg);
+    end;
   end;
 
 begin
   if Edit.Modified then begin
-    case Application.MessageBox(PChar(mysg7), 'BirEdit',
-                                  MB_YESNOCANCEL + MB_ICONQUESTION) of
+    case MessageBox(Self.Handle, PChar(mysg7), 'BirEdit', MB_YESNOCANCEL
+                      + MB_ICONQUESTION) of
       IDYES:
         if FileExists(MyFileName) then begin
           MySaveFile(MyFileName, curcp, 1);
           MyOpen;
-        end else if Save.Execute then begin
-          Save.FileName := MyExtByFilter(Save.FilterIndex, Save.FileName);
-          MySaveFile(Save.FileName, Save.EncodingIndex, Save.FilterIndex);
-          MyOpen;
-        end;
+        end else if SaveDlgExec then MyOpen;
       IDNO: MyOpen;
     end;
   end else MyOpen;
@@ -1845,10 +2783,7 @@ end;
 
 procedure TMain.N5Click(Sender: TObject);
 begin
-  if Save.Execute then begin
-    Save.FileName := MyExtByFilter(Save.FilterIndex, Save.FileName);
-    MySaveFile(Save.FileName, Save.EncodingIndex, Save.FilterIndex);
-  end;
+  SaveDlgExec;
 end;
 
 procedure TMain.N11Click(Sender: TObject);
@@ -1885,7 +2820,9 @@ end;
 procedure TMain.N162Click(Sender: TObject);
 begin
   Edit.ReadOnly := not Edit.ReadOnly;
-  N162.Checked := Edit.ReadOnly;
+  bor.ed_reon := Edit.ReadOnly;
+  N162.Checked := bor.ed_reon;
+  MySaveSettings;
 end;
 
 procedure TMain.N163Click(Sender: TObject);
@@ -1895,36 +2832,102 @@ begin
 end;
 
 procedure TMain.N166Click(Sender: TObject);
+var
+  dlg: TPageSetupDialog;
 begin
-  PageDlg.MarginLeft := Round(synprint1.Margins.Left * 100);
-  PageDlg.MarginTop := Round(synprint1.Margins.Top * 100);
-  PageDlg.MarginRight := Round(synprint1.Margins.Right * 100);
-  PageDlg.MarginBottom := Round(synprint1.Margins.Bottom * 100);
-  if PageDlg.Execute then begin
-    synprint1.Margins.Left := PageDlg.MarginLeft / 100;
-    synprint1.Margins.Top := PageDlg.MarginTop / 100;
-    synprint1.Margins.Right := PageDlg.MarginRight / 100;
-    synprint1.Margins.Bottom := PageDlg.MarginBottom / 100;
+  dlg := TPageSetupDialog.Create(Self);
+  try
+    dlg.Ctl3D := True;
+    dlg.Units := pmMillimeters;
+    dlg.Options := [psoMargins];
+    dlg.PageHeight := 29700;
+    dlg.PageWidth := 21000;
+    dlg.MinMarginLeft := 0;
+    dlg.MinMarginTop := 0;
+    dlg.MinMarginRight := 0;
+    dlg.MinMarginBottom := 0;
+    dlg.MarginLeft := Round(bor.pr_mlft * 100);
+    dlg.MarginTop := Round(bor.pr_mtop * 100);
+    dlg.MarginRight := Round(bor.pr_mrgt * 100);
+    dlg.MarginBottom := Round(bor.pr_mbtm * 100);
+    if dlg.Execute then begin
+      bor.pr_mbtm := dlg.MarginBottom / 100;
+      bor.pr_mlft := dlg.MarginLeft / 100;
+      bor.pr_mrgt := dlg.MarginRight / 100;
+      bor.pr_mtop := dlg.MarginTop / 100;
+      MySaveSettings;
+    end;
+  finally
+    FreeAndNil(dlg);
   end;
 end;
 
 procedure TMain.N167Click(Sender: TObject);
+var
+  dlg: TPrinterSetupDialog;
 begin
-  PrinterSetupDialog.Execute;
+  dlg := TPrinterSetupDialog.Create(Self);
+  try
+    dlg.Ctl3D := True;
+    dlg.Execute;
+  finally
+    FreeAndNil(dlg);
+  end;
 end;
 
 procedure TMain.N168Click(Sender: TObject);
 var
   dlg: TPreviewDlg;
+  spr: TSynEditPrint;
 begin
-  synprint1.SynEdit := Edit;
-  synprint1.Title := MyFileName;
-  dlg := TPreviewDlg.Create(Self);
-  with dlg do try
-    MyLoadLoc(dlg, 'PrintPreviewDlg', False);
-    ShowModal;
+  spr := TSynEditPrint.Create(Self);
+  try
+    spr.Color := bor.pr_colr;
+    spr.Colors := bor.pr_clrs;
+    spr.Copies := bor.pr_cops;
+    spr.Font.Assign(Edit.Font);
+    spr.Header.DefaultFont.Name := 'Courier New';
+    spr.Header.DefaultFont.Charset := DEFAULT_CHARSET;
+    spr.Header.DefaultFont.Color := clWindowText;
+    spr.Header.DefaultFont.Size := 8;
+    spr.Header.DefaultFont.Style := [];
+    spr.Header.DefaultFont.Height := -11;
+    spr.Header.DefaultFont.Orientation := 0;
+    spr.Header.DefaultFont.Pitch := fpDefault;
+    spr.Header.FrameTypes := [ftBox, ftShaded];
+    spr.Header.LineColor := clBlack;
+    spr.Header.MirrorPosition := False;
+    spr.Header.RomanNumbers := False;
+    spr.Header.ShadedColor := clSilver;
+    spr.Footer.DefaultFont.Assign(spr.Header.DefaultFont);
+    spr.Footer.FrameTypes := [ftLine];
+    spr.Footer.LineColor := clBlack;
+    spr.Footer.MirrorPosition := False;
+    spr.Footer.RomanNumbers := False;
+    spr.Footer.ShadedColor := clSilver;
+    spr.Highlight := bor.pr_high;
+    spr.LineNumbers := bor.pr_lnum;
+    spr.LineNumbersInMargin := bor.pr_lnim;
+    spr.Margins.Bottom := bor.pr_mbtm;
+    spr.Margins.Left := bor.pr_mlft;
+    spr.Margins.Right := bor.pr_mrgt;
+    spr.Margins.Top := bor.pr_mtop;
+    spr.PageOffset := 0;
+    spr.SelectedOnly := False;
+    spr.TabWidth := bor.ed_tabw;
+    spr.SynEdit := Edit;
+    spr.Title := MyFileName;
+    spr.Wrap := True;
+    dlg := TPreviewDlg.Create(Self);
+    try
+      MyLoadLoc(dlg, 'PrintPreviewDlg', False);
+      dlg.EditPreview.SynEditPrint := spr;
+      dlg.ShowModal;
+    finally
+      dlg.Free;
+    end;
   finally
-    dlg.Free;
+    FreeAndNil(spr);
   end;
 end;
 
@@ -1946,7 +2949,7 @@ var
 begin
   if Edit.SelAvail then bs := Edit.BlockBegin else bs := Edit.CaretXY;
   Edit.PasteFromClipboard;
-  if psafc then Edit.CaretXY := bs;
+  if bor.ptac then Edit.CaretXY := bs;
 end;
 
 procedure TMain.N170Click(Sender: TObject);
@@ -1969,6 +2972,11 @@ end;
 
 procedure TMain.N174Click(Sender: TObject);
 var
+  {$IFNDEF UNICODE}
+  wifn: array [0..MAX_PATH] of Char;
+  tmpext: string;
+  b: TIniFile;
+  {$ENDIF}
   i: Integer;
   a: TRegistry;
   fadlg: TFAssoc;
@@ -1976,42 +2984,105 @@ begin
   fadlg := TFAssoc.Create(Self);
   with fadlg do try
     MyLoadLoc(fadlg, 'FAssocDlg', False);
-    for I := 0 to chklst1.Count - 1 do begin
-      a := TRegistry.Create(KEY_READ);
-      try
-        a.RootKey := HKEY_CLASSES_ROOT;
-        if a.OpenKeyReadOnly(chklst1.Items[i]) then begin
-          chklst1.Checked[i] := a.ReadString('') = 'BirEdit.File';
-          a.CloseKey;
+    for I := 0 to 91 do begin
+      chklst1.Items.Add(BEFileExtensions[i]);
+      {$IFNDEF UNICODE}
+      if Win32Platform = VER_PLATFORM_WIN32_NT then begin
+      {$ENDIF}
+        a := TRegistry.Create(KEY_READ);
+        try
+          a.RootKey := HKEY_CLASSES_ROOT;
+          if a.OpenKeyReadOnly(BEFileExtensions[i]) then begin
+            chklst1.Checked[i] := a.ReadString('') = 'BirEdit.File';
+            a.CloseKey;
+          end;
+        finally
+          FreeAndNil(a);
         end;
-      finally
-        a.Free;
+      {$IFNDEF UNICODE}
+      end else begin
+        GetWindowsDirectory(wifn, SizeOf(wifn));
+        b := TIniFile.Create(IncludeTrailingPathDelimiter(wifn) + 'win.ini');
+        try
+          tmpext := BEFileExtensions[i];
+          Delete(tmpext, 1, 1);
+          chklst1.Checked[i] := b.ReadString('Extensions', tmpext, '')
+                                 = (appath + ExtractFileName(ParamStr(0)) + ' ^'
+                                      + BEFileExtensions[i]);
+        finally
+          FreeAndNil(b);
+        end;
       end;
+      {$ENDIF}
     end;
     if ShowModal = mrOk then begin
       for I := 0 to chklst1.Count - 1 do begin
-        a := TRegistry.Create;
-        try
-          a.RootKey := HKEY_CLASSES_ROOT;
-          if a.OpenKey(chklst1.Items[i], True) then begin
+        {$IFNDEF UNICODE}
+        if Win32Platform = VER_PLATFORM_WIN32_NT then begin
+        {$ENDIF}
+          a := TRegistry.Create;
+          try
+            a.RootKey := HKEY_CLASSES_ROOT;
+            if a.OpenKey(chklst1.Items[i], True) then begin
+              if chklst1.Checked[i] = True then begin
+                if not (a.ReadString('') = 'BirEdit.File') then begin
+                  a.WriteString('BirEdit.bak', a.ReadString(''));
+                  a.WriteString('', 'BirEdit.File');
+                end;
+              end else begin
+                if a.ReadString('') = 'BirEdit.File' then begin
+                  a.WriteString('', a.ReadString('BirEdit.bak'));
+                  a.DeleteValue('BirEdit.bak');
+                end;
+              end;
+              a.CloseKey;
+            end;
+          finally
+            FreeAndNil(a);
+          end;
+        {$IFNDEF UNICODE}
+        end else begin
+          GetWindowsDirectory(wifn, SizeOf(wifn));
+          b := TIniFile.Create(IncludeTrailingPathDelimiter(wifn) + 'win.ini');
+          try
             if chklst1.Checked[i] = True then begin
-              if not (a.ReadString('') = 'BirEdit.File') then begin
-                a.WriteString('BirEdit.bak', a.ReadString(''));
-                a.WriteString('', 'BirEdit.File');
+              tmpext := BEFileExtensions[i];
+              Delete(tmpext, 1, 1);
+              if not (b.ReadString('Extensions', tmpext, '')
+                                 = (appath + ExtractFileName(ParamStr(0)) + ' ^'
+                                      + BEFileExtensions[i]))
+              then begin
+                b.WriteString('Extensions.bak', tmpext,
+                                b.ReadString('Extensions', tmpext, ''));
+                b.WriteString('Extensions', tmpext, appath
+                                + ExtractFileName(ParamStr(0)) + ' ^'
+                                + BEFileExtensions[i]);
               end;
             end else begin
-              if a.ReadString('') = 'BirEdit.File' then begin
-                a.WriteString('', a.ReadString('BirEdit.bak'));
-                a.DeleteValue('BirEdit.bak');
+              tmpext := BEFileExtensions[i];
+              Delete(tmpext, 1, 1);
+              if b.ReadString('Extensions', tmpext, '')
+                                 = (appath + ExtractFileName(ParamStr(0)) + ' ^'
+                                      + BEFileExtensions[i])
+              then begin
+                b.WriteString('Extensions', tmpext,
+                                b.ReadString('Extensions.bak', tmpext, ''));
+                b.DeleteKey('Extensions.bak', tmpext);
               end;
             end;
+          finally
+            FreeAndNil(b);
           end;
-        finally
-          a.Free;
         end;
+        {$ENDIF}
       end;
     end;
   finally
+    {$IFNDEF UNICODE}
+    if Win32Platform = VER_PLATFORM_WIN32_WINDOWS
+    then SendMessage(HWND_BROADCAST, WM_WININICHANGE, 0,
+                       LongInt(PChar('Extensions')));
+    {$ENDIF}
     fadlg.Free;
   end;
 end;
@@ -2022,7 +3093,7 @@ var
 begin
   MyOpenDropped(Recent.Strings.Strings[0]);
   if Recent.Strings.Count > 1 then for I := 1 to Recent.Strings.Count - 1
-  do ShellExecute(Self.Handle, 'open', PChar(Application.ExeName),
+  do ShellExecute(Self.Handle, 'open', PChar(ParamStr(0)),
                     PChar('"' + Recent.Strings.Strings[i] + '"'),
                   PChar('"' + ExtractFilePath(Recent.Strings.Strings[i]) + '"'),
                     SW_SHOWNORMAL);
@@ -2059,6 +3130,12 @@ var
 begin
   aboutdlg := TAbout.Create(Self);
   with aboutdlg do try
+    {$IFNDEF UNICODE}
+    lbl2.Caption := lbl2.Caption + '-ansi';
+    {$ENDIF}
+    {$IFNDEF VER210}
+    Memo3.Lines.Insert(4, '- VCLFixPack v1.4 (http://andy.jgknet.de/blog/)');
+    {$ENDIF}
     Image1.Picture.Icon := Application.Icon;
     ShowModal;
   finally
@@ -2067,13 +3144,30 @@ begin
 end;
 
 procedure TMain.N51Click(Sender: TObject);
+var
+  dlg: TFontDialog;
 begin
-  if Printer.Printers.Count > 0 then FontDialog.Device := fdBoth
-  else FontDialog.Device :=  fdScreen;
-  FontDialog.Font.Assign(Edit.Font);
-  if FontDialog.Execute then begin
-    Edit.Font.Assign(FontDialog.Font);
-    WriteToAppStorage(AppIni, AppIni.DefaultSection);
+  dlg := TFontDialog.Create(Self);
+  try
+    dlg.Ctl3D := True;
+    if Printer.Printers.Count > 0 then dlg.Device := fdBoth
+    else dlg.Device := fdScreen;
+    dlg.Options := [fdEffects, fdFixedPitchOnly];
+    dlg.Font.Assign(Edit.Font);
+    if dlg.Execute then begin
+      Edit.Font.Assign(dlg.Font);
+      bor.ef_chrs := Edit.Font.Charset;
+      bor.ef_ptch := Byte(Edit.Font.Pitch);
+      bor.ef_styl := Byte(Edit.Font.Style);
+      bor.ef_colr := Edit.Font.Color;
+      bor.ef_hght := Edit.Font.Height;
+      bor.ef_ornt := Edit.Font.Orientation;
+      bor.ef_size := Edit.Font.Size;
+      bor.ef_name := Edit.Font.Name;
+      MySaveSettings;
+    end;
+  finally
+    FreeAndNil(dlg);
   end;
 end;
 
@@ -2104,7 +3198,7 @@ begin
   if Edit.SelAvail then bs := Edit.BlockBegin else bs := Edit.CaretXY;
   Edit.SelText := '$' + IntToHex(GetRValue(MyColor), 2)
             + IntToHex(GetGValue(MyColor), 2) + IntToHex(GetBValue(MyColor), 2);
-  if psafc then Edit.CaretXY := bs;
+  if bor.ptac then Edit.CaretXY := bs;
 end;
 
 procedure TMain.AddToClipboard;
@@ -2141,12 +3235,21 @@ begin
   Temp := Clipboard.AsText;
   Clipboard.AsText := SText;
   Edit.SelText := Temp;
-  if psafc then Edit.CaretXY := bs;
+  if bor.ptac then Edit.CaretXY := bs;
 end;
 
 procedure TMain.N38Click(Sender: TObject);
+var
+  dlg: TJvRunDialog;
 begin
-  dlg1.Execute;
+  dlg := TJvRunDialog.Create(Self);
+  try
+    dlg.Ctl3D := True;
+    dlg.Icon := Application.Icon;
+    dlg.Execute;
+  finally
+    FreeAndNil(dlg);
+  end;
 end;
 
 procedure TMain.N30Click(Sender: TObject);
@@ -2184,10 +3287,10 @@ begin
     Chk1 := Edit.ReadOnly;
     Chk2 := Edit.Gutter.UseFontStyle;
     Chk3 := Edit.Gutter.Gradient;
-    Chk4 := psafc;
-    Chk5 := sddir;
-    Chk6 := sudir;
-    Chk7 := JvTrayIcon1.Active;
+    Chk4 := bor.ptac;
+    Chk5 := bor.sdfl;
+    Chk6 := bor.sdsf;
+    Chk7 := bor.tray;
     Chk8 := Status.Visible;
     Chk9 := Edit.Gutter.Visible;
     Chk10 := Edit.WordWrap;
@@ -2195,10 +3298,10 @@ begin
     Chk12 := Edit.Gutter.LeadingZeros;
     Chk13 := Edit.Gutter.ShowLineNumbers;
     Chk14 := Edit.Gutter.ZeroStart;
-    Chk15 := usesyn;
-    Chk16 := synprint1.Colors;
-    Chk17 := synprint1.Highlight;
-    Chk18 := synprint1.LineNumbers;
+    Chk15 := bor.synh;
+    Chk16 := bor.pr_clrs;
+    Chk17 := bor.pr_high;
+    Chk18 := bor.pr_lnum;
     Spn1 := Recent.Capacity;
     Spn2 := Edit.MaxScrollWidth;
     Spn3 := Edit.MaxUndo;
@@ -2221,10 +3324,6 @@ begin
       Edit.ReadOnly := Chk1;
       Edit.Gutter.UseFontStyle := Chk2;
       Edit.Gutter.Gradient := Chk3;
-      psafc := Chk4;
-      sddir := Chk5;
-      sudir := Chk6;
-      JvTrayIcon1.Active := Chk7;
       Status.Visible := Chk8;
       Edit.Gutter.Visible := Chk9;
       Edit.WordWrap := Chk10;
@@ -2232,10 +3331,6 @@ begin
       Edit.Gutter.LeadingZeros := Chk12;
       Edit.Gutter.ShowLineNumbers := Chk13;
       Edit.Gutter.ZeroStart := Chk14;
-      usesyn := Chk15;
-      synprint1.Colors := Chk16;
-      synprint1.Highlight := Chk17;
-      synprint1.LineNumbers := Chk18;
       Recent.Capacity := Spn1;
       Edit.MaxScrollWidth := Spn2;
       Edit.MaxUndo := Spn3;
@@ -2252,20 +3347,56 @@ begin
       for I := 0 to 26 do if OptsList.Checked[i] = True
       then Edit.Options := Edit.Options + [TSynEditorOption(i)]
       else Edit.Options := Edit.Options - [TSynEditorOption(i)];
+      N42.Enabled := not (eoAltSetsColumnMode in Edit.Options);
       JvDragDrop1.AcceptDrag := not (eoDropFiles in Edit.Options);
-      N40.Items[Byte(Edit.SelectionMode)].Checked := True;
-	    N42.Enabled := not (eoAltSetsColumnMode in Edit.Options);
-      N162.Checked := Edit.ReadOnly;
-      N173.Checked := Edit.WordWrap;
-      if usesyn then begin
+      bor.ptac := Chk4;
+      bor.sdfl := Chk5;
+      bor.sdsf := Chk6;
+      bor.synh := Chk15;
+      bor.tray := Chk7;
+      bor.pr_clrs := Chk16;
+      bor.pr_high := Chk17;
+      bor.pr_lnum := Chk18;
+      bor.drag := JvDragDrop1.AcceptDrag;
+      bor.rfcl := Recent.Capacity;
+      bor.ssbp := Status.Visible;
+      bor.ed_exls := Edit.ExtraLineSpacing;
+      bor.ed_insc := Byte(Edit.InsertCaret);
+      bor.ed_mxsw := Edit.MaxScrollWidth;
+      bor.ed_mxun := Edit.MaxUndo;
+      bor.ed_opts := Integer(Edit.Options);
+      bor.ed_owrc := Byte(Edit.OverwriteCaret);
+      bor.ed_redg := Edit.RightEdge;
+      bor.ed_reon := Edit.ReadOnly;
+      bor.ed_selm := Byte(Edit.SelectionMode);
+      bor.ed_shft := Boolean(Edit.ScrollHintFormat);
+      bor.ed_tabw := Edit.TabWidth;
+      bor.ed_wrap := Edit.WordWrap;
+      bor.eg_asiz := Edit.Gutter.AutoSize;
+      bor.eg_dcnt := Edit.Gutter.DigitCount;
+      bor.eg_grad := Edit.Gutter.Gradient;
+      bor.eg_gstp := Edit.Gutter.GradientSteps;
+      bor.eg_ldzr := Edit.Gutter.LeadingZeros;
+      bor.eg_lnst := Edit.Gutter.LineNumberStart;
+      bor.eg_shln := Edit.Gutter.ShowLineNumbers;
+      bor.eg_ufst := Edit.Gutter.UseFontStyle;
+      bor.eg_vsbl := Edit.Gutter.Visible;
+      bor.eg_zrst := Edit.Gutter.ZeroStart;
+      N40.Items[bor.ed_selm].Checked := True;
+      N162.Checked := bor.ed_reon;
+      N173.Checked := bor.ed_wrap;
+      if bor.synh then begin
         if FileExists(MyFileName) then MySetSynByExt(ExtractFileExt(MyFileName))
-        else MySetSynByFid(1);
+        else MySetSynByFid(0);
         N74.Enabled := True;
       end else begin
-        Edit.Highlighter := nil;
+        MySetSynByFid(-1);
         N74.Enabled := False;
       end;
-      WriteToAppStorage(AppIni, AppIni.DefaultSection);
+      if bor.tray then begin
+        if jvtic = nil then ShowTrayIcon;
+      end else if jvtic <> nil then FreeAndNil(jvtic);
+      MySaveSettings;
     end;
   finally
     setdlg.Free;
@@ -2288,7 +3419,7 @@ var
 begin
   if Edit.SelAvail then bs := Edit.BlockBegin else bs := Edit.CaretXY;
   Edit.SelText := QuotedStr(Edit.SelText);
-  if psafc then Edit.CaretXY := bs;
+  if bor.ptac then Edit.CaretXY := bs;
 end;
 
 procedure TMain.N72Click(Sender: TObject);
@@ -2297,7 +3428,7 @@ var
 begin
   if Edit.SelAvail then bs := Edit.BlockBegin else bs := Edit.CaretXY;
   Edit.SelText := AnsiDequotedStr(Edit.SelText, '''');
-  if psafc then Edit.CaretXY := bs;
+  if bor.ptac then Edit.CaretXY := bs;
 end;
 
 procedure TMain.N78Click(Sender: TObject);
@@ -2306,13 +3437,70 @@ begin
 end;
 
 procedure TMain.N7Click(Sender: TObject);
+var
+  dlg: TPrintDialog;
+  spr: TSynEditPrint;
 begin
-  PrintDialog.Copies := synprint1.Copies;
-  if PrintDialog.Execute then begin
-    synprint1.SynEdit := Edit;
-    synprint1.Title := MyFileName;
-    synprint1.Copies := PrintDialog.Copies;
-    synprint1.Print;
+  dlg := TPrintDialog.Create(Self);
+  try
+    dlg.Collate := False;
+    dlg.Copies := bor.pr_cops;
+    dlg.Ctl3D := True;
+    dlg.MinPage := 0;
+    dlg.MaxPage := 0;
+    dlg.FromPage := 0;
+    dlg.Options := [poPrintToFile];
+    dlg.PrintRange := prAllPages;
+    dlg.PrintToFile := False;
+    dlg.ToPage := 0;
+    if dlg.Execute then begin
+      bor.pr_cops := dlg.Copies;
+      MySaveSettings;
+      spr := TSynEditPrint.Create(Self);
+      try
+        spr.Color := bor.pr_colr;
+        spr.Colors := bor.pr_clrs;
+        spr.Copies := bor.pr_cops;
+        spr.Font.Assign(Edit.Font);
+        spr.Header.DefaultFont.Name := 'Courier New';
+        spr.Header.DefaultFont.Charset := DEFAULT_CHARSET;
+        spr.Header.DefaultFont.Color := clWindowText;
+        spr.Header.DefaultFont.Size := 8;
+        spr.Header.DefaultFont.Style := [];
+        spr.Header.DefaultFont.Height := -11;
+        spr.Header.DefaultFont.Orientation := 0;
+        spr.Header.DefaultFont.Pitch := fpDefault;
+        spr.Header.FrameTypes := [ftBox, ftShaded];
+        spr.Header.LineColor := clBlack;
+        spr.Header.MirrorPosition := False;
+        spr.Header.RomanNumbers := False;
+        spr.Header.ShadedColor := clSilver;
+        spr.Footer.DefaultFont.Assign(spr.Header.DefaultFont);
+        spr.Footer.FrameTypes := [ftLine];
+        spr.Footer.LineColor := clBlack;
+        spr.Footer.MirrorPosition := False;
+        spr.Footer.RomanNumbers := False;
+        spr.Footer.ShadedColor := clSilver;
+        spr.Highlight := bor.pr_high;
+        spr.LineNumbers := bor.pr_lnum;
+        spr.LineNumbersInMargin := bor.pr_lnim;
+        spr.Margins.Bottom := bor.pr_mbtm;
+        spr.Margins.Left := bor.pr_mlft;
+        spr.Margins.Right := bor.pr_mrgt;
+        spr.Margins.Top := bor.pr_mtop;
+        spr.PageOffset := 0;
+        spr.SelectedOnly := False;
+        spr.TabWidth := bor.ed_tabw;
+        spr.SynEdit := Edit;
+        spr.Title := MyFileName;
+        spr.Wrap := True;
+        spr.Print;
+      finally
+        FreeAndNil(spr);
+      end;
+    end;
+  finally
+    FreeAndNil(dlg);
   end;
 end;
 
@@ -2333,6 +3521,7 @@ var
   bs: TBufferCoord;
 begin
   if Edit.SelAvail then bs := Edit.BlockBegin else bs := Edit.CaretXY;
+  {$IFDEF UNICODE}
   case curcp of
     1: Edit.SelText := 'ASCII';
     2: Edit.SelText := 'UTF-16 little endian';
@@ -2341,7 +3530,15 @@ begin
     5: Edit.SelText := 'UTF-7';
     else Edit.SelText := 'Ansi';
   end;
-  if psafc then Edit.CaretXY := bs;
+  {$ELSE}
+  case curcp of
+    0: Edit.SelText := 'UTF-16 little endian';
+    1: Edit.SelText := 'UTF-16 big endian';
+    2: Edit.SelText := 'UTF-8';
+    else Edit.SelText := 'Ansi';
+  end;
+  {$ENDIF}
+  if bor.ptac then Edit.CaretXY := bs;
 end;
 
 procedure TMain.N90Click(Sender: TObject);
@@ -2355,7 +3552,7 @@ begin
     if ShowModal = mrOk then begin
       if Edit.SelAvail then bs := Edit.BlockBegin else bs := Edit.CaretXY;
       Edit.SelText := Edit1.Text + Edit.SelText + Edit2.Text;
-      if psafc then Edit.CaretXY := bs;
+      if bor.ptac then Edit.CaretXY := bs;
     end;
   finally
     sidlg.Free;
@@ -2368,7 +3565,7 @@ var
 begin
   if Edit.SelAvail then bs := Edit.BlockBegin else bs := Edit.CaretXY;
   Edit.SelText := Edit.SelText + Edit.SelText;
-  if psafc then Edit.CaretXY := bs;
+  if bor.ptac then Edit.CaretXY := bs;
 end;
 
 procedure TMain.N99Click(Sender: TObject);
@@ -2377,7 +3574,7 @@ var
 begin
   if Edit.SelAvail then bs := Edit.BlockBegin else bs := Edit.CaretXY;
   Edit.SelText := DateTimeToStr(Now);
-  if psafc then Edit.CaretXY := bs;
+  if bor.ptac then Edit.CaretXY := bs;
 end;
 
 procedure TMain.Popup1Popup(Sender: TObject);
@@ -2387,6 +3584,7 @@ end;
 
 procedure TMain.N104Click(Sender: TObject);
 begin
+  {$IFDEF UNICODE}
   case curcp of
     1: MyOpenFile(MyFileName, TEncoding.ASCII, 1);
     2: MyOpenFile(MyFileName, TEncoding.Unicode, 1);
@@ -2395,6 +3593,9 @@ begin
     5: MyOpenFile(MyFileName, TEncoding.UTF7, 1);
     else MyOpenFile(MyFileName, TEncoding.Default, 1);
   end;
+  {$ELSE}
+  MyOpenFile(MyFileName, curcp, 1);
+  {$ENDIF}
 end;
 
 procedure TMain.N105Click(Sender: TObject);
@@ -2407,17 +3608,13 @@ procedure TMain.N105Click(Sender: TObject);
 
 begin
   if Edit.Modified then begin
-    case Application.MessageBox(PChar(mysg7), 'BirEdit',
-                                  MB_YESNOCANCEL + MB_ICONQUESTION) of
+    case MessageBox(Self.Handle, PChar(mysg7), 'BirEdit', MB_YESNOCANCEL
+                      + MB_ICONQUESTION) of
       IDYES:
         if FileExists(MyFileName) then begin
           MySaveFile(MyFileName, curcp, 1);
           MyNewDoc;
-        end else if Save.Execute then begin
-          Save.FileName := MyExtByFilter(Save.FilterIndex, Save.FileName);
-          MySaveFile(Save.FileName, Save.EncodingIndex, Save.FilterIndex);
-          MyNewDoc;
-        end;
+        end else if SaveDlgExec then MyNewDoc;
       IDNO: MyNewDoc;
     end;
   end else MyNewDoc;
@@ -2438,8 +3635,10 @@ end;
 procedure TMain.JvTimer1Timer(Sender: TObject);
 begin
   Status.Panels.Items[0].Text := Format('%d:%d', [Edit.CaretY, Edit.CaretX]);
-  if Edit.InsertMode then Status.Panels.Items[1].Text := 'Insert'
+  bor.ed_insm := Edit.InsertMode;
+  if bor.ed_insm then Status.Panels.Items[1].Text := 'Insert'
   else Status.Panels.Items[1].Text := 'Overwrite';
+  {$IFDEF UNICODE}
   case curcp of
     1: Status.Panels.Items[3].Text := 'ASCII';
     2: Status.Panels.Items[3].Text := 'UTF-16 little endian';
@@ -2448,21 +3647,29 @@ begin
     5: Status.Panels.Items[3].Text := 'UTF-7';
     else Status.Panels.Items[3].Text := 'Ansi';
   end;
+  {$ELSE}
+  case curcp of
+    0: Status.Panels.Items[3].Text := 'UTF-16 little endian';
+    1: Status.Panels.Items[3].Text := 'UTF-16 big endian';
+    2: Status.Panels.Items[3].Text := 'UTF-8';
+    else Status.Panels.Items[3].Text := 'Ansi';
+  end;
+  {$ENDIF}
 end;
 
 procedure TMain.JvTimer3Timer(Sender: TObject);
 begin
   if FileExists(MyFileName) then begin
     if (FileAge(MyFileName) <> prev) and (prev <> 0) then begin
-      if Application.MessageBox(PChar(mysg4), 'BirEdit',
-                                  MB_YESNO + MB_ICONQUESTION) = IDYES
+      if MessageBox(Self.Handle, PChar(mysg4), 'BirEdit', MB_YESNO
+                      + MB_ICONQUESTION) = IDYES
       then N104.Click;
       prev := FileAge(MyFileName);
     end;
   end else begin
     if (prevnoex = False) and not (MyFileName = '') then begin
-      if Application.MessageBox(PChar(mysg5), 'BirEdit',
-                                  MB_YESNO + MB_ICONQUESTION) = IDYES
+      if MessageBox(Self.Handle, PChar(mysg5), 'BirEdit', MB_YESNO
+                      + MB_ICONQUESTION) = IDYES
       then begin
         MySaveFile(MyFileName, curcp, 1);
         prev := FileAge(MyFileName);
@@ -2474,40 +3681,39 @@ end;
 
 procedure TMain.JvTimer4Timer(Sender: TObject);
 var
-  cpa, fe, fm ,lc, nro, stxt, rtxt, sav, cun, cre, hpt: Boolean;
+  cpa, fe, fm ,lc, stxt, rtxt, sav, cun, cre, hpt: Boolean;
   capt: string;
 begin
   fm := Edit.Modified;
   hpt := Printer.Printers.Count > 0;
   fe := FileExists(MyFileName);
   lc := Edit.Lines.Count > 0;
-  nro := not Edit.ReadOnly;
   sav := Edit.SelAvail;
   cpa := Edit.CanPaste;
-  cun := Edit.CanUndo and nro;
-  cre := Edit.CanRedo and nro;
+  cun := Edit.CanUndo and not bor.ed_reon;
+  cre := Edit.CanRedo and not bor.ed_reon;
   stxt := not (gsSearchText = '');
   rtxt := not (gsReplaceText = '');
-  N4.Enabled := fe and fm and nro;
+  N4.Enabled := fe and fm and not bor.ed_reon;
   N7.Enabled := lc and hpt;
   N11.Enabled := cun;
   N12.Enabled := cre;
   N14.Enabled := lc;
   N15.Enabled := sav;
-  N16.Enabled := cpa and nro;
-  N17.Enabled := sav and nro;
-  N18.Enabled := rtxt and nro;
+  N16.Enabled := cpa and not bor.ed_reon;
+  N17.Enabled := sav and not bor.ed_reon;
+  N18.Enabled := rtxt and not bor.ed_reon;
   N19.Enabled := cun;
   N20.Enabled := cre;
-  N22.Enabled := sav and nro;
+  N22.Enabled := sav and not bor.ed_reon;
   N23.Enabled := sav;
-  N24.Enabled := cpa and nro;
+  N24.Enabled := cpa and not bor.ed_reon;
   N25.Enabled := lc;
   N27.Enabled := stxt;
   N28.Enabled := stxt;
-  N29.Enabled := nro;
+  N29.Enabled := not bor.ed_reon;
   N30.Enabled := sav and cpa;
-  N33.Enabled := rtxt and nro;
+  N33.Enabled := rtxt and not bor.ed_reon;
   N36.Enabled := lc;
   N37.Enabled := sav;
   N39.Enabled := lc;
@@ -2515,21 +3721,21 @@ begin
   N45.Enabled := lc;
   N46.Enabled := cpa;
   N55.Enabled := sav and cpa;
-  N56.Enabled := cpa and sav and nro;
-  N57.Enabled := lc and nro;
-  N59.Enabled := lc and nro;
-  N65.Enabled := cpa and sav and nro;
-  N66.Enabled := lc and nro;
-  N71.Enabled := sav and nro;
-  N72.Enabled := sav and nro;
-  N76.Enabled := sav and nro;
-  N77.Enabled := nro;
+  N56.Enabled := cpa and sav and not bor.ed_reon;
+  N57.Enabled := lc and not bor.ed_reon;
+  N59.Enabled := lc and not bor.ed_reon;
+  N65.Enabled := cpa and sav and not bor.ed_reon;
+  N66.Enabled := lc and not bor.ed_reon;
+  N71.Enabled := sav and not bor.ed_reon;
+  N72.Enabled := sav and not bor.ed_reon;
+  N76.Enabled := sav and not bor.ed_reon;
+  N77.Enabled := not bor.ed_reon;
   N78.Enabled := fe;
   N80.Enabled := fe;
-  N85.Enabled := lc and nro;
-  N88.Enabled := nro;
+  N85.Enabled := lc and not bor.ed_reon;
+  N88.Enabled := not bor.ed_reon;
   N90.Enabled := sav;
-  N95.Enabled := lc and nro;
+  N95.Enabled := lc and not bor.ed_reon;
   N96.Enabled := cpa;
   N100.Enabled := fe;
   N102.Enabled := fe;
@@ -2543,18 +3749,17 @@ begin
   N167.Enabled := hpt;
   N168.Enabled := lc and hpt;
   N171.Enabled := fe;
-  if fe then begin
-    if ExtractFilePath(MyFileName) = ''
-    then capt := appath + MyFileName+ ' - BirEdit'
-    else capt := MyFileName + ' - BirEdit';
-  end else begin
-    capt := myunk + ' - BirEdit';
-    Status.Panels.Items[2].Text := '';
-  end;
+  capt := 'BirEdit';
   if fm then capt := '* ' + capt;
-  if nro = False then capt := capt + ' [' + mysn5 + ']';
+  if bor.ed_reon then capt := capt + ' (' + mysn5 + ')';
+  if fe then begin
+    capt := capt + ' - [';
+    if ExtractFilePath(MyFileName) = '' then capt := capt + appath;
+    capt := capt + MyFileName + ']';
+  end else Status.Panels.Items[2].Text := '';
   Caption := capt;
-  JvTrayIcon1.Hint := Caption;
+  Application.Title := Caption;
+  if jvtic <> nil then jvtic.Hint := Caption;
 end;
 
 procedure TMain.JvDragDrop1Drop(Sender: TObject; Pos: TPoint; Value: TStrings);
@@ -2564,14 +3769,14 @@ end;
 
 procedure TMain.N119Click(Sender: TObject);
 begin
-  ShellExecute(Self.Handle, 'open', PChar(Application.ExeName),
+  ShellExecute(Self.Handle, 'open', PChar(ParamStr(0)),
                  PChar('"' + MyFileName + '"'),
                  PChar('"' + ExtractFilePath(MyFileName) + '"'), SW_SHOWNORMAL);
 end;
 
 procedure TMain.N122Click(Sender: TObject);
 begin
-  ShellExecute(Self.Handle, 'open', PChar(Application.ExeName), nil,
+  ShellExecute(Self.Handle, 'open', PChar(ParamStr(0)), nil,
         PChar('"' + appath + '"'), SW_SHOWNORMAL);
 end;
 
@@ -2604,7 +3809,7 @@ var
 begin
   if Edit.SelAvail then bs := Edit.BlockBegin else bs := Edit.CaretXY;
   Edit.SelText := ExtractFileName(MyFileName);
-  if psafc then Edit.CaretXY := bs;
+  if bor.ptac then Edit.CaretXY := bs;
 end;
 
 procedure TMain.N102Click(Sender: TObject);
@@ -2613,64 +3818,75 @@ var
 begin
   if Edit.SelAvail then bs := Edit.BlockBegin else bs := Edit.CaretXY;
   Edit.SelText := MyFileName;
-  if psafc then Edit.CaretXY := bs;
+  if bor.ptac then Edit.CaretXY := bs;
 end;
 
-initialization
-  ExcValsEdit := TStringList.Create;
-  ExcValsGut := TStringList.Create;
-  ExcValsPrint := TStringList.Create;
-  ExcValsPrintM := TStringList.Create;
-  try
-    ExcValsEdit.Add('Align');
-    ExcValsEdit.Add('Ctl3D');
-    ExcValsEdit.Add('Cursor');
-    ExcValsEdit.Add('Enabled');
-    ExcValsEdit.Add('Gutter');
-    ExcValsEdit.Add('Height');
-    ExcValsEdit.Add('HelpContext');
-    ExcValsEdit.Add('HelpKeyword');
-    ExcValsEdit.Add('HelpType');
-    ExcValsEdit.Add('Highlighter');
-    ExcValsEdit.Add('Hint');
-    ExcValsEdit.Add('ImeMode');
-    ExcValsEdit.Add('ImeName');
-    ExcValsEdit.Add('Keystrokes');
-    ExcValsEdit.Add('Left');
-    ExcValsEdit.Add('Lines');
-    ExcValsEdit.Add('Name');
-    ExcValsEdit.Add('ParentColor');
-    ExcValsEdit.Add('ParentCtl3D');
-    ExcValsEdit.Add('ParentCustomHint');
-    ExcValsEdit.Add('ParentFont');
-    ExcValsEdit.Add('ParentShowHint');
-    ExcValsEdit.Add('PopupMenu');
-    ExcValsEdit.Add('ShowHint');
-    ExcValsEdit.Add('TabOrder');
-    ExcValsEdit.Add('TabStop');
-    ExcValsEdit.Add('Tag');
-    ExcValsEdit.Add('Top');
-    ExcValsEdit.Add('Visible');
-    ExcValsEdit.Add('WantReturns');
-    ExcValsEdit.Add('WantTabs');
-    ExcValsEdit.Add('Width');
-    ExcValsGut.Add('Cursor');
-    ExcValsPrint.Add('DocTitle');
-    ExcValsPrint.Add('Lines');
-    ExcValsPrint.Add('Margins');
-    ExcValsPrint.Add('Name');
-    ExcValsPrint.Add('Tag');
-    ExcValsPrint.Add('Title');
-    ExcValsPrintM.Add('UnitSystem');
-  except
-    RaiseLastOSError;
-    Application.Terminate;
-  end;
+procedure TMain.MyOpenFileWosf(OpenFileName: TFileName; fd: Byte);
+begin
+  {$IFDEF UNICODE}
+  MyOpenFile(OpenFileName, nil, fd);
+  {$ELSE}
+  MyOpenFile(OpenFileName, 4, fd);
+  {$ENDIF}
+end;
 
-finalization
-  ExcValsEdit.Free;
-  ExcValsGut.Free;
-  ExcValsPrint.Free;
-  ExcValsPrintM.Free;
+procedure TMain.DoUnAssoc;
+var
+  {$IFNDEF UNICODE}
+  wifn: array [0..MAX_PATH] of Char;
+  tmpext: string;
+  b: TIniFile;
+  {$ENDIF}
+  i: Integer;
+  a: TRegistry;
+begin
+  try
+    for I := 0 to 91 do begin
+      {$IFNDEF UNICODE}
+      if Win32Platform = VER_PLATFORM_WIN32_NT then begin
+      {$ENDIF}
+        a := TRegistry.Create;
+        try
+          a.RootKey := HKEY_CLASSES_ROOT;
+          if a.OpenKey(BEFileExtensions[i], False) then begin
+            if a.ReadString('') = 'BirEdit.File' then begin
+              a.WriteString('', a.ReadString('BirEdit.bak'));
+              a.DeleteValue('BirEdit.bak');
+            end;
+            a.CloseKey;
+          end;
+        finally
+          FreeAndNil(a);
+        end;
+      {$IFNDEF UNICODE}
+      end else begin
+        GetWindowsDirectory(wifn, SizeOf(wifn));
+        b := TIniFile.Create(IncludeTrailingPathDelimiter(wifn) + 'win.ini');
+        try
+          tmpext := BEFileExtensions[i];
+          Delete(tmpext, 1, 1);
+          if b.ReadString('Extensions', tmpext, '')
+                                 = (appath + ExtractFileName(ParamStr(0)) + ' ^'
+                                      + BEFileExtensions[i])
+          then begin
+            b.WriteString('Extensions', tmpext,
+                            b.ReadString('Extensions.bak', tmpext, ''));
+            b.DeleteKey('Extensions.bak', tmpext);
+          end;
+        finally
+          FreeAndNil(b);
+        end;
+      end;
+      {$ENDIF}
+    end;
+  finally
+    {$IFNDEF UNICODE}
+    if Win32Platform = VER_PLATFORM_WIN32_WINDOWS
+    then SendMessage(HWND_BROADCAST, WM_WININICHANGE, 0,
+                       LongInt(PChar('Extensions')));
+    {$ENDIF}
+    if CallTerminateProcs then PostQuitMessage(0);
+  end;
+end;
 
 end.

@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uAboutDlg.pas by Alexey Tatuyko, released 2010-01-01.
+The Original Code is uAboutDlg.pas by Alexey Tatuyko, released 2010-03-19.
 All Rights Reserved.
 
-$Id: uAboutDlg.pas, v 1.3.4.621 2010/01/01 07:25:00 ta2i4 Exp $
+$Id: uAboutDlg.pas, v 2.0.0.18 2010/03/19 09:14:00 ta2i4 Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.fireforge.net/
@@ -49,10 +49,19 @@ type
     Memo2: TMemo;
     Tab2: TTabSheet;
     Memo3: TMemo;
+    procedure FormDestroy(Sender: TObject);
   end;
+
+var
+  About: TAbout;
 
 implementation
 
 {$R *.DFM}
+
+procedure TAbout.FormDestroy(Sender: TObject);
+begin
+  About := nil;
+end;
 
 end.

@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is BirEdit.dpr by Alexey Tatuyko, released 2010-01-07.
+The Original Code is BirEdit.dpr by Alexey Tatuyko, released 2010-04-03.
 All Rights Reserved.
 
-$Id: BirEdit.dpr, v 1.3.4.627 2010/01/07 03:47:00 ta2i4 Exp $
+$Id: BirEdit.dpr, v 2.0.0.23 2010/04/03 04:59:00 ta2i4 Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.fireforge.net/
@@ -34,6 +34,10 @@ program BirEdit;
 
 uses
   FastMM4,
+  {$IFNDEF VER210}
+  VCLFixPack,
+  {$ENDIF}
+  IniFiles,
   Registry,
   Windows,
   SysUtils,
@@ -53,38 +57,85 @@ uses
 {$R *.res}
 {$R fileicon.res}
 
+procedure CreateBEType;
 var
-  a: TRegistry;
   b: Boolean;
+  i: Integer;
+  c: TIniFile;
+  a: TRegistry;
+begin
+  c :=
+      TIniFile.Create(IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)))
+                        + 'profile.ini');
+  if c.ReadInteger('settings', 'saveplace', 2) <> 2 then begin
+    a := TRegistry.Create(KEY_ALL_ACCESS);
+    try
+      a.RootKey := HKEY_CLASSES_ROOT;
+      b := a.OpenKey('BirEdit.File', True);
+      if b then begin
+        a.WriteString('', 'BirEdit File');
+        a.WriteString('FriendlyTypeName', 'BirEdit File');
+        b := a.OpenKey('DefaultIcon', True);
+      end;
+      if b then a.WriteExpandString('',
+                      IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)))
+                                      + ExtractFileName(ParamStr(0)) + ',1');
+      a.CloseKey;
+      b := a.OpenKey('BirEdit.File\shell', True);
+      if b then b := a.OpenKey('open', True);
+      if b then b := a.OpenKey('command', True);
+      if b then begin
+        a.WriteExpandString('', '"'
+                    + IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)))
+                              + ExtractFileName(ParamStr(0)) + '" "%1"');
+      end;
+      a.CloseKey;
+      b := a.OpenKey('BirEdit.File\shell\print', True);
+      if b then b := a.OpenKey('command', True);
+      if b then begin
+        a.WriteExpandString('', '"'
+                    + IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)))
+                              + ExtractFileName(ParamStr(0)) + '" /p "%1"');
+      end;
+      a.CloseKey;
+      b := a.OpenKey('Applications', True);
+      if b then b := a.OpenKey('biredit.exe', True);
+      if b then b := a.OpenKey('DefaultIcon', True);
+      if b
+      then a.WriteString('', '"' +
+                      IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)))
+                                + ExtractFileName(ParamStr(0)) + '"');
+      a.CloseKey;
+      b := a.OpenKey('Applications\biredit.exe\shell', True);
+      if b then b := a.OpenKey('open', True);
+      if b
+      then b := a.OpenKey('command', True);
+      if b
+      then a.WriteString('', '"' +
+                      IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)))
+                           + ExtractFileName(ParamStr(0)) + '" "%1"');
+      a.CloseKey;
+      b := a.OpenKey('Applications\biredit.exe\shell\print', True);
+      if b then b := a.OpenKey('command', True);
+      if b then begin
+        a.WriteExpandString('', '"'
+                    + IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)))
+                              + ExtractFileName(ParamStr(0)) + '" /p "%1"');
+      end;
+      a.CloseKey;
+      b := a.OpenKey('Applications\biredit.exe\SupportedTypes', True);
+      if b then for I := 0 to 91 do a.WriteString(BEFileExtensions[i], '');
+      a.CloseKey;
+    finally
+      FreeAndNil(a);
+    end;
+  end;
+  FreeAndNil(c);
+end;
 
 begin
   Application.Initialize;
-  a := TRegistry.Create(KEY_ALL_ACCESS);
-  try
-    a.RootKey := HKEY_CLASSES_ROOT;
-    b := a.OpenKey('BirEdit.File', True);
-    if b then begin
-      a.WriteString('', 'BirEdit File');
-      b := a.OpenKey('DefaultIcon', True);
-    end;
-    if b then begin
-      a.WriteExpandString('',
-              IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))
-                            + ExtractFileName(Application.ExeName) + '1');
-      b := a.OpenKey('shell', True);
-    end;
-    if b then b := a.OpenKey('open', True);
-    if b then b := a.OpenKey('command', True);
-    if b then begin
-      a.WriteExpandString('', '"'
-            + IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))
-                          + ExtractFileName(Application.ExeName) + '" "%1"');
-    end;
-    a.CloseKey;
-  finally
-    a.Free;
-  end;
-  Application.MainFormOnTaskbar := True;
+  if Win32Platform = VER_PLATFORM_WIN32_NT then CreateBEType;
   Application.Title := 'BirEdit';
   Application.CreateForm(TMain, Main);
   Application.Run;

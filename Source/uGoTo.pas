@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uGoTo.pas by Alexey Tatuyko, released 2010-01-01.
+The Original Code is uGoTo.pas by Alexey Tatuyko, released 2010-03-19.
 All Rights Reserved.
 
-$Id: uGoTo.pas, v 1.3.4.621 2010/01/01 11:56:00 ta2i4 Exp $
+$Id: uGoTo.pas, v 2.0.0.12 2010/03/19 09:17:00 ta2i4 Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.fireforge.net/
@@ -43,6 +43,7 @@ type
     ChrLbl: TLabel;
     Spin2: TJvSpinEdit;
     procedure Spin1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormDestroy(Sender: TObject);
   private
     function GetLineXY: TPoint;
     procedure SetMaxXY(Value: TPoint);
@@ -58,6 +59,11 @@ var
 implementation
 
 {$R *.DFM}
+
+procedure TGoToDlg.FormDestroy(Sender: TObject);
+begin
+  GoToDlg := nil;
+end;
 
 function TGoToDlg.GetLineXY: TPoint;
 begin

@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uEncloseSelDlg.pas by Alexey Tatuyko, released 2010-01-01.
+The Original Code is uEncloseSelDlg.pas by Alexey Tatuyko, released 2010-03-22.
 All Rights Reserved.
 
-$Id: uEncloseSelDlg.pas, v 1.3.4.621 2010/01/01 11:56:00 ta2i4 Exp $
+$Id: uEncloseSelDlg.pas, v 2.0.0.19 2010/03/22 07:37:00 ta2i4 Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.fireforge.net/
@@ -44,6 +44,7 @@ type
     OkBtn: TButton;
     procedure Edit1Change(Sender: TObject);
     procedure Edit1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormDestroy(Sender: TObject);
   end;
 
 var
@@ -62,6 +63,11 @@ procedure TSelIns.Edit1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = 27 then ModalResult := mrCancel;
+end;
+
+procedure TSelIns.FormDestroy(Sender: TObject);
+begin
+  SelIns := nil;
 end;
 
 end.

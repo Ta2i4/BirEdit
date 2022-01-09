@@ -14,6 +14,7 @@ object DropDlg: TDropDlg
   KeyPreview = True
   OldCreateOrder = False
   Position = poOwnerFormCenter
+  OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 13

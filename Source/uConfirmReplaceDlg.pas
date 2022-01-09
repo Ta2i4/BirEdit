@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uConfirmReplaceDlg.pas by Alexey Tatuyko, released 2010-01-01.
+The Original Code is uConfirmReplaceDlg.pas by Alexey Tatuyko, released 2010-01-10.
 All Rights Reserved.
 
-$Id: uConfirmReplaceDlg.pas, v 1.3.4.621 2010/01/01 11:54:00 ta2i4 Exp $
+$Id: uConfirmReplaceDlg.pas, v 2.0.0.12 2010/01/10 05:53:00 ta2i4 Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.fireforge.net/

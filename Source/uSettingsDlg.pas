@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uSettingsDlg.pas by Alexey Tatuyko, released 2010-01-01.
+The Original Code is uSettingsDlg.pas by Alexey Tatuyko, released 2010-03-24.
 All Rights Reserved.
 
-$Id: uSettingsDlg.pas, v 1.3.4.621 2010/01/01 12:02:00 ta2i4 Exp $
+$Id: uSettingsDlg.pas, v 2.0.0.20 2010/03/24 02:56:00 ta2i4 Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.fireforge.net/
@@ -55,6 +55,9 @@ type
     Check13: TCheckBox;
     Check14: TCheckBox;
     Check15: TCheckBox;
+    Check16: TCheckBox;
+    Check17: TCheckBox;
+    Check18: TCheckBox;
     OptsList: TCheckListBox;
     Combo1: TComboBox;
     Combo2: TComboBox;
@@ -91,11 +94,9 @@ type
     Tab3: TTabSheet;
     grp1: TGroupBox;
     grp2: TGroupBox;
-    Check16: TCheckBox;
-    Check17: TCheckBox;
-    Check18: TCheckBox;
     lbl14: TLabel;
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     function GetChk1: Boolean;
     function GetChk2: Boolean;
@@ -201,30 +202,30 @@ implementation
 {$R *.DFM}
 
 procedure TSettingsDlg.FormCreate(Sender: TObject);
-var
-  b: Byte;
-  a: Integer;
 begin
-  a := MaxInt;
-  b := MAXBYTE;
   Spin1.MinValue := 1;
-  Spin1.MaxValue := a;
+  Spin1.MaxValue := MaxInt;
   Spin2.MinValue := 1;
-  Spin2.MaxValue := a;
+  Spin2.MaxValue := MaxInt;
   Spin3.MinValue := 0;
-  Spin3.MaxValue := a;
-  Spin4.MinValue := - a - 1;
-  Spin4.MaxValue := a;
+  Spin3.MaxValue := MaxInt;
+  Spin4.MinValue := - MaxInt - 1;
+  Spin4.MaxValue := MaxInt;
   Spin5.MinValue := 1;
-  Spin5.MaxValue := b + 1;
+  Spin5.MaxValue := MAXBYTE + 1;
   Spin6.MinValue := 2;
-  Spin6.MaxValue := a;
+  Spin6.MaxValue := MaxInt;
   Spin7.MinValue := 0;
-  Spin7.MaxValue := a;
+  Spin7.MaxValue := MaxInt;
   Spin8.MinValue := 2;
-  Spin8.MaxValue := a;
+  Spin8.MaxValue := MaxInt;
   Spin9.MinValue := 0;
-  Spin9.MaxValue := a;
+  Spin9.MaxValue := MaxInt;
+end;
+
+procedure TSettingsDlg.FormDestroy(Sender: TObject);
+begin
+  SettingsDlg := nil;
 end;
 
 function TSettingsDlg.GetChk1;

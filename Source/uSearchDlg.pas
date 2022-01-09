@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uSearchDlg.pas by Alexey Tatuyko, released 2010-01-01.
+The Original Code is uSearchDlg.pas by Alexey Tatuyko, released 2010-03-19.
 All Rights Reserved.
 
-$Id: uSearchDlg.pas, v 1.3.4.621 2010/01/01 12:01:00 ta2i4 Exp $
+$Id: uSearchDlg.pas, v 2.0.0.18 2010/03/19 09:27:00 ta2i4 Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.fireforge.net/
@@ -51,6 +51,7 @@ type
     Tmr1: TJvTimer;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure Tmr1Timer(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     function GetSearchBackwards: Boolean;
     function GetSearchCaseSensitive: Boolean;
@@ -92,6 +93,11 @@ var
 implementation
 
 {$R *.DFM}
+
+procedure TSearchForm.FormDestroy(Sender: TObject);
+begin
+  SearchForm := nil;
+end;
 
 function TSearchForm.GetSearchBackwards: Boolean;
 begin
