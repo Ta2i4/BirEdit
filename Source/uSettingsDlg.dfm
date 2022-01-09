@@ -4,7 +4,7 @@ object SettingsDlg: TSettingsDlg
   BorderStyle = bsDialog
   Caption = 'Settings'
   ClientHeight = 373
-  ClientWidth = 374
+  ClientWidth = 394
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -41,7 +41,7 @@ object SettingsDlg: TSettingsDlg
   object PageCtrl1: TPageControl
     Left = 0
     Top = 0
-    Width = 374
+    Width = 394
     Height = 335
     ActivePage = Tab1
     Align = alTop
@@ -118,7 +118,7 @@ object SettingsDlg: TSettingsDlg
         Top = 110
         Width = 340
         Height = 17
-        Caption = 'Scan subfolders'
+        Caption = 'Scan subfolders in dropped folders'
         TabOrder = 4
       end
       object Check15: TCheckBox
@@ -140,10 +140,14 @@ object SettingsDlg: TSettingsDlg
     object Tab2: TTabSheet
       Tag = 302
       Caption = 'Editor'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object PageCtrl2: TPageControl
         Left = 0
         Top = 0
-        Width = 366
+        Width = 386
         Height = 307
         ActivePage = Tab4
         Align = alClient
@@ -152,6 +156,10 @@ object SettingsDlg: TSettingsDlg
         object Tab4: TTabSheet
           Tag = 304
           Caption = 'Options'
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object Lbl13: TLabel
             Tag = 106
             Left = 10
@@ -260,7 +268,6 @@ object SettingsDlg: TSettingsDlg
             Height = 21
             AutoCloseUp = True
             Style = csDropDownList
-            ItemHeight = 13
             ItemIndex = 0
             TabOrder = 8
             Text = 'Normal'
@@ -276,7 +283,6 @@ object SettingsDlg: TSettingsDlg
             Width = 150
             Height = 21
             Style = csDropDownList
-            ItemHeight = 13
             ItemIndex = 0
             TabOrder = 5
             Text = 'Vertical Line'
@@ -303,7 +309,6 @@ object SettingsDlg: TSettingsDlg
             Width = 150
             Height = 21
             Style = csDropDownList
-            ItemHeight = 13
             ItemIndex = 3
             TabOrder = 6
             Text = 'Block'
@@ -338,7 +343,6 @@ object SettingsDlg: TSettingsDlg
             Width = 150
             Height = 21
             Style = csDropDownList
-            ItemHeight = 13
             ItemIndex = 1
             TabOrder = 7
             Text = 'Top to Bottom'
@@ -368,11 +372,15 @@ object SettingsDlg: TSettingsDlg
           Tag = 305
           Caption = 'Advanced'
           ImageIndex = 1
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object OptsList: TCheckListBox
             Tag = 1101
             Left = 0
             Top = 0
-            Width = 358
+            Width = 378
             Height = 281
             Align = alClient
             ItemHeight = 13
@@ -413,6 +421,10 @@ object SettingsDlg: TSettingsDlg
       Tag = 303
       Caption = 'Other'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object grp1: TGroupBox
         Tag = 401
         Left = 10

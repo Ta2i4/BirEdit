@@ -1,6 +1,6 @@
 {-------------------------------------------------------------------------------
 BirEdit text editor.
-Copyright (C) 2008-2009 Alexey Tatuyko
+Copyright (C) 2008-2010 Alexey Tatuyko
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,13 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is BirEdit.dpr by Alexey Tatuyko, released 2009-10-02.
+The Original Code is BirEdit.dpr by Alexey Tatuyko, released 2010-01-07.
 All Rights Reserved.
 
-$Id: BirEdit.dpr, v 1.3.2.530 2009/10/02 00:48:00 maelh Exp $
+$Id: BirEdit.dpr, v 1.3.4.627 2010/01/07 03:47:00 ta2i4 Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
-located at http://biredit.googlecode.com/
+located at http://biredit.fireforge.net/
 
 }
 
@@ -34,7 +34,9 @@ program BirEdit;
 
 uses
   FastMM4,
-  VCLFixPack,
+  Registry,
+  Windows,
+  SysUtils,
   Forms,
   uMainFrm in 'uMainFrm.pas' {Main: TForm},
   uAboutDlg in 'uAboutDlg.pas' {About},
@@ -45,12 +47,43 @@ uses
   uSearchDlg in 'uSearchDlg.pas' {SearchForm},
   uSettingsDlg in 'uSettingsDlg.pas' {SettingsDlg},
   uDropped in 'uDropped.pas' {DropDlg},
-  uPrintPreview in 'uPrintPreview.pas' {PreviewDlg};
+  uPrintPreview in 'uPrintPreview.pas' {PreviewDlg},
+  uFileAssocDlg in 'uFileAssocDlg.pas' {FAssoc};
 
 {$R *.res}
+{$R fileicon.res}
+
+var
+  a: TRegistry;
+  b: Boolean;
 
 begin
   Application.Initialize;
+  a := TRegistry.Create(KEY_ALL_ACCESS);
+  try
+    a.RootKey := HKEY_CLASSES_ROOT;
+    b := a.OpenKey('BirEdit.File', True);
+    if b then begin
+      a.WriteString('', 'BirEdit File');
+      b := a.OpenKey('DefaultIcon', True);
+    end;
+    if b then begin
+      a.WriteExpandString('',
+              IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))
+                            + ExtractFileName(Application.ExeName) + '1');
+      b := a.OpenKey('shell', True);
+    end;
+    if b then b := a.OpenKey('open', True);
+    if b then b := a.OpenKey('command', True);
+    if b then begin
+      a.WriteExpandString('', '"'
+            + IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))
+                          + ExtractFileName(Application.ExeName) + '" "%1"');
+    end;
+    a.CloseKey;
+  finally
+    a.Free;
+  end;
   Application.MainFormOnTaskbar := True;
   Application.Title := 'BirEdit';
   Application.CreateForm(TMain, Main);

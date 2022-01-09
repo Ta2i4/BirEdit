@@ -18,41 +18,61 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uAboutDlg.pas by Alexey Tatuyko, released 2010-01-01.
+The Original Code is uFileAssocDlg.pas by Alexey Tatuyko, released 2010-01-07.
 All Rights Reserved.
 
-$Id: uAboutDlg.pas, v 1.3.4.621 2010/01/01 07:25:00 ta2i4 Exp $
+$Id: uFileAssocDlg.pas, v 1.3.4.627 2010/01/07 03:48:00 ta2i4 Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.fireforge.net/
 
 }
- 
-unit uAboutDlg;
+
+unit uFileAssocDlg;
 
 interface
 
 uses
-  Windows, Forms, uMainFrm, Classes, Controls, ExtCtrls, StdCtrls,
-  ComCtrls;
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ComCtrls, StdCtrls, CheckLst, Menus;
 
 type
-  TAbout = class(TForm)
-    Image1: TImage;
-    lbl1: TLabel;
-    lbl2: TLabel;
+  TFAssoc = class(TForm)
+    chklst1: TCheckListBox;
+    popup1: TPopupMenu;
+    N1: TMenuItem;
+    N2: TMenuItem;
+    N3: TMenuItem;
     btn1: TButton;
-    PageCtrl1: TPageControl;
-    Tab1: TTabSheet;
-    Tab3: TTabSheet;
-    Memo1: TMemo;
-    Memo2: TMemo;
-    Tab2: TTabSheet;
-    Memo3: TMemo;
+    btn2: TButton;
+    procedure N1Click(Sender: TObject);
+    procedure N2Click(Sender: TObject);
+    procedure N3Click(Sender: TObject);
   end;
+
+var
+  FAssoc: TFAssoc;
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
+
+procedure TFAssoc.N1Click(Sender: TObject);
+begin
+  chklst1.CheckAll(cbChecked);
+end;
+
+procedure TFAssoc.N2Click(Sender: TObject);
+begin
+  chklst1.CheckAll(cbUnchecked);
+end;
+
+procedure TFAssoc.N3Click(Sender: TObject);
+var
+  i: Integer;
+begin
+  for I := 0 to chklst1.Count - 1
+  do chklst1.Checked[i] := not chklst1.Checked[i];
+end;
 
 end.

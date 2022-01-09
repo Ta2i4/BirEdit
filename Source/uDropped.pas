@@ -1,6 +1,6 @@
 {-------------------------------------------------------------------------------
 BirEdit text editor.
-Copyright (C) 2008-2009 Alexey Tatuyko
+Copyright (C) 2008-2010 Alexey Tatuyko
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,13 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uDropped.pas by Alexey Tatuyko, released 2009-10-02.
+The Original Code is uDropped.pas by Alexey Tatuyko, released 2010-01-01.
 All Rights Reserved.
 
-$Id: uDropped.pas, v 1.3.2.530 2009/10/02 00:50:00 maelh Exp $
+$Id: uDropped.pas, v 1.3.4.621 2010/01/01 11:55:00 ta2i4 Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
-located at http://biredit.googlecode.com/
+located at http://biredit.fireforge.net/
 
 }
 
@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, CheckLst, Menus, JvTimer;
+  Dialogs, StdCtrls, CheckLst, Menus, JvTimer, JvComponentBase, JvDragDrop;
 
 type
   TDropDlg = class(TForm)
@@ -45,15 +45,13 @@ type
     N2: TMenuItem;
     N3: TMenuItem;
     JvTmr: TJvTimer;
+    dragdrop1: TJvDragDrop;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure N1Click(Sender: TObject);
     procedure N2Click(Sender: TObject);
     procedure N3Click(Sender: TObject);
     procedure JvTmrTimer(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
+    procedure dragdrop1Drop(Sender: TObject; Pos: TPoint; Value: TStrings);
   end;
 
 var
@@ -61,7 +59,50 @@ var
 
 implementation
 
+uses uMainFrm;
+
 {$R *.dfm}
+
+procedure TDropDlg.dragdrop1Drop(Sender: TObject; Pos: TPoint; Value: TStrings);
+var
+  i, s: Integer;
+  tmpstrs: TStrings;
+
+  procedure MyScanDir(MyDir: string);
+  var
+    mys: TSearchRec;
+  begin
+    MyDir := IncludeTrailingPathDelimiter(MyDir);
+    if FindFirst(MyDir + '*', faAnyFile, mys) = 0 then repeat
+      if (mys.Name = '.') or (mys.Name = '..') then Continue;
+      if not ((mys.Attr and faDirectory) <> 0)
+      then tmpstrs.Add(MyDir + mys.Name) else
+      if Main.sudir then MyScanDir(MyDir + mys.Name);
+    until FindNext(mys) <> 0;
+  end;
+
+begin
+  s := Value.Count;
+  if s > 0 then begin
+    tmpstrs := TStringList.Create;
+    try
+      tmpstrs.Text := Value.Text;
+      for I := tmpstrs.Count - 1 downto 0 do begin
+        if (DirectoryExists(tmpstrs.Strings[i])) then begin
+          if Main.sddir
+          then MyScanDir(tmpstrs.Strings[i]);
+          tmpstrs.Delete(i);
+        end else
+        if not FileExists(tmpstrs.Strings[i])  then tmpstrs.Delete(i);
+      end;
+      if tmpstrs.Count > 0 then for i := tmpstrs.Count - 1 downto 0 do
+      if ChkLst.Items.IndexOf(tmpstrs.Strings[i]) > -1 then tmpstrs.Delete(i);
+      if tmpstrs.Count > 0 then ChkLst.Items.AddStrings(tmpstrs);
+    finally
+      tmpstrs.Free;
+    end;
+  end;
+end;
 
 procedure TDropDlg.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
@@ -87,17 +128,13 @@ begin
 end;
 
 procedure TDropDlg.N1Click(Sender: TObject);
-var
-  i: Integer;
 begin
-  for I := 0 to ChkLst.Count - 1 do ChkLst.Checked[i] := True;
+  ChkLst.CheckAll(cbChecked);
 end;
 
 procedure TDropDlg.N2Click(Sender: TObject);
-var
-  i: Integer;
 begin
-  for I := 0 to ChkLst.Count - 1 do ChkLst.Checked[i] := False;
+  ChkLst.CheckAll(cbUnchecked);
 end;
 
 procedure TDropDlg.N3Click(Sender: TObject);

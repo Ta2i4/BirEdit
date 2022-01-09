@@ -30,7 +30,6 @@ object SearchForm: TSearchForm
     Width = 247
     Height = 21
     DropDownCount = 10
-    ItemHeight = 13
     TabOrder = 0
   end
   object OptsGrp: TGroupBox

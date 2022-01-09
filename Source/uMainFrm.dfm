@@ -2,8 +2,8 @@ object Main: TMain
   Left = 353
   Top = 233
   Caption = 'Untitled - BirEdit'
-  ClientHeight = 344
-  ClientWidth = 584
+  ClientHeight = 400
+  ClientWidth = 600
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,8 +19,8 @@ object Main: TMain
   object Edit: TSynEdit
     Left = 0
     Top = 0
-    Width = 584
-    Height = 325
+    Width = 600
+    Height = 381
     Align = alClient
     ActiveLineColor = clInfoBk
     Font.Charset = DEFAULT_CHARSET
@@ -45,8 +45,8 @@ object Main: TMain
   end
   object Status: TStatusBar
     Left = 0
-    Top = 325
-    Width = 584
+    Top = 381
+    Width = 600
     Height = 19
     Panels = <
       item
@@ -98,15 +98,11 @@ object Main: TMain
         ShortCut = 117
         OnClick = N5Click
       end
-      object N162: TMenuItem
-        Caption = 'Read only'
-        OnClick = N162Click
-      end
       object N47: TMenuItem
         Caption = '-'
       end
       object N44: TMenuItem
-        Caption = 'Codepage'
+        Caption = 'Encoding'
         object N53: TMenuItem
           Caption = 'Auto'
           Default = True
@@ -211,6 +207,10 @@ object Main: TMain
       end
       object N127: TMenuItem
         Caption = 'Recent files'
+        object N175: TMenuItem
+          Caption = 'Open all'
+          OnClick = N175Click
+        end
         object N130: TMenuItem
           Caption = 'Delete non-existent'
           OnClick = N130Click
@@ -271,6 +271,11 @@ object Main: TMain
         Caption = 'Copy add'
         ShortCut = 16453
         OnClick = N30Click
+      end
+      object N78: TMenuItem
+        Caption = 'Copy filepath'
+        ShortCut = 8312
+        OnClick = N78Click
       end
       object N16: TMenuItem
         Caption = 'Paste'
@@ -448,6 +453,11 @@ object Main: TMain
         ShortCut = 16500
         OnClick = N99Click
       end
+      object N8: TMenuItem
+        Caption = 'Encoding identifier'
+        ShortCut = 16503
+        OnClick = N8Click
+      end
       object N100: TMenuItem
         Caption = 'Filename'
         ShortCut = 16504
@@ -461,13 +471,13 @@ object Main: TMain
     end
     object N101: TMenuItem
       Caption = 'Options'
+      object N174: TMenuItem
+        Caption = 'Associations'
+        OnClick = N174Click
+      end
       object N51: TMenuItem
         Caption = 'Font...'
         OnClick = N51Click
-      end
-      object N32: TMenuItem
-        Caption = 'Settings'
-        OnClick = N32Click
       end
       object N40: TMenuItem
         Caption = 'Selection'
@@ -495,22 +505,9 @@ object Main: TMain
           OnClick = MySetSelMode
         end
       end
-      object N52: TMenuItem
-        Caption = '-'
-      end
-      object N117: TMenuItem
-        Caption = 'Language'
-        object N126: TMenuItem
-          AutoCheck = True
-          Caption = 'Internal'
-          Checked = True
-          Default = True
-          RadioItem = True
-          OnClick = N126Click
-        end
-      end
-      object N73: TMenuItem
-        Caption = '-'
+      object N162: TMenuItem
+        Caption = 'Read only'
+        OnClick = N162Click
       end
       object N74: TMenuItem
         Caption = 'Syntax'
@@ -829,6 +826,28 @@ object Main: TMain
           OnClick = MySetSyn
         end
       end
+      object N173: TMenuItem
+        Caption = 'Word wrap'
+        OnClick = N173Click
+      end
+      object N176: TMenuItem
+        Caption = '-'
+      end
+      object N32: TMenuItem
+        Caption = 'Settings'
+        OnClick = N32Click
+      end
+      object N117: TMenuItem
+        Caption = 'Language'
+        object N126: TMenuItem
+          AutoCheck = True
+          Caption = 'Internal'
+          Checked = True
+          Default = True
+          RadioItem = True
+          OnClick = N126Click
+        end
+      end
     end
     object N49: TMenuItem
       Caption = 'Help'
@@ -941,6 +960,10 @@ object Main: TMain
       Caption = 'Copy add'
       OnClick = N30Click
     end
+    object N171: TMenuItem
+      Caption = 'Copy filepath'
+      OnClick = N78Click
+    end
     object N24: TMenuItem
       Caption = 'Paste'
       OnClick = N16Click
@@ -1007,7 +1030,6 @@ object Main: TMain
     Font.Height = -13
     Font.Name = 'Courier New'
     Font.Style = []
-    Device = fdBoth
     Options = [fdEffects, fdFixedPitchOnly]
     Left = 208
     Top = 120

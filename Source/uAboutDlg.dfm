@@ -40,7 +40,7 @@ object About: TAbout
     Top = 29
     Width = 86
     Height = 13
-    Caption = 'Version 1.3.3.606'
+    Caption = 'Version 1.3.4.627'
   end
   object btn1: TButton
     Left = 414
@@ -69,21 +69,15 @@ object About: TAbout
         Height = 210
         Align = alClient
         Lines.Strings = (
-          'Copyright '#169' 2008-2009 Alexey Tatuyko'
+          'Copyright '#169' 2008-2010 Alexey Tatuyko'
           ''
           
             'This program is freeware and released under the GNU general publ' +
             'ic license.'
           ''
           'Project links:'
-          'http://ta2i4.dxnet.ru/ - homepage'
-          'http://ta2i4.dxnet.ru/forum/ - forum'
-          
-            'http://biredit.googlecode.com/ - project page # 1 (distributives' +
-            ' and sources)'
-          
-            'http://fireforge.net/projects/biredit/ - project page #2 (distri' +
-            'butives)'
+          'http://biredit.fireforge.net/ - homepage'
+          'http://fireforge.net/projects/biredit/ - project page'
           ''
           'Contacts:'
           'E-mail: tatuich@gmail.com')
@@ -95,6 +89,10 @@ object About: TAbout
     object Tab2: TTabSheet
       Caption = 'Thanks'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Memo3: TMemo
         Left = 0
         Top = 0
@@ -103,12 +101,13 @@ object About: TAbout
         Align = alClient
         Lines.Strings = (
           'Third party libs used:'
-          '- FastMM 4.95 CVS (http://sourceforge.net/projects/fastmm/)'
-          '- JVCL 3.38 (http://sourceforge.net/projects/jvcl/)'
           
-            '- SynEdit 2009/12/14 CVS (http://sourceforge.net/projects/synedi' +
-            't/)'
-          '- VCL Fix Pack 1.4 (http://andy.jgknet.de/)'
+            '- FastMM v4.95 2009/12/14 SVN (http://sourceforge.net/projects/f' +
+            'astmm/)'
+          '- JVCL v3.38 (http://sourceforge.net/projects/jvcl/)'
+          
+            '- SynEdit 2009/12/14  SVN (http://sourceforge.net/projects/syned' +
+            'it/)'
           ''
           'Special thanks:'
           '- Oleg Domani (http://viacoding.ucoz.ru/)')
@@ -120,6 +119,10 @@ object About: TAbout
     object Tab3: TTabSheet
       Caption = 'License'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Memo1: TMemo
         Left = 0
         Top = 0

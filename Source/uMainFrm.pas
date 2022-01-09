@@ -1,6 +1,6 @@
 {-------------------------------------------------------------------------------
 BirEdit text editor.
-Copyright (C) 2008-2009 Alexey Tatuyko
+Copyright (C) 2008-2010 Alexey Tatuyko
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,13 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uMainFrm.pas by Alexey Tatuyko, released 2009-12-17.
+The Original Code is uMainFrm.pas by Alexey Tatuyko, released 2010-01-07.
 All Rights Reserved.
 
-$Id: uMainFrm.pas, v 1.3.3.606 2009/12/17 03:57:00 maelh Exp $
+$Id: uMainFrm.pas, v 1.3.4.627 2010/01/07 03:50:00 ta2i4 Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
-located at http://biredit.googlecode.com/
+located at http://biredit.fireforge.net/
 
 }
 
@@ -33,14 +33,15 @@ unit uMainFrm;
 interface
 
 uses
-  Windows, Messages, ComCtrls, Dialogs, Menus, Classes, Controls, ToolWin,
-  Forms, Graphics, SysUtils, SynEdit, SynEditPrint, ImgList, ExtCtrls, ShellAPI,
-  JvTimer, JvComponentBase, JvDragDrop, ShlObj, SynEditTypes, Clipbrd, IniFiles,
-  SynEditRegexSearch, SynEditSearch, JvTrayIcon, StdCtrls, CheckLst, ExtDlgs,
-  ActnList, JvBaseDlg, JvWinDialogs, SynEditMiscClasses, JvMRUManager,
-  JvAppStorage, JvAppIniStorage, JvFormPlacement, SynEditHighlighter,
-  SynHighlighterCpp, SynHighlighterEiffel, SynHighlighterFortran,
-  SynHighlighterJava, SynHighlighterGeneral, SynHighlighterM3, SynHighlighterVB,
+  Windows, Messages, ComCtrls, Dialogs, Menus, Classes, Controls, Forms,
+  Graphics, SysUtils, ExtCtrls, ShellAPI, Clipbrd, IniFiles, CheckLst, ExtDlgs,
+  StdCtrls, ActnList, Printers, Registry,
+  JvTimer, JvComponentBase, JvDragDrop, JvTrayIcon, JvBaseDlg, JvWinDialogs,
+  JvMRUManager, JvAppStorage, JvAppIniStorage, JvFormPlacement,
+  SynEdit, SynEditPrint, SynEditTypes, SynEditRegexSearch, SynEditSearch,
+  SynEditMiscClasses, SynEditHighlighter, SynHighlighterCpp,
+  SynHighlighterEiffel, SynHighlighterFortran, SynHighlighterJava,
+  SynHighlighterGeneral, SynHighlighterM3, SynHighlighterVB,
   SynHighlighterCobol, SynHighlighterPas, SynHighlighterHtml, SynHighlighterCSS,
   SynHighlighterCS, SynHighlighterJScript, SynHighlighterPHP, SynHighlighterAWK,
   SynHighlighterVrml97, SynHighlighterXML, SynHighlighterVBScript,
@@ -59,15 +60,16 @@ type
   TMain = class(TForm, IJvAppStorageHandler)
     Edit: TSynEdit;
     MainMenu: TMainMenu;
+    Popup1: TPopupMenu;
+    Open: TOpenDialog;
+    Status: TStatusBar;
+    synprint1: TSynEditPrint;
     N1: TMenuItem;
     N2: TMenuItem;
-    Open: TOpenDialog;
     N3: TMenuItem;
     N4: TMenuItem;
     N5: TMenuItem;
     N6: TMenuItem;
-    Status: TStatusBar;
-    synprint1: TSynEditPrint;
     N9: TMenuItem;
     N10: TMenuItem;
     N11: TMenuItem;
@@ -77,7 +79,6 @@ type
     N15: TMenuItem;
     N16: TMenuItem;
     N17: TMenuItem;
-    Popup1: TPopupMenu;
     N19: TMenuItem;
     N20: TMenuItem;
     N21: TMenuItem;
@@ -119,10 +120,6 @@ type
     N105: TMenuItem;
     N114: TMenuItem;
     N115: TMenuItem;
-    JvTimer1: TJvTimer;
-    JvTimer3: TJvTimer;
-    JvTimer4: TJvTimer;
-    JvDragDrop1: TJvDragDrop;
     N119: TMenuItem;
     N120: TMenuItem;
     N122: TMenuItem;
@@ -139,8 +136,6 @@ type
     N100: TMenuItem;
     N102: TMenuItem;
     N135: TMenuItem;
-    SynEditRegexSearch1: TSynEditRegexSearch;
-    SynEditSearch1: TSynEditSearch;
     N141: TMenuItem;
     N26: TMenuItem;
     N27: TMenuItem;
@@ -148,13 +143,8 @@ type
     N29: TMenuItem;
     N31: TMenuItem;
     N48: TMenuItem;
-    FontDialog: TFontDialog;
     N51: TMenuItem;
-    N52: TMenuItem;
     N32: TMenuItem;
-    JvTrayIcon1: TJvTrayIcon;
-    Save: TSaveTextFileDialog;
-    dlg1: TJvRunDialog;
     N38: TMenuItem;
     N18: TMenuItem;
     N33: TMenuItem;
@@ -165,9 +155,6 @@ type
     N41: TMenuItem;
     N42: TMenuItem;
     N43: TMenuItem;
-    Recent: TJvMRUManager;
-    AppIni: TJvAppIniFileStorage;
-    FormIni: TJvFormStorage;
     N44: TMenuItem;
     N47: TMenuItem;
     N53: TMenuItem;
@@ -177,59 +164,6 @@ type
     N62: TMenuItem;
     N63: TMenuItem;
     N64: TMenuItem;
-    SynCpp: TSynCppSyn;
-    SynEif: TSynEiffelSyn;
-    SynFor: TSynFortranSyn;
-    SynDef: TSynGeneralSyn;
-    SynJava: TSynJavaSyn;
-    SynMod: TSynM3Syn;
-    SynPas: TSynPasSyn;
-    SynBas: TSynVBSyn;
-    SynCobol: TSynCobolSyn;
-    SynCS: TSynCSSyn;
-    SynCss: TSynCssSyn;
-    SynHtml: TSynHTMLSyn;
-    SynJS: TSynJScriptSyn;
-    SynPhp: TSynPHPSyn;
-    SynVbs: TSynVBScriptSyn;
-    SynXml: TSynXMLSyn;
-    SynVrml: TSynVrml97Syn;
-    SynAwk: TSynAWKSyn;
-    SynBat: TSynBatSyn;
-    SynKix: TSynKixSyn;
-    SynPerl: TSynPerlSyn;
-    SynPy: TSynPythonSyn;
-    SynTcl: TSynTclTkSyn;
-    SynGws: TSynGWScriptSyn;
-    SynRuby: TSynRubySyn;
-    SynUSh: TSynUNIXShellScriptSyn;
-    SynCac: TSynCACSyn;
-    SynCch: TSynCacheSyn;
-    SynFox: TSynFoxproSyn;
-    SynSql: TSynSQLSyn;
-    SynSdd: TSynSDDSyn;
-    SynDsp: TSynADSP21xxSyn;
-    SynAsm: TSynAsmSyn;
-    SynHc: TSynHC11Syn;
-    SynSt: TSynSTSyn;
-    SynGem: TSynDmlSyn;
-    SynModa: TSynModelicaSyn;
-    SynSml: TSynSMLSyn;
-    SynDfm: TSynDfmSyn;
-    SynIni: TSynIniSyn;
-    SynInno: TSynInnoSyn;
-    SynBaan: TSynBaanSyn;
-    SynGal: TSynGalaxySyn;
-    SynPrg: TSynProgressSyn;
-    SynMsg: TSynMsgSyn;
-    SynIdl: TSynIdlSyn;
-    SynCpm: TSynCPMSyn;
-    SynTex: TSynTeXSyn;
-    SynHas: TSynHaskellSyn;
-    SynLdr: TSynLDRSyn;
-    SynDot: TSynDOTSyn;
-    SynRc: TSynRCSyn;
-    N73: TMenuItem;
     N74: TMenuItem;
     N75: TMenuItem;
     N79: TMenuItem;
@@ -289,17 +223,95 @@ type
     N162: TMenuItem;
     N163: TMenuItem;
     N164: TMenuItem;
-    PrintDialog: TPrintDialog;
-    PrinterSetupDialog: TPrinterSetupDialog;
     N166: TMenuItem;
     N167: TMenuItem;
     N168: TMenuItem;
     N7: TMenuItem;
-    PageDlg: TPageSetupDialog;
     N165: TMenuItem;
     N169: TMenuItem;
     N170: TMenuItem;
+    N78: TMenuItem;
+    N8: TMenuItem;
+    JvTimer1: TJvTimer;
+    JvTimer3: TJvTimer;
+    JvTimer4: TJvTimer;
+    JvDragDrop1: TJvDragDrop;
+    SynEditRegexSearch1: TSynEditRegexSearch;
+    SynEditSearch1: TSynEditSearch;
+    FontDialog: TFontDialog;
+    JvTrayIcon1: TJvTrayIcon;
+    Save: TSaveTextFileDialog;
+    dlg1: TJvRunDialog;
+    Recent: TJvMRUManager;
+    AppIni: TJvAppIniFileStorage;
+    FormIni: TJvFormStorage;
+    SynCpp: TSynCppSyn;
+    SynEif: TSynEiffelSyn;
+    SynFor: TSynFortranSyn;
+    SynDef: TSynGeneralSyn;
+    SynJava: TSynJavaSyn;
+    SynMod: TSynM3Syn;
+    SynPas: TSynPasSyn;
+    SynBas: TSynVBSyn;
+    SynCobol: TSynCobolSyn;
+    SynCS: TSynCSSyn;
+    SynCss: TSynCssSyn;
+    SynHtml: TSynHTMLSyn;
+    SynJS: TSynJScriptSyn;
+    SynPhp: TSynPHPSyn;
+    SynVbs: TSynVBScriptSyn;
+    SynXml: TSynXMLSyn;
+    SynVrml: TSynVrml97Syn;
+    SynAwk: TSynAWKSyn;
+    SynBat: TSynBatSyn;
+    SynKix: TSynKixSyn;
+    SynPerl: TSynPerlSyn;
+    SynPy: TSynPythonSyn;
+    SynTcl: TSynTclTkSyn;
+    SynGws: TSynGWScriptSyn;
+    SynRuby: TSynRubySyn;
+    SynUSh: TSynUNIXShellScriptSyn;
+    SynCac: TSynCACSyn;
+    SynCch: TSynCacheSyn;
+    SynFox: TSynFoxproSyn;
+    SynSql: TSynSQLSyn;
+    SynSdd: TSynSDDSyn;
+    SynDsp: TSynADSP21xxSyn;
+    SynAsm: TSynAsmSyn;
+    SynHc: TSynHC11Syn;
+    SynSt: TSynSTSyn;
+    SynGem: TSynDmlSyn;
+    SynModa: TSynModelicaSyn;
+    SynSml: TSynSMLSyn;
+    SynDfm: TSynDfmSyn;
+    SynIni: TSynIniSyn;
+    SynInno: TSynInnoSyn;
+    SynBaan: TSynBaanSyn;
+    SynGal: TSynGalaxySyn;
+    SynPrg: TSynProgressSyn;
+    SynMsg: TSynMsgSyn;
+    SynIdl: TSynIdlSyn;
+    SynCpm: TSynCPMSyn;
+    SynTex: TSynTeXSyn;
+    SynHas: TSynHaskellSyn;
+    SynLdr: TSynLDRSyn;
+    SynDot: TSynDOTSyn;
+    SynRc: TSynRCSyn;
+    PrintDialog: TPrintDialog;
+    PrinterSetupDialog: TPrinterSetupDialog;
+    PageDlg: TPageSetupDialog;
+    N171: TMenuItem;
+    N173: TMenuItem;
+    N174: TMenuItem;
+    N175: TMenuItem;
+    N176: TMenuItem;
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
+    procedure JvDragDrop1Drop(Sender: TObject; Pos: TPoint;
+      Value: TStrings);
+    procedure JvTimer1Timer(Sender: TObject);
+    procedure JvTimer3Timer(Sender: TObject);
+    procedure JvTimer4Timer(Sender: TObject);
     procedure N2Click(Sender: TObject);
     procedure N3Click(Sender: TObject);
     procedure N4Click(Sender: TObject);
@@ -310,26 +322,21 @@ type
     procedure N15Click(Sender: TObject);
     procedure N16Click(Sender: TObject);
     procedure N17Click(Sender: TObject);
-    procedure N50Click(Sender: TObject);
-    procedure N57Click(Sender: TObject);
+    procedure N30Click(Sender: TObject);
+    procedure N37Click(Sender: TObject);
     procedure N39Click(Sender: TObject);
     procedure N46Click(Sender: TObject);
-    procedure N30Click(Sender: TObject);
+    procedure N50Click(Sender: TObject);
     procedure N56Click(Sender: TObject);
+    procedure N57Click(Sender: TObject);
     procedure N59Click(Sender: TObject);
     procedure N86Click(Sender: TObject);
     procedure N87Click(Sender: TObject);
     procedure N90Click(Sender: TObject);
-    procedure N37Click(Sender: TObject);
     procedure N99Click(Sender: TObject);
     procedure N104Click(Sender: TObject);
     procedure N105Click(Sender: TObject);
     procedure N114Click(Sender: TObject);
-    procedure JvTimer1Timer(Sender: TObject);
-    procedure JvTimer3Timer(Sender: TObject);
-    procedure JvTimer4Timer(Sender: TObject);
-    procedure JvDragDrop1Drop(Sender: TObject; Pos: TPoint;
-      Value: TStrings);
     procedure N119Click(Sender: TObject);
     procedure N122Click(Sender: TObject);
     procedure N124Click(Sender: TObject);
@@ -339,7 +346,6 @@ type
     procedure N80Click(Sender: TObject);
     procedure N100Click(Sender: TObject);
     procedure N102Click(Sender: TObject);
-    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure N141Click(Sender: TObject);
     procedure N26Click(Sender: TObject);
     procedure N27Click(Sender: TObject);
@@ -373,8 +379,13 @@ type
     procedure N166Click(Sender: TObject);
     procedure N169Click(Sender: TObject);
     procedure N170Click(Sender: TObject);
+    procedure N78Click(Sender: TObject);
+    procedure N8Click(Sender: TObject);
+    procedure N173Click(Sender: TObject);
+    procedure N174Click(Sender: TObject);
+    procedure N175Click(Sender: TObject);
   private
-    fSearchFromCaret, gbSearchBackwards, gbSearchCaseSensitive, sddir, sudir,
+    fSearchFromCaret, gbSearchBackwards, gbSearchCaseSensitive,
     gbSearchFromCaret, gbSearchRegex, gbSearchSelectionOnly, prevnoex, psafc,
     gbSearchWholeWords, gbTempSearchBackwards, usesyn: Boolean;
     prev, curcp: Integer;
@@ -402,17 +413,16 @@ type
     procedure ReplaceAgainExecute;
     procedure ReplaceBackwardsExecute;
     procedure WorkParams;
-    procedure MySetTextStr(const Value: string);
-    procedure MyLoadFromStream(Stream: TStream; Encoding: TEncoding);
     procedure MyLoadFromFile(const FileName: TFileName; Encoding: TEncoding);
     procedure MySaveToFileEnc(const FileName: TFileName; Encoding: TEncoding);
     procedure MySaveToFile(const FileName: TFileName; seid, fid: Integer);
     procedure MySetSynByFid(fid: Byte);
     procedure MySetSynByExt(fExt: string);
-    procedure MyShowDroppedDlg(const fValues: TStrings);
     procedure MyScanDropFiles(const fValues: TStrings);
+    procedure MyShowDroppedDlg(const fValues: TStrings);
     procedure MyOpenDropped(const FileName: TFileName);
   public
+    sddir, sudir: Boolean;
     mylang: string;
   end;
 
@@ -443,7 +453,7 @@ implementation
 
 uses
   uAboutDlg, uSearchDlg, uReplaceDlg, uEncloseSelDlg, uConfirmReplaceDlg,
-  uSettingsDlg, uGoTo, uDropped, uPrintPreview;
+  uSettingsDlg, uGoTo, uDropped, uPrintPreview, uFileAssocDlg;
 
 {$R *.DFM}
 
@@ -676,71 +686,53 @@ begin
   MyScanDropFiles(AFiles);
 end;
 
-procedure TMain.MySetTextStr(const Value: string);
-var
-  P, Start, LB: PChar;
-  S: string;
-  LineBreakLen: Integer;
-begin
-  Edit.Lines.BeginUpdate;
-  try
-    Edit.Lines.Clear;
-    P := Pointer(Value);
-    if P <> nil then
-      if CompareStr(Edit.Lines.LineBreak, sLineBreak) = 0 then begin
-        while P^ <> #0 do begin
-          Start := P;
-          while not (P^ in [#0, #10, #13]) do Inc(P);
-          SetString(S, Start, P - Start);
-          Edit.Lines.Add(S);
-          if P^ = #13 then Inc(P);
-          if P^ = #10 then Inc(P);
-        end;
-      end else begin
-        LineBreakLen := Length(Edit.Lines.LineBreak);
-        while P^ <> #0 do begin
-          Start := P;
-          LB := AnsiStrPos(P, PChar(Edit.Lines.LineBreak));
-          while (P^ <> #0) and (P <> LB) do Inc(P);
-          SetString(S, Start, P - Start);
-          Edit.Lines.Add(S);
-          if P = LB then Inc(P, LineBreakLen);
-        end;
-      end;
-  finally
-    Edit.Lines.EndUpdate;
-  end;
-end;
-
-procedure TMain.MyLoadFromStream(Stream: TStream; Encoding: TEncoding);
-var
-  Size: Integer;
-  Buffer: TBytes;
-begin
-  Edit.Lines.BeginUpdate;
-  try
-    Size := Stream.Size - Stream.Position;
-    SetLength(Buffer, Size);
-    Stream.Read(Buffer[0], Size);
-    Size := TEncoding.GetBufferEncoding(Buffer, Encoding);
-    MySetTextStr(Encoding.GetString(Buffer, Size, Length(Buffer) - Size));
-    if Encoding = Encoding.Unicode then curcp := 2 else
-    if Encoding = Encoding.BigEndianUnicode then curcp := 3 else
-    if Encoding = Encoding.UTF8 then curcp := 4 else
-    if Encoding = Encoding.UTF7 then curcp := 5 else
-    if Encoding = Encoding.ASCII then curcp := 1 else curcp := 0;
-  finally
-    Edit.Lines.EndUpdate;
-  end;
-end;
-
 procedure TMain.MyLoadFromFile(const FileName: TFileName; Encoding: TEncoding);
 var
+  Size, LineBreakLen: Integer;
+  P, Start, LB: PChar;
+  S: string;
+  Buffer: TBytes;
   Stream: TStream;
 begin
   Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
   try
-    MyLoadFromStream(Stream, Encoding);
+    Edit.Lines.BeginUpdate;
+    try
+      Size := Stream.Size - Stream.Position;
+      SetLength(Buffer, Size);
+      Stream.Read(Buffer[0], Size);
+      Size := TEncoding.GetBufferEncoding(Buffer, Encoding);
+      Edit.Lines.Clear;
+      P := Pointer(Encoding.GetString(Buffer, Size, Length(Buffer) - Size));
+      if P <> nil then
+        if CompareStr(Edit.Lines.LineBreak, sLineBreak) = 0 then begin
+          while P^ <> #0 do begin
+            Start := P;
+            while not (P^ in [#0, #10, #13]) do Inc(P);
+            SetString(S, Start, P - Start);
+            Edit.Lines.Add(S);
+            if P^ = #13 then Inc(P);
+            if P^ = #10 then Inc(P);
+          end;
+        end else begin
+          LineBreakLen := Length(Edit.Lines.LineBreak);
+          while P^ <> #0 do begin
+            Start := P;
+            LB := AnsiStrPos(P, PChar(Edit.Lines.LineBreak));
+            while (P^ <> #0) and (P <> LB) do Inc(P);
+            SetString(S, Start, P - Start);
+            Edit.Lines.Add(S);
+            if P = LB then Inc(P, LineBreakLen);
+          end;
+        end;
+      if Encoding = Encoding.Unicode then curcp := 2 else
+      if Encoding = Encoding.BigEndianUnicode then curcp := 3 else
+      if Encoding = Encoding.UTF8 then curcp := 4 else
+      if Encoding = Encoding.UTF7 then curcp := 5 else
+      if Encoding = Encoding.ASCII then curcp := 1 else curcp := 0;
+    finally
+      Edit.Lines.EndUpdate;
+    end;
     myfsize := Stream.Size;
     MyFileName := FileName;
   finally
@@ -1148,7 +1140,7 @@ begin
                 '\n', #13#10, [rfReplaceAll]);
   mysg5 := StringReplace(langini.ReadString('Main', '83',
       'File is no more exists.\nSave the file?'), '\n', #13#10, [rfReplaceAll]);
-  N44.Caption := langini.ReadString('Main', '84', 'Codepage');
+  N44.Caption := langini.ReadString('Main', '84', 'Encoding');
   mysg7 := StringReplace(langini.ReadString('Main', '85',
             'File has changed.\nSave the file?'), '\n', #13#10, [rfReplaceAll]);
   N32.Caption := langini.ReadString('Main', '86', 'Settings');
@@ -1166,6 +1158,11 @@ begin
   N165.Caption := langini.ReadString('Main', '98', 'Data');
   N169.Caption := langini.ReadString('Main', '99', 'Computer name');
   N170.Caption := langini.ReadString('Main', '100', 'User name');
+  N78.Caption := langini.ReadString('Main', '101', 'Copy filepath');
+  N8.Caption := langini.ReadString('Main', '102', 'Encoding identifier');
+  N174.Caption := langini.ReadString('Main', '103', 'Associations');
+  N173.Caption := langini.ReadString('Main', '104', 'Word wrap');
+  N175.Caption := langini.ReadString('Main', '105', 'Open all');
   N19.Caption := N11.Caption;
   N20.Caption := N12.Caption;
   N22.Caption := N17.Caption;
@@ -1178,6 +1175,7 @@ begin
   N85.Caption := N59.Caption;
   N95.Caption := N57.Caption;
   N96.Caption := N46.Caption;
+  N171.Caption := N78.Caption;
   Save.FileName := myunk + '.txt';
   langini.Free;
   for I := 1 to N117.Count - 1 do if CompareStr(N117.Items[i].Hint, mylang) = 0
@@ -1213,6 +1211,7 @@ begin
   N4.Caption := 'Save';
   N5.Caption := 'Save as...';
   N7.Caption := 'Print';
+  N8.Caption := 'Encoding identifier';
   N10.Caption := 'Edit';
   N11.Caption := 'Undo';
   N12.Caption := 'Redo';
@@ -1237,7 +1236,7 @@ begin
   N41.Caption := 'Normal';
   N42.Caption := 'Column';
   N43.Caption := 'Line';
-  N44.Caption := 'Codepage';
+  N44.Caption := 'Encoding';
   N46.Caption := 'Clear clipboard';
   N48.Caption := 'Color under cursor (RGB)';
   N49.Caption := 'Help';
@@ -1258,6 +1257,7 @@ begin
   N75.Caption := 'Default';
   N76.Caption := 'Sentence case';
   N77.Caption := 'Insert';
+  N78.Caption := 'Copy filepath';
   N80.Caption := 'Open with...';
   N86.Caption := 'Indent';
   N87.Caption := 'Unindent';
@@ -1289,6 +1289,9 @@ begin
   N168.Caption := 'Print preview';
   N169.Caption := 'Computer name';
   N170.Caption := 'User name';
+  N173.Caption := 'Word wrap';
+  N174.Caption := 'Associations';
+  N175.Caption := 'Open all';
   N19.Caption := N11.Caption;
   N20.Caption := N12.Caption;
   N22.Caption := N17.Caption;
@@ -1301,6 +1304,7 @@ begin
   N85.Caption := N59.Caption;
   N95.Caption := N57.Caption;
   N96.Caption := N46.Caption;
+  N171.Caption := N78.Caption;
   Save.FileName := myunk + '.txt';
   mylang := '';
 end;
@@ -1617,7 +1621,8 @@ begin
     if not (i = 0) then begin
       if (ParamStr(i)[1]= '/') then begin
         if CompareText(ParamStr(i), '/n') = 0 then ToCreate := True;
-        if CompareText(ParamStr(i), '/p') = 0 then ToPrint := True;
+        if CompareText(ParamStr(i), '/p') = 0
+        then ToPrint := Printer.Printers.Count > 0;
         if CompareText(ParamStr(i), '/c') = 0 then ToPaste := True;
         if CompareText(ParamStr(i), '/q') = 0 then ToQuit := True;
       end else if FileExists(ParamStr(i)) then ParamFile := ParamStr(i);
@@ -1690,7 +1695,6 @@ begin
   curcp := 0;
   JvTrayIcon1.Icon := Application.Icon;
   dlg1.Icon := Application.Icon;
-  Edit.AdditionalIdentChars := ['À'..'ß'] + ['à'..'ÿ'];
 end;
 
 procedure TMain.ReadFromAppStorage(AppStorage: TJvCustomAppStorage;
@@ -1736,6 +1740,7 @@ begin
     shlist.Free;
   end;
   N162.Checked := Edit.ReadOnly;
+  N173.Checked := Edit.WordWrap;
   LoadAppLoc;
   WorkParams;
 end;
@@ -1956,6 +1961,73 @@ begin
   FreeMem(p);
 end;
 
+procedure TMain.N173Click(Sender: TObject);
+begin
+  Edit.WordWrap := not Edit.WordWrap;
+  N173.Checked := Edit.WordWrap;
+end;
+
+procedure TMain.N174Click(Sender: TObject);
+var
+  i: Integer;
+  a: TRegistry;
+  fadlg: TFAssoc;
+begin
+  fadlg := TFAssoc.Create(Self);
+  with fadlg do try
+    MyLoadLoc(fadlg, 'FAssocDlg', False);
+    for I := 0 to chklst1.Count - 1 do begin
+      a := TRegistry.Create(KEY_READ);
+      try
+        a.RootKey := HKEY_CLASSES_ROOT;
+        if a.OpenKeyReadOnly(chklst1.Items[i]) then begin
+          chklst1.Checked[i] := a.ReadString('') = 'BirEdit.File';
+          a.CloseKey;
+        end;
+      finally
+        a.Free;
+      end;
+    end;
+    if ShowModal = mrOk then begin
+      for I := 0 to chklst1.Count - 1 do begin
+        a := TRegistry.Create;
+        try
+          a.RootKey := HKEY_CLASSES_ROOT;
+          if a.OpenKey(chklst1.Items[i], True) then begin
+            if chklst1.Checked[i] = True then begin
+              if not (a.ReadString('') = 'BirEdit.File') then begin
+                a.WriteString('BirEdit.bak', a.ReadString(''));
+                a.WriteString('', 'BirEdit.File');
+              end;
+            end else begin
+              if a.ReadString('') = 'BirEdit.File' then begin
+                a.WriteString('', a.ReadString('BirEdit.bak'));
+                a.DeleteValue('BirEdit.bak');
+              end;
+            end;
+          end;
+        finally
+          a.Free;
+        end;
+      end;
+    end;
+  finally
+    fadlg.Free;
+  end;
+end;
+
+procedure TMain.N175Click(Sender: TObject);
+var
+  i: Integer;
+begin
+  MyOpenDropped(Recent.Strings.Strings[0]);
+  if Recent.Strings.Count > 1 then for I := 1 to Recent.Strings.Count - 1
+  do ShellExecute(Self.Handle, 'open', PChar(Application.ExeName),
+                    PChar('"' + Recent.Strings.Strings[i] + '"'),
+                  PChar('"' + ExtractFilePath(Recent.Strings.Strings[i]) + '"'),
+                    SW_SHOWNORMAL);
+end;
+
 procedure TMain.N17Click(Sender: TObject);
 begin
   Edit.CutToClipboard;
@@ -1996,6 +2068,8 @@ end;
 
 procedure TMain.N51Click(Sender: TObject);
 begin
+  if Printer.Printers.Count > 0 then FontDialog.Device := fdBoth
+  else FontDialog.Device :=  fdScreen;
   FontDialog.Font.Assign(Edit.Font);
   if FontDialog.Execute then begin
     Edit.Font.Assign(FontDialog.Font);
@@ -2140,6 +2214,9 @@ begin
     Cmb4 := Byte(Edit.SelectionMode);
     for I := 0 to 26
     do OptsList.Checked[i] := TSynEditorOption(i) in Edit.Options;
+    Check16.Enabled := Printer.Printers.Count > 0;
+    Check17.Enabled := Printer.Printers.Count > 0;
+    Check18.Enabled := Printer.Printers.Count > 0;
     if ShowModal = mrOk then begin
       Edit.ReadOnly := Chk1;
       Edit.Gutter.UseFontStyle := Chk2;
@@ -2179,6 +2256,7 @@ begin
       N40.Items[Byte(Edit.SelectionMode)].Checked := True;
 	    N42.Enabled := not (eoAltSetsColumnMode in Edit.Options);
       N162.Checked := Edit.ReadOnly;
+      N173.Checked := Edit.WordWrap;
       if usesyn then begin
         if FileExists(MyFileName) then MySetSynByExt(ExtractFileExt(MyFileName))
         else MySetSynByFid(1);
@@ -2222,6 +2300,11 @@ begin
   if psafc then Edit.CaretXY := bs;
 end;
 
+procedure TMain.N78Click(Sender: TObject);
+begin
+  Clipboard.AsText := MyFileName;
+end;
+
 procedure TMain.N7Click(Sender: TObject);
 begin
   PrintDialog.Copies := synprint1.Copies;
@@ -2243,6 +2326,22 @@ procedure TMain.N87Click(Sender: TObject);
 begin
   if Edit.SelLength > 0 then Edit.ExecuteCommand(611, 'A', @Edit.Lines)
   else Edit.ExecuteCommand(613, 'A', @Edit.Lines);
+end;
+
+procedure TMain.N8Click(Sender: TObject);
+var
+  bs: TBufferCoord;
+begin
+  if Edit.SelAvail then bs := Edit.BlockBegin else bs := Edit.CaretXY;
+  case curcp of
+    1: Edit.SelText := 'ASCII';
+    2: Edit.SelText := 'UTF-16 little endian';
+    3: Edit.SelText := 'UTF-16 big endian';
+    4: Edit.SelText := 'UTF-8';
+    5: Edit.SelText := 'UTF-7';
+    else Edit.SelText := 'Ansi';
+  end;
+  if psafc then Edit.CaretXY := bs;
 end;
 
 procedure TMain.N90Click(Sender: TObject);
@@ -2375,12 +2474,13 @@ end;
 
 procedure TMain.JvTimer4Timer(Sender: TObject);
 var
-  cpa, fe, fm ,lc, nro, stxt, rtxt, sav, cun, cre: Boolean;
+  cpa, fe, fm ,lc, nro, stxt, rtxt, sav, cun, cre, hpt: Boolean;
   capt: string;
 begin
   fm := Edit.Modified;
+  hpt := Printer.Printers.Count > 0;
   fe := FileExists(MyFileName);
-  lc := (Edit.Lines.Count > 0);
+  lc := Edit.Lines.Count > 0;
   nro := not Edit.ReadOnly;
   sav := Edit.SelAvail;
   cpa := Edit.CanPaste;
@@ -2389,7 +2489,7 @@ begin
   stxt := not (gsSearchText = '');
   rtxt := not (gsReplaceText = '');
   N4.Enabled := fe and fm and nro;
-  N7.Enabled := lc;
+  N7.Enabled := lc and hpt;
   N11.Enabled := cun;
   N12.Enabled := cre;
   N14.Enabled := lc;
@@ -2424,6 +2524,7 @@ begin
   N72.Enabled := sav and nro;
   N76.Enabled := sav and nro;
   N77.Enabled := nro;
+  N78.Enabled := fe;
   N80.Enabled := fe;
   N85.Enabled := lc and nro;
   N88.Enabled := nro;
@@ -2438,7 +2539,10 @@ begin
   N124.Enabled := fe;
   N127.Enabled := Recent.Strings.Count > 0;
   N163.Enabled := fe;
-  N168.Enabled := lc;
+  N166.Enabled := hpt;
+  N167.Enabled := hpt;
+  N168.Enabled := lc and hpt;
+  N171.Enabled := fe;
   if fe then begin
     if ExtractFilePath(MyFileName) = ''
     then capt := appath + MyFileName+ ' - BirEdit'

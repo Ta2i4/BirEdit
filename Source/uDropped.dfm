@@ -44,16 +44,19 @@ object DropDlg: TDropDlg
     object N1: TMenuItem
       Tag = 2001
       Caption = 'Check all'
+      ShortCut = 16449
       OnClick = N1Click
     end
     object N2: TMenuItem
       Tag = 2002
       Caption = 'Uncheck all'
+      ShortCut = 16469
       OnClick = N2Click
     end
     object N3: TMenuItem
       Tag = 2003
       Caption = 'Invert'
+      ShortCut = 16457
       OnClick = N3Click
     end
   end
@@ -63,5 +66,11 @@ object DropDlg: TDropDlg
     OnTimer = JvTmrTimer
     Left = 200
     Top = 104
+  end
+  object dragdrop1: TJvDragDrop
+    DropTarget = Owner
+    OnDrop = dragdrop1Drop
+    Left = 376
+    Top = 184
   end
 end

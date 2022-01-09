@@ -4,7 +4,7 @@ inherited ReplaceForm: TReplaceForm
   ClientWidth = 336
   OldCreateOrder = True
   ExplicitWidth = 342
-  ExplicitHeight = 233
+  ExplicitHeight = 235
   PixelsPerInch = 96
   TextHeight = 13
   object ReplaceLbl: TLabel [1]
@@ -40,7 +40,6 @@ inherited ReplaceForm: TReplaceForm
     Top = 37
     Width = 247
     Height = 21
-    ItemHeight = 13
     TabOrder = 1
   end
 end
