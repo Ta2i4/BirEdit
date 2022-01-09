@@ -7,29 +7,29 @@ inherited ReplaceForm: TReplaceForm
   ExplicitHeight = 239
   PixelsPerInch = 96
   TextHeight = 13
-  object TntLabel2: TTntLabel [1]
+  object ReplaceLbl: TTntLabel [1]
     Left = 8
     Top = 41
     Width = 65
     Height = 13
     Caption = 'Replace with:'
   end
-  inherited TntGroupBox1: TTntGroupBox
+  inherited OptsGrp: TTntGroupBox
     Top = 70
     TabOrder = 2
     ExplicitTop = 70
   end
-  inherited TntRadioGroup1: TTntRadioGroup
+  inherited DirectGrp: TTntRadioGroup
     Top = 70
     TabOrder = 3
     ExplicitTop = 70
   end
-  inherited TntButton1: TTntButton
+  inherited OkBtn: TTntButton
     Top = 175
     TabOrder = 4
     ExplicitTop = 175
   end
-  inherited TntButton2: TTntButton
+  inherited CancelBtn: TTntButton
     Top = 175
     TabOrder = 5
     ExplicitTop = 175

@@ -25,7 +25,7 @@ All Rights Reserved.
 
 Contributors to the SynEdit project are listed in the Contributors.txt file.
 
-$Id: dlgReplaceText.pas,v 1.3 2008/11/05 12:37:25 rmay Exp $
+$Id: dlgReplaceText.pas,v 1.3 2008/11/07 12:29:25 rmay Exp $
 
 You may retrieve the latest version of this file at the SynEdit home page,
 located at http://SynEdit.SourceForge.net
@@ -44,7 +44,7 @@ uses
 
 type
   TReplaceForm = class(TSearchForm)
-    TntLabel2: TTntLabel;
+    ReplaceLbl: TTntLabel;
     TntComboBox2: TTntComboBox;
     procedure TntFormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
@@ -52,11 +52,9 @@ type
     function GetReplaceTextHistory: UnicodeString;
     procedure SetReplaceText(Value: UnicodeString);
     procedure SetReplaceTextHistory(Value: UnicodeString);
-    { Private declarations }
   public
     property ReplaceText: UnicodeString read GetReplaceText write SetReplaceText;
     property ReplaceTextHistory: UnicodeString read GetReplaceTextHistory write SetReplaceTextHistory;
-    { Public declarations }
   end;
 
 var

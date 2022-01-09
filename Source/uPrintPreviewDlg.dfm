@@ -37,82 +37,78 @@ object Preview: TPreview
       Width = 3
       Height = 13
     end
-    object TntButton1: TTntButton
-      Left = 72
-      Top = 32
-      Width = 25
+    object NextBtn: TTntButton
+      Left = 264
+      Top = 33
+      Width = 120
       Height = 25
-      Hint = 'Next Page'
-      Caption = '>'
+      Caption = 'Next'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -13
+      Font.Height = -11
       Font.Name = 'MS Sans Serif'
-      Font.Style = [fsBold]
+      Font.Style = []
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
-      OnClick = TntButton1Click
+      OnClick = NextBtnClick
     end
-    object TntButton2: TTntButton
-      Left = 40
-      Top = 32
-      Width = 25
+    object PrevBtn: TTntButton
+      Left = 136
+      Top = 33
+      Width = 120
       Height = 25
-      Hint = 'Previous Page'
-      Caption = '<'
+      Caption = 'Previous'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -13
+      Font.Height = -11
       Font.Name = 'MS Sans Serif'
-      Font.Style = [fsBold]
+      Font.Style = []
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
-      OnClick = TntButton2Click
+      OnClick = PrevBtnClick
     end
-    object TntButton3: TTntButton
-      Left = 104
-      Top = 32
-      Width = 25
+    object LastBtn: TTntButton
+      Left = 392
+      Top = 33
+      Width = 120
       Height = 25
-      Hint = 'Last Page'
-      Caption = '>>'
+      Caption = 'Last'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -13
+      Font.Height = -11
       Font.Name = 'MS Sans Serif'
-      Font.Style = [fsBold]
+      Font.Style = []
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
       TabOrder = 3
-      OnClick = TntButton3Click
+      OnClick = LastBtnClick
     end
-    object TntButton4: TTntButton
+    object FirstBtn: TTntButton
       Left = 8
-      Top = 32
-      Width = 25
+      Top = 33
+      Width = 120
       Height = 25
-      Hint = 'First Page'
-      Caption = '<<'
+      Caption = 'First'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -13
+      Font.Height = -11
       Font.Name = 'MS Sans Serif'
-      Font.Style = [fsBold]
+      Font.Style = []
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
-      OnClick = TntButton4Click
+      OnClick = FirstBtnClick
     end
-    object TntButton5: TTntButton
+    object PrintBtn: TTntButton
       Left = 8
       Top = 64
-      Width = 121
+      Width = 120
       Height = 25
       Caption = 'Print'
       Font.Charset = DEFAULT_CHARSET
@@ -124,12 +120,12 @@ object Preview: TPreview
       ParentShowHint = False
       ShowHint = False
       TabOrder = 4
-      OnClick = TntButton5Click
+      OnClick = PrintBtnClick
     end
-    object TntButton6: TTntButton
+    object CloseBtn: TTntButton
       Left = 136
       Top = 64
-      Width = 121
+      Width = 120
       Height = 25
       Caption = 'Close'
       Default = True

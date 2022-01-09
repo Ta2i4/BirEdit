@@ -1,4 +1,4 @@
-object GoToBox: TGoToBox
+object GoToDlg: TGoToDlg
   Left = 0
   Top = 0
   BorderStyle = bsDialog
@@ -15,7 +15,7 @@ object GoToBox: TGoToBox
   Position = poDesktopCenter
   PixelsPerInch = 96
   TextHeight = 13
-  object TntLabel1: TTntLabel
+  object LineLbl: TTntLabel
     Left = 10
     Top = 10
     Width = 23
@@ -33,7 +33,7 @@ object GoToBox: TGoToBox
     TabOrder = 0
     OnKeyDown = JvSpinEdit1KeyDown
   end
-  object TntButton1: TTntButton
+  object OkBtn: TTntButton
     Left = 60
     Top = 40
     Width = 75

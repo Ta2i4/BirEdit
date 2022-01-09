@@ -16,10 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>
 
 
-The Original Code is uSettingsDlg.pas by Aleksey Tatuyko, released 2008-11-05.
+The Original Code is uSettingsDlg.pas by Aleksey Tatuyko, released 2008-11-07.
 All Rights Reserved.
 
-$Id: uSettingsDlg.pas,v 1.1.7.199 2008/11/05 12:40:00 maelh Exp $
+$Id: uSettingsDlg.pas,v 1.1.8.201 2008/11/07 12:31:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit home page,
 located at http://BirEdit.FireForge.net
@@ -37,29 +37,30 @@ uses
 
 type
   TSettingsDlg = class(TTntForm)
-    TntButton1: TTntButton;
-    TntButton2: TTntButton;
+    ApplyBtn: TTntButton;
+    CancelBtn: TTntButton;
     TntPageControl1: TTntPageControl;
-    TntTabSheet1: TTntTabSheet;
-    TntGroupBox1: TTntGroupBox;
-    TntCheckBox1: TTntCheckBox;
-    TntCheckBox2: TTntCheckBox;
-    TntCheckBox3: TTntCheckBox;
-    TntCheckBox4: TTntCheckBox;
-    TntCheckBox5: TTntCheckBox;
-    TntCheckBox7: TTntCheckBox;
-    TntTabSheet2: TTntTabSheet;
-    TntLabel2: TTntLabel;
+    DisplayTab: TTntTabSheet;
+    GutterGrp: TTntGroupBox;
+    GVisChk: TTntCheckBox;
+    GASizeChk: TTntCheckBox;
+    ShowLnNumChk: TTntCheckBox;
+    StartZeroChk: TTntCheckBox;
+    ShowLZChk: TTntCheckBox;
+    StatusBarChk: TTntCheckBox;
+    EditorTab: TTntTabSheet;
+    UndoLimLbl: TTntLabel;
     JvSpinEdit2: TJvSpinEdit;
-    TntGroupBox2: TTntGroupBox;
-    TntCheckBox6: TTntCheckBox;
-    TntCheckBox9: TTntCheckBox;
-    TntRadioGroup1: TTntRadioGroup;
-    TntCheckBox8: TTntCheckBox;
-    TntLabel1: TTntLabel;
+    OptGrp: TTntGroupBox;
+    ShSpChrChk: TTntCheckBox;
+    TabAsSpcChk: TTntCheckBox;
+    SelModeGrp: TTntRadioGroup;
+    WrapChk: TTntCheckBox;
+    TabSizeLbl: TTntLabel;
     JvSpinEdit1: TJvSpinEdit;
-    TntTabSheet3: TTntTabSheet;
-    TntRadioGroup2: TTntRadioGroup;
+    AppTab: TTntTabSheet;
+    SaveConfGrp: TTntRadioGroup;
+    TrayChk: TTntCheckBox;
   end;
 
 var

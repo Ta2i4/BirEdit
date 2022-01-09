@@ -16,10 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>
 
 
-The Original Code is uMainFrm.pas by Aleksey Tatuyko, released 2008-11-05.
+The Original Code is uMainFrm.pas by Aleksey Tatuyko, released 2008-11-07.
 All Rights Reserved.
 
-$Id: uMainFrm.pas,v 1.1.7.199 2008/11/05 12:37:00 maelh Exp $
+$Id: uMainFrm.pas,v 1.1.8.201 2008/11/07 12:39:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit home page,
 located at http://BirEdit.FireForge.net
@@ -38,7 +38,7 @@ uses
   JvComponentBase, JvDragDrop, TntWideStrUtils, TntFormatStrUtils, TntSystem,
   ShlObj, Forms, XPMan, Graphics, SynEditTypes, SynEditRegexSearch,
   SynEditMiscClasses, SynEditSearch, SynEditKeyCmds, Clipbrd, TntRegistry,
-  IniFiles;
+  IniFiles, JvTrayIcon, TntStdCtrls, TntExtCtrls;
 
 type
   TEditor = class(TTntForm)
@@ -178,6 +178,7 @@ type
     N51: TTntMenuItem;
     N52: TTntMenuItem;
     N32: TTntMenuItem;
+    JvTrayIcon1: TJvTrayIcon;
     procedure TntFormCreate(Sender: TObject);
     procedure N2Click(Sender: TObject);
     procedure N3Click(Sender: TObject);
@@ -266,11 +267,14 @@ type
     procedure N48Click(Sender: TObject);
     procedure N51Click(Sender: TObject);
     procedure N32Click(Sender: TObject);
+    procedure JvTrayIcon1Click(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure TntFormResize(Sender: TObject);
   private
     fSearchFromCaret, gbSearchBackwards, gbSearchCaseSensitive,
     gbSearchFromCaret, gbSearchRegex, gbSearchSelectionOnly,
     gbSearchTextAtCaret, gbSearchWholeWords, gbTempSearchBackwards,
-    prevnoex, useprogdir: Boolean;
+    prevnoex, useprogdir, ismax: Boolean;
     prev: Integer;
     bigsize, myfsize: Int64;
     MyFileName: TWideFileName;
@@ -291,6 +295,7 @@ type
     procedure LoadFromFile(const FileName: TWideFileName);
     procedure LoadMyApp;
     procedure LoadTranslate(const lang: UnicodeString);
+    procedure MyLoadLoc(AWnd: TTntForm; ASectionInIni:string);
     procedure MyOpenFile(OpenFileName: TWideFileName);
     procedure MySaveFile(SaveFileName: TWideFileName);
     procedure RecentItemClick(sender: TObject);
@@ -306,8 +311,8 @@ type
   end;
 
 const
-  progver='1.1.7';
-  progbld='199';
+  progver='1.1.8';
+  progbld='201';
 
 var
   CRCap: UnicodeString = 'Confirm replace';
@@ -335,9 +340,36 @@ implementation
 
 uses
   BirEditAdv, uPrintPreviewDlg, uAboutDlg, uSearchDlg, uReplaceDlg,
-  uEncloseSelDlg, uConfirmReplaceDlg, uGoToDlg, uSettingsDlg;
+  uEncloseSelDlg, uConfirmReplaceDlg, uSettingsDlg, uGoTo;
 
 {$R *.DFM}
+
+procedure TEditor.MyLoadLoc(AWnd: TTntForm; ASectionInIni:string);
+var
+  i,j: Integer;
+  langini: TIniFile;
+begin
+  if WideFileExists(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang) then begin
+    langini:=TIniFile.Create(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang);
+    AWnd.Caption:=langini.ReadString(ASectionInIni,'Title',AWnd.Caption);
+    if AWnd.ComponentCount<>0 then begin
+      for i:=0 to AWnd.ComponentCount-1 do begin
+        if AWnd.Components[i].ClassType=TTntButton then (AWnd.Components[i] as TTntButton).Caption:=langini.ReadString(ASectionInIni,AWnd.Components[i].Name,(AWnd.Components[i] as TTntButton).Caption);
+        if AWnd.Components[i].ClassType=TTntCheckBox then (AWnd.Components[i] as TTntCheckBox).Caption:=langini.ReadString(ASectionInIni,AWnd.Components[i].Name,(AWnd.Components[i] as TTntCheckBox).Caption);
+        if AWnd.Components[i].ClassType=TTntGroupBox then (AWnd.Components[i] as TTntGroupBox).Caption:=langini.ReadString(ASectionInIni,AWnd.Components[i].Name,(AWnd.Components[i] as TTntGroupBox).Caption);
+        if AWnd.Components[i].ClassType=TTntLabel then (AWnd.Components[i] as TTntLabel).Caption:=langini.ReadString(ASectionInIni,AWnd.Components[i].Name,(AWnd.Components[i] as TTntLabel).Caption);
+        if AWnd.Components[i].ClassType=TTntRadioGroup then begin
+          (AWnd.Components[i] as TTntRadioGroup).Caption:=langini.ReadString(ASectionInIni,AWnd.Components[i].Name,(AWnd.Components[i] as TTntRadioGroup).Caption);
+          if (AWnd.Components[i] as TTntRadioGroup).Items.Count>0 then
+            for j:=0 to (AWnd.Components[i] as TTntRadioGroup).Items.Count-1
+              do (AWnd.Components[i] as TTntRadioGroup).Items.Strings[j]:=langini.ReadString(ASectionInIni,AWnd.Components[i].Name+IntToStr(j),(AWnd.Components[i] as TTntRadioGroup).Items.Strings[j]);
+        end;
+        if AWnd.Components[i].ClassType=TTntTabSheet then (AWnd.Components[i] as TTntTabSheet).Caption:=langini.ReadString(ASectionInIni,AWnd.Components[i].Name,(AWnd.Components[i] as TTntTabSheet).Caption);
+      end;
+    end;
+    langini.Free;
+  end;
+end;
 
 {Load/Save the file}
 
@@ -385,32 +417,11 @@ end;
 {Find and Replace}
 
 procedure TEditor.ShowSearchReplaceDialog(AReplace: boolean);
-var
-  langini: TIniFile;
-  dlg:TSearchForm;
+var dlg:TSearchForm;
 begin
   if AReplace then dlg:=TReplaceForm.Create(Self) else dlg:=TSearchForm.Create(Self);
   with dlg do try
-    //localization
-    if WideFileExists(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang) then begin
-      langini:=TIniFile.Create(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang);
-      Caption:=langini.ReadString('SearchDlg','0','Search Text');
-      TntLabel1.Caption:=langini.ReadString('SearchDlg','1','Search for');
-      TntGroupBox1.Caption:=langini.ReadString('SearchDlg','2','Options');
-      TntCheckBox1.Caption:=langini.ReadString('SearchDlg','3','Case sensitivity');
-      TntCheckBox2.Caption:=langini.ReadString('SearchDlg','4','Whole words only');
-      TntCheckBox3.Caption:=langini.ReadString('SearchDlg','5','Search from caret');
-      TntCheckBox4.Caption:=langini.ReadString('SearchDlg','6','Selected text only');
-      TntCheckBox5.Caption:=langini.ReadString('SearchDlg','7','Regular expression');
-      TntRadioGroup1.Caption:=langini.ReadString('SearchDlg','8','Direction');
-      TntRadioGroup1.Items[0]:=langini.ReadString('SearchDlg','9','Forward');
-      TntRadioGroup1.Items[1]:=langini.ReadString('SearchDlg','10','Backward');
-      TntButton1.Caption:=langini.ReadString('SearchDlg','11','OK');
-      TntButton2.Caption:=langini.ReadString('SearchDlg','12','Cancel');
-      if AReplace then with dlg as TReplaceForm
-      do TntLabel2.Caption:=langini.ReadString('SearchDlg','13','Replace with:');
-      langini.Free;
-    end;
+    if AReplace then MyLoadLoc(dlg,'ReplaceDlg') else MyLoadLoc(dlg,'SearchDlg');
     // assign search options
     SearchBackwards:=(gbSearchBackwards or gbtempSearchBackwards);
     SearchCaseSensitive:=gbSearchCaseSensitive;
@@ -882,6 +893,8 @@ begin
   Editor.Top:=ini.ReadInteger('GUI','MainWnd.Top',Editor.Top);
   Editor.Left:=ini.ReadInteger('GUI','MainWnd.Left',Editor.Left);
   if ini.ReadBool('GUI','MainWnd.Maximized',False) then Editor.WindowState:=wsMaximized;
+  ismax:=(WindowState=wsMaximized);
+  JvTrayIcon1.Active:=ini.ReadBool('Application','MinimizeToTray',JvTrayIcon1.Active);
   Status.Visible:=ini.ReadBool('Application','ShowStatusBar',Status.Visible);
   Edit.WordWrap:=ini.ReadBool('Application','WordWrap',Edit.WordWrap);
   bigsize:=ini.ReadInteger('Editor','BigFile',1048576);
@@ -933,6 +946,7 @@ end;
 
 procedure TEditor.TntFormCreate(Sender: TObject);
 begin
+  JvTrayIcon1.Icon:=Application.Icon;
   JvDebugHandler1.LogFileName:=WideExtractFilePath(TntApplication.ExeName)+'error.log';
   LoadMyApp;
   WorkParams;
@@ -954,6 +968,7 @@ begin
     ini.WriteInteger('GUI','MainWnd.Width',Editor.Width);
   end;
   ini.WriteString('GUI','Lang',mylang);
+  ini.WriteBool('Application','MinimizeToTray',JvTrayIcon1.Active);
   ini.WriteBool('Application','ShowStatusBar',Status.Visible);
   ini.WriteBool('Application','WordWrap',Edit.WordWrap);
   ini.WriteBool('Editor','GutterAutoSize',Edit.Gutter.AutoSize);
@@ -983,6 +998,11 @@ begin
   ini.Free;
 end;
 
+procedure TEditor.TntFormResize(Sender: TObject);
+begin
+  ismax:=((WindowState=wsMinimized)and ismax)or(WindowState=wsMaximized);
+end;
+
 procedure TEditor.N2Click(Sender: TObject);
 begin
   Close;
@@ -1004,25 +1024,13 @@ begin
 end;
 
 procedure TEditor.N7Click(Sender: TObject);
-var
-  langini: TIniFile;
-  prwdlg: TPreview;
+var prwdlg: TPreview;
 begin
   synprint1.SynEdit:=Edit;
   synprint1.Wrap:=True;
   prwdlg:=TPreview.Create(Self);
   with prwdlg do try
-    if WideFileExists(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang) then begin
-      langini:=TIniFile.Create(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang);
-      Caption:=langini.ReadString('PrevDlg','0','Print Preview');
-      TntButton1.Hint:=langini.ReadString('PrevDlg','1','Next Page');
-      TntButton2.Hint:=langini.ReadString('PrevDlg','2','Previous Page');
-      TntButton3.Hint:=langini.ReadString('PrevDlg','3','Last Page');
-      TntButton4.Hint:=langini.ReadString('PrevDlg','4','First Page');
-      TntButton5.Caption:=langini.ReadString('PrevDlg','5','Print');
-      TntButton6.Caption:=langini.ReadString('PrevDlg','6','Close');
-      langini.Free;
-    end;
+    MyLoadLoc(prwdlg,'PrevDlg');
     SynEditPrintPreview.UpdatePreview;
     if ShowModal=mrOk then {do nothing} ;
   finally
@@ -1220,7 +1228,6 @@ begin
     TntLabel2.Caption:='Copyright (C) 2008 Aleksey Tatuyko';
     TntLabel3.Caption:='http://biredit.fireforge.net/';
     TntLabel4.Caption:='Build '+progbld;
-    //TntLabel5.Caption:='Windows '+IntToStr(Win32MajorVersion)+'.'+IntToStr(Win32MinorVersion)+'.'+IntToStr(Win32BuildNumber)+' ('+Win32CSDVersion+')';
     TntMemo1.Text:='Author:'
     +#13#10+'  Aleksey Tatuyko'
     +#13#10#13#10+'Thanks to:'
@@ -1328,19 +1335,20 @@ procedure TEditor.N31Click(Sender: TObject);
 var
   lnumber: TPoint;
   langini: TIniFile;
-  gtbox: TGoToBox;
+  gtbox: TGoToDlg;
 begin
-  gtbox:=TGoToBox.Create(Self);
+  gtbox:=TGoToDlg.Create(Self);
   with gtbox do try
     JvSpinEdit1.MaxValue:=Edit.Lines.Count;
     JvSpinEdit1.Value:=Edit.CaretY;
-    if WideFileExists(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang) then begin
+    MyLoadLoc(gtbox,'GoToDlg');
+    {if WideFileExists(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang) then begin
       langini:=TIniFile.Create(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang);
       Caption:=langini.ReadString('GoToDlg','0','Go to Line Number');
       TntLabel1.Caption:=langini.ReadString('GoToDlg','1','Line:');
       TntButton1.Caption:=langini.ReadString('GoToDlg','2','OK');
       langini.Free;
-    end;
+    end;}
     if ShowModal=mrOk then begin
       lnumber.Y:=JvSpinEdit1.AsInteger;
       lnumber.X:=1;
@@ -1352,73 +1360,44 @@ begin
 end;
 
 procedure TEditor.N32Click(Sender: TObject);
-var
-  langini: TIniFile;
-  setdlg: TSettingsDlg;
+var setdlg: TSettingsDlg;
 begin
   setdlg:=TSettingsDlg.Create(Self);
   with setdlg do try
-    TntRadioGroup2.ItemIndex:=Byte(useprogdir);
+    SaveConfGrp.ItemIndex:=Byte(useprogdir);
     JvSpinEdit1.AsInteger:=Edit.TabWidth;
     JvSpinEdit2.AsInteger:=Edit.MaxUndo;
-    TntCheckBox1.Checked:=Edit.Gutter.Visible;
-    TntCheckBox2.Checked:=Edit.Gutter.AutoSize;
-    TntCheckBox3.Checked:=Edit.Gutter.ShowLineNumbers;
-    TntCheckBox4.Checked:=Edit.Gutter.ZeroStart;
-    TntCheckBox5.Checked:=Edit.Gutter.LeadingZeros;
-    TntCheckBox6.Checked:=eoShowSpecialChars in Edit.Options;
-    TntCheckBox7.Checked:=Status.Visible;
-    TntCheckBox8.Checked:=Edit.WordWrap;
-    TntCheckBox9.Checked:=eoTabsToSpaces in Edit.Options;
-    TntRadioGroup1.ItemIndex:=Byte(Edit.SelectionMode);
-    if WideFileExists(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang) then begin
-      langini:=TIniFile.Create(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang);
-      Caption:=langini.ReadString('SettingsDlg','0',Caption);
-      TntButton1.Caption:=langini.ReadString('SettingsDlg','1',TntButton1.Caption);
-      TntButton2.Caption:=langini.ReadString('SettingsDlg','2',TntButton2.Caption);
-      TntTabSheet1.Caption:=langini.ReadString('SettingsDlg','3',TntTabSheet1.Caption);
-      TntLabel1.Caption:=langini.ReadString('SettingsDlg','4',TntLabel1.Caption);
-      TntLabel2.Caption:=langini.ReadString('SettingsDlg','5',TntLabel2.Caption);
-      TntGroupBox2.Caption:=langini.ReadString('SettingsDlg','6',TntGroupBox2.Caption);
-      TntCheckBox6.Caption:=langini.ReadString('SettingsDlg','7',TntCheckBox6.Caption);
-      TntCheckBox9.Caption:=langini.ReadString('SettingsDlg','8',TntCheckBox9.Caption);
-      TntTabSheet2.Caption:=langini.ReadString('SettingsDlg','9',TntTabSheet2.Caption);
-      TntRadioGroup2.Caption:=langini.ReadString('SettingsDlg','10',TntRadioGroup2.Caption);
-      TntTabSheet3.Caption:=langini.ReadString('SettingsDlg','11',TntTabSheet3.Caption);
-      TntCheckBox7.Caption:=langini.ReadString('SettingsDlg','12',TntCheckBox7.Caption);
-      TntCheckBox8.Caption:=langini.ReadString('SettingsDlg','13',TntCheckBox8.Caption);
-      TntGroupBox1.Caption:=langini.ReadString('SettingsDlg','14',TntGroupBox1.Caption);
-      TntCheckBox1.Caption:=langini.ReadString('SettingsDlg','15',TntCheckBox1.Caption);
-      TntCheckBox2.Caption:=langini.ReadString('SettingsDlg','16',TntCheckBox2.Caption);
-      TntCheckBox3.Caption:=langini.ReadString('SettingsDlg','17',TntCheckBox3.Caption);
-      TntCheckBox4.Caption:=langini.ReadString('SettingsDlg','18',TntCheckBox4.Caption);
-      TntCheckBox5.Caption:=langini.ReadString('SettingsDlg','19',TntCheckBox5.Caption);
-      TntRadioGroup1.Caption:=langini.ReadString('SettingsDlg','20',TntRadioGroup1.Caption);
-      TntRadioGroup1.Items.Strings[0]:=langini.ReadString('SettingsDlg','21',TntRadioGroup1.Items.Strings[0]);
-      TntRadioGroup1.Items.Strings[1]:=langini.ReadString('SettingsDlg','22',TntRadioGroup1.Items.Strings[1]);
-      TntRadioGroup1.Items.Strings[2]:=langini.ReadString('SettingsDlg','23',TntRadioGroup1.Items.Strings[2]);
-      TntRadioGroup2.Items.Strings[0]:=langini.ReadString('SettingsDlg','24',TntRadioGroup2.Items.Strings[0]);
-      TntRadioGroup2.Items.Strings[1]:=langini.ReadString('SettingsDlg','25',TntRadioGroup2.Items.Strings[1]);
-      langini.Free;
-    end;
+    GVisChk.Checked:=Edit.Gutter.Visible;
+    GASizeChk.Checked:=Edit.Gutter.AutoSize;
+    ShowLnNumChk.Checked:=Edit.Gutter.ShowLineNumbers;
+    StartZeroChk.Checked:=Edit.Gutter.ZeroStart;
+    ShowLZChk.Checked:=Edit.Gutter.LeadingZeros;
+    ShSpChrChk.Checked:=eoShowSpecialChars in Edit.Options;
+    StatusBarChk.Checked:=Status.Visible;
+    WrapChk.Checked:=Edit.WordWrap;
+    TabAsSpcChk.Checked:=eoTabsToSpaces in Edit.Options;
+    TrayChk.Checked:=JvTrayIcon1.Active;
+    SelModeGrp.ItemIndex:=Byte(Edit.SelectionMode);
+    MyLoadLoc(setdlg,'SettingsDlg');
     if ShowModal=mrOk then begin
       Edit.TabWidth:=JvSpinEdit1.AsInteger;
       Edit.MaxUndo:=JvSpinEdit2.AsInteger;
-      Edit.Gutter.Visible:=TntCheckBox1.Checked;
-      Edit.Gutter.AutoSize:=TntCheckBox2.Checked;
-      Edit.Gutter.ShowLineNumbers:=TntCheckBox3.Checked;
-      Edit.Gutter.ZeroStart:=TntCheckBox4.Checked;
-      Edit.Gutter.LeadingZeros:=TntCheckBox5.Checked;
-      if TntCheckBox6.Checked
+      Edit.Gutter.Visible:=GVisChk.Checked;
+      Edit.Gutter.AutoSize:=GASizeChk.Checked;
+      Edit.Gutter.ShowLineNumbers:=ShowLnNumChk.Checked;
+      Edit.Gutter.ZeroStart:=StartZeroChk.Checked;
+      Edit.Gutter.LeadingZeros:=ShowLZChk.Checked;
+      if ShSpChrChk.Checked
       then Edit.Options:=Edit.Options+[eoShowSpecialChars]
       else Edit.Options:=Edit.Options-[eoShowSpecialChars];
-      if TntCheckBox9.Checked
+      if TabAsSpcChk.Checked
       then Edit.Options:=Edit.Options+[eoTabsToSpaces]
       else Edit.Options:=Edit.Options-[eoTabsToSpaces];
-      Status.Visible:=TntCheckBox7.Checked;
-      Edit.WordWrap:=TntCheckBox8.Checked;
-      Edit.SelectionMode:=TSynSelectionMode(TntRadioGroup1.ItemIndex);
-      useprogdir:=Boolean(TntRadioGroup2.ItemIndex);
+      Status.Visible:=StatusBarChk.Checked;
+      Edit.WordWrap:=WrapChk.Checked;
+      JvTrayIcon1.Active:=TrayChk.Checked;
+      Edit.SelectionMode:=TSynSelectionMode(SelModeGrp.ItemIndex);
+      useprogdir:=Boolean(SaveConfGrp.ItemIndex);
       ini.Free;
       if WideDirectoryExists(mydatadir) then begin
         ini:=TIniFile.Create(mydatadir+'biredit.ini');
@@ -1484,21 +1463,11 @@ begin
 end;
 
 procedure TEditor.N90Click(Sender: TObject);
-var
-  langini: TIniFile;
-  sidlg: TSelIns;
+var sidlg: TSelIns;
 begin
   sidlg:=TSelIns.Create(Self);
   with sidlg do try
-    if WideFileExists(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang) then begin
-      langini:=TIniFile.Create(WideExtractFilePath(TntApplication.ExeName)+'lang\'+mylang);
-      Caption:=langini.ReadString('EnclSelDlg','0','Enclose Selection');
-      TntLabel1.Caption:=langini.ReadString('EnclSelDlg','1','Insert before selection');
-      TntLabel2.Caption:=langini.ReadString('EnclSelDlg','2','Insert after selection');
-      TntButton1.Caption:=langini.ReadString('EnclSelDlg','3','OK');
-      TntButton2.Caption:=langini.ReadString('EnclSelDlg','4','Cancel');
-      langini.Free;
-    end;
+    MyLoadLoc(sidlg,'EnclSelDlg');
     if ShowModal=mrOk then Edit.SelText:=TntEdit1.Text+Edit.SelText+TntEdit2.Text;
   finally
     sidlg.Free;
@@ -1643,7 +1612,20 @@ begin
     capt:=myunk+' - BirEdit';
     Status.Panels.Items[3].Text:='';
   end;
-  if fm then Caption:='* '+capt else Caption:=capt;  
+  if fm then Caption:='* '+capt else Caption:=capt;
+  JvTrayIcon1.Hint:=Caption;  
+end;
+
+procedure TEditor.JvTrayIcon1Click(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  //надо запоминать позицию до сворачивания в трей
+  if ismax then WindowState:=wsMaximized else WindowState:=wsNormal;   // restore window
+  FormStyle:=fsStayOnTop;  // move window to top
+  FormStyle:=fsNormal;     // if any apps with stayontop property
+  JvTrayIcon1.IconVisible:=False; // hide tray icon
+  //обработать если до сворачивания в трей было окно максимизировано
+  //то обратно и делать
 end;
 
 procedure TEditor.JvDragDrop1Drop(Sender: TObject; Pos: TPoint; Value: TStrings);
@@ -1695,6 +1677,7 @@ begin
   mysn2:='MB';
   mysn3:='KB';
   mysn4:='Byte(s)';
+  myunk:='Untitled';
   N1.Caption:='File';
   N2.Caption:='Exit';
   N3.Caption:='Open';
@@ -1775,7 +1758,7 @@ begin
   N139.Caption:='Delete';
   N140.Caption:='Special';
   N141.Caption:='Find mathing brace';
-  Save.FileName:='Untitled.txt';
+  Save.FileName:=myunk+'.txt';
   mylang:='';
 end;
 

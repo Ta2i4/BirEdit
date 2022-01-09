@@ -15,7 +15,7 @@ object SettingsDlg: TSettingsDlg
   Position = poDesktopCenter
   PixelsPerInch = 96
   TextHeight = 13
-  object TntButton1: TTntButton
+  object ApplyBtn: TTntButton
     Left = 10
     Top = 335
     Width = 75
@@ -25,7 +25,7 @@ object SettingsDlg: TSettingsDlg
     ModalResult = 1
     TabOrder = 0
   end
-  object TntButton2: TTntButton
+  object CancelBtn: TTntButton
     Left = 100
     Top = 335
     Width = 75
@@ -40,19 +40,19 @@ object SettingsDlg: TSettingsDlg
     Top = 0
     Width = 424
     Height = 330
-    ActivePage = TntTabSheet1
+    ActivePage = DisplayTab
     Align = alTop
     TabOrder = 2
-    object TntTabSheet1: TTntTabSheet
+    object DisplayTab: TTntTabSheet
       Caption = 'Display'
-      object TntGroupBox1: TTntGroupBox
+      object GutterGrp: TTntGroupBox
         Left = 8
         Top = 8
         Width = 393
         Height = 134
         Caption = 'Gutter'
         TabOrder = 0
-        object TntCheckBox1: TTntCheckBox
+        object GVisChk: TTntCheckBox
           Left = 8
           Top = 16
           Width = 369
@@ -60,7 +60,7 @@ object SettingsDlg: TSettingsDlg
           Caption = 'Visible'
           TabOrder = 0
         end
-        object TntCheckBox2: TTntCheckBox
+        object GASizeChk: TTntCheckBox
           Left = 8
           Top = 38
           Width = 369
@@ -68,7 +68,7 @@ object SettingsDlg: TSettingsDlg
           Caption = 'Autosize'
           TabOrder = 1
         end
-        object TntCheckBox3: TTntCheckBox
+        object ShowLnNumChk: TTntCheckBox
           Left = 8
           Top = 60
           Width = 369
@@ -76,7 +76,7 @@ object SettingsDlg: TSettingsDlg
           Caption = 'Show line numbers'
           TabOrder = 2
         end
-        object TntCheckBox4: TTntCheckBox
+        object StartZeroChk: TTntCheckBox
           Left = 8
           Top = 82
           Width = 369
@@ -84,7 +84,7 @@ object SettingsDlg: TSettingsDlg
           Caption = 'Start at zero'
           TabOrder = 3
         end
-        object TntCheckBox5: TTntCheckBox
+        object ShowLZChk: TTntCheckBox
           Left = 8
           Top = 104
           Width = 369
@@ -93,7 +93,7 @@ object SettingsDlg: TSettingsDlg
           TabOrder = 4
         end
       end
-      object TntCheckBox7: TTntCheckBox
+      object StatusBarChk: TTntCheckBox
         Left = 16
         Top = 154
         Width = 369
@@ -102,16 +102,16 @@ object SettingsDlg: TSettingsDlg
         TabOrder = 1
       end
     end
-    object TntTabSheet2: TTntTabSheet
+    object EditorTab: TTntTabSheet
       Caption = 'Editor'
-      object TntLabel2: TTntLabel
+      object UndoLimLbl: TTntLabel
         Left = 8
         Top = 10
         Width = 46
         Height = 13
         Caption = 'Undo limit'
       end
-      object TntLabel1: TTntLabel
+      object TabSizeLbl: TTntLabel
         Left = 290
         Top = 10
         Width = 39
@@ -127,14 +127,14 @@ object SettingsDlg: TSettingsDlg
         MaxValue = 9999.000000000000000000
         TabOrder = 0
       end
-      object TntGroupBox2: TTntGroupBox
+      object OptGrp: TTntGroupBox
         Left = 3
         Top = 35
         Width = 398
         Height = 62
         Caption = 'Options'
         TabOrder = 1
-        object TntCheckBox6: TTntCheckBox
+        object ShSpChrChk: TTntCheckBox
           Left = 8
           Top = 16
           Width = 377
@@ -142,7 +142,7 @@ object SettingsDlg: TSettingsDlg
           Caption = 'Show special chars'
           TabOrder = 0
         end
-        object TntCheckBox9: TTntCheckBox
+        object TabAsSpcChk: TTntCheckBox
           Left = 8
           Top = 38
           Width = 377
@@ -151,7 +151,7 @@ object SettingsDlg: TSettingsDlg
           TabOrder = 1
         end
       end
-      object TntRadioGroup1: TTntRadioGroup
+      object SelModeGrp: TTntRadioGroup
         Left = 3
         Top = 103
         Width = 398
@@ -163,7 +163,7 @@ object SettingsDlg: TSettingsDlg
           'Column')
         TabOrder = 2
       end
-      object TntCheckBox8: TTntCheckBox
+      object WrapChk: TTntCheckBox
         Left = 11
         Top = 187
         Width = 390
@@ -182,9 +182,9 @@ object SettingsDlg: TSettingsDlg
         TabOrder = 4
       end
     end
-    object TntTabSheet3: TTntTabSheet
+    object AppTab: TTntTabSheet
       Caption = 'Application'
-      object TntRadioGroup2: TTntRadioGroup
+      object SaveConfGrp: TTntRadioGroup
         Left = 8
         Top = 8
         Width = 393
@@ -194,6 +194,14 @@ object SettingsDlg: TSettingsDlg
           'Application Data directory'
           'Program directory')
         TabOrder = 0
+      end
+      object TrayChk: TTntCheckBox
+        Left = 8
+        Top = 91
+        Width = 390
+        Height = 17
+        Caption = 'Minimize to tray'
+        TabOrder = 1
       end
     end
   end

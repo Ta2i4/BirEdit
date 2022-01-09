@@ -25,7 +25,7 @@ All Rights Reserved.
 
 Contributors to the SynEdit project are listed in the Contributors.txt file.
 
-$Id: uSearchDlg.pas,v 1.3 2008/11/05 12:38:10 rmay Exp $
+$Id: uSearchDlg.pas,v 1.3 2008/11/07 12:29:10 rmay Exp $
 
 You may retrieve the latest version of this file at the SynEdit home page,
 located at http://SynEdit.SourceForge.net
@@ -45,17 +45,17 @@ uses
 
 type
   TSearchForm = class(TTntForm)
-    TntLabel1: TTntLabel;
+    SearchForLbl: TTntLabel;
     TntComboBox1: TTntComboBox;
-    TntGroupBox1: TTntGroupBox;
-    TntCheckBox1: TTntCheckBox;
-    TntCheckBox2: TTntCheckBox;
-    TntCheckBox3: TTntCheckBox;
-    TntCheckBox4: TTntCheckBox;
-    TntCheckBox5: TTntCheckBox;
-    TntRadioGroup1: TTntRadioGroup;
-    TntButton1: TTntButton;
-    TntButton2: TTntButton;
+    OptsGrp: TTntGroupBox;
+    CaseSentChk: TTntCheckBox;
+    WholeWordChk: TTntCheckBox;
+    FromCaretChk: TTntCheckBox;
+    InSelChk: TTntCheckBox;
+    RegExpChk: TTntCheckBox;
+    DirectGrp: TTntRadioGroup;
+    OkBtn: TTntButton;
+    CancelBtn: TTntButton;
     procedure TntFormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
     function GetSearchBackwards: boolean;
@@ -74,7 +74,6 @@ type
     procedure SetSearchWholeWords(Value: boolean);
     procedure SetSearchRegularExpression(const Value: boolean);
     function GetSearchRegularExpression: boolean;
-    { Private declarations }
   public
     property SearchBackwards: boolean read GetSearchBackwards write SetSearchBackwards;
     property SearchCaseSensitive: boolean read GetSearchCaseSensitive write SetSearchCaseSensitive;
@@ -84,7 +83,6 @@ type
     property SearchTextHistory: UnicodeString read GetSearchTextHistory write SetSearchTextHistory;
     property SearchWholeWords: boolean read GetSearchWholeWords write SetSearchWholeWords;
     property SearchRegularExpression: boolean read GetSearchRegularExpression write SetSearchRegularExpression;
-    { Public declarations }
   end;
 
 var
@@ -96,27 +94,27 @@ implementation
 
 function TSearchForm.GetSearchBackwards: boolean;
 begin
-  Result:=TntRadioGroup1.ItemIndex=1;
+  Result:=DirectGrp.ItemIndex=1;
 end;
 
 function TSearchForm.GetSearchCaseSensitive: boolean;
 begin
-  Result:=TntCheckBox1.Checked;
+  Result:=CaseSentChk.Checked;
 end;
 
 function TSearchForm.GetSearchFromCursor: boolean;
 begin
-  Result:=TntCheckBox3.Checked;
+  Result:=FromCaretChk.Checked;
 end;
 
 function TSearchForm.GetSearchInSelection: boolean;
 begin
-  Result:=TntCheckBox4.Checked;
+  Result:=InSelChk.Checked;
 end;
 
 function TSearchForm.GetSearchRegularExpression: boolean;
 begin
-  Result:=TntCheckBox5.Checked;
+  Result:=RegExpChk.Checked;
 end;
 
 function TSearchForm.GetSearchText: UnicodeString;
@@ -137,27 +135,27 @@ end;
 
 function TSearchForm.GetSearchWholeWords: boolean;
 begin
-  Result:=TntCheckBox2.Checked;
+  Result:=WholeWordChk.Checked;
 end;
 
 procedure TSearchForm.SetSearchBackwards(Value: boolean);
 begin
-  TntRadioGroup1.ItemIndex:=Ord(Value);
+  DirectGrp.ItemIndex:=Ord(Value);
 end;
 
 procedure TSearchForm.SetSearchCaseSensitive(Value: boolean);
 begin
-  TntCheckBox1.Checked:=Value;
+  CaseSentChk.Checked:=Value;
 end;
 
 procedure TSearchForm.SetSearchFromCursor(Value: boolean);
 begin
-  TntCheckBox3.Checked:=Value;
+  FromCaretChk.Checked:=Value;
 end;
 
 procedure TSearchForm.SetSearchInSelection(Value: boolean);
 begin
-  TntCheckBox4.Checked:=Value;
+  InSelChk.Checked:=Value;
 end;
 
 procedure TSearchForm.SetSearchText(Value: UnicodeString);
@@ -172,12 +170,12 @@ end;
 
 procedure TSearchForm.SetSearchWholeWords(Value: boolean);
 begin
-  TntCheckBox2.Checked:=Value;
+  WholeWordChk.Checked:=Value;
 end;
 
 procedure TSearchForm.SetSearchRegularExpression(const Value: boolean);
 begin
-  TntCheckBox5.Checked:=Value;
+  RegExpChk.Checked:=Value;
 end;
 
 procedure TSearchForm.TntFormCloseQuery(Sender: TObject; var CanClose: Boolean);

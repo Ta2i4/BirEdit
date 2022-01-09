@@ -16,7 +16,7 @@ object SearchForm: TSearchForm
   OnCloseQuery = TntFormCloseQuery
   PixelsPerInch = 96
   TextHeight = 13
-  object TntLabel1: TTntLabel
+  object SearchForLbl: TTntLabel
     Left = 8
     Top = 12
     Width = 50
@@ -31,14 +31,14 @@ object SearchForm: TSearchForm
     ItemHeight = 13
     TabOrder = 0
   end
-  object TntGroupBox1: TTntGroupBox
+  object OptsGrp: TTntGroupBox
     Left = 8
     Top = 40
     Width = 154
     Height = 127
     Caption = 'Options'
     TabOrder = 1
-    object TntCheckBox1: TTntCheckBox
+    object CaseSentChk: TTntCheckBox
       Left = 8
       Top = 17
       Width = 140
@@ -46,7 +46,7 @@ object SearchForm: TSearchForm
       Caption = 'Case sensitivity'
       TabOrder = 0
     end
-    object TntCheckBox2: TTntCheckBox
+    object WholeWordChk: TTntCheckBox
       Left = 8
       Top = 39
       Width = 140
@@ -54,7 +54,7 @@ object SearchForm: TSearchForm
       Caption = 'Whole words only'
       TabOrder = 1
     end
-    object TntCheckBox3: TTntCheckBox
+    object FromCaretChk: TTntCheckBox
       Left = 8
       Top = 61
       Width = 140
@@ -62,7 +62,7 @@ object SearchForm: TSearchForm
       Caption = 'Search from caret'
       TabOrder = 2
     end
-    object TntCheckBox4: TTntCheckBox
+    object InSelChk: TTntCheckBox
       Left = 8
       Top = 83
       Width = 140
@@ -70,7 +70,7 @@ object SearchForm: TSearchForm
       Caption = 'Selected text only'
       TabOrder = 3
     end
-    object TntCheckBox5: TTntCheckBox
+    object RegExpChk: TTntCheckBox
       Left = 8
       Top = 105
       Width = 140
@@ -79,7 +79,7 @@ object SearchForm: TSearchForm
       TabOrder = 4
     end
   end
-  object TntRadioGroup1: TTntRadioGroup
+  object DirectGrp: TTntRadioGroup
     Left = 170
     Top = 40
     Width = 157
@@ -91,7 +91,7 @@ object SearchForm: TSearchForm
       'Backward')
     TabOrder = 2
   end
-  object TntButton1: TTntButton
+  object OkBtn: TTntButton
     Left = 170
     Top = 142
     Width = 75
@@ -101,7 +101,7 @@ object SearchForm: TSearchForm
     ModalResult = 1
     TabOrder = 3
   end
-  object TntButton2: TTntButton
+  object CancelBtn: TTntButton
     Left = 252
     Top = 142
     Width = 75

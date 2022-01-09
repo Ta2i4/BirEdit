@@ -15,6 +15,7 @@ object Editor: TEditor
   OnCloseQuery = TntFormCloseQuery
   OnCreate = TntFormCreate
   OnDestroy = TntFormDestroy
+  OnResize = TntFormResize
   PixelsPerInch = 96
   TextHeight = 13
   object Edit: TSynEdit
@@ -738,5 +739,12 @@ object Editor: TEditor
     Options = [fdEffects, fdFixedPitchOnly]
     Left = 208
     Top = 120
+  end
+  object JvTrayIcon1: TJvTrayIcon
+    IconIndex = 0
+    Visibility = [tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide, tvAutoHideIcon, tvRestoreClick]
+    OnClick = JvTrayIcon1Click
+    Left = 480
+    Top = 64
   end
 end

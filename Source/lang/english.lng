@@ -1,6 +1,6 @@
 ; This is english translation for BirEdit.
 ;
-; Get the support on http://biredit.fireforge.net/
+; Get the support on http://biredit.freeforums.org/
 ;
 ; If you will found a mistakes in translation,
 ; please, post the fixes on the official forum or bugtracker of the program.
@@ -17,8 +17,8 @@ Mail=tatuich@mail.ru
 
 [TranslationInfo]
 ; information about file
-FileVer=1.1.0.146
-Build=199
+FileVer=1.1.1.148
+Build=201
 Name=English
 
 [Main]
@@ -111,66 +111,82 @@ Name=English
 86=Settings
 
 [PrevDlg]
-0=Print Preview
-1=Next Page
-2=Previous Page
-3=Last Page
-4=First Page
-5=Print
-6=Close
+Title=Print Preview
+FirstBtn=First
+PrevBtn=Previous
+NextBtn=Next
+LastBtn=Last
+PrintBtn=Print
+CloseBtn=Close
 
 [SearchDlg]
-0=Search Text
-1=Search for
-2=Options
-3=Case sensitivity
-4=Whole words only
-5=Search from caret
-6=Selected text only
-7=Regular expression
-8=Direction
-9=Forward
-10=Backward
-11=OK
-12=Cancel
-13=Replace with:
+Title=Search Text
+CancelBtn=Cancel
+OkBtn=OK
+CaseSentChk=Case sensitivity
+FromCaretChk=Search from caret
+InSelChk=Selected text only
+RegExpChk=Regular expression
+WholeWordChk=Whole words only
+OptsGrp=Options
+SearchForLbl=Search for
+DirectGrp=Direction
+DirectGrp0=Forward
+DirectGrp1=Backward
 
-[EncSelDlg]
-0=Enclose Selection
-1=Insert before selection
-2=Insert after selection
-3=OK
-4=Cancel
+[ReplaceDlg]
+Title=Replace Text
+CancelBtn=Cancel
+OkBtn=OK
+CaseSentChk=Case sensitivity
+FromCaretChk=Search from caret
+InSelChk=Selected text only
+RegExpChk=Regular expression
+WholeWordChk=Whole words only
+OptsGrp=Options
+ReplaceLbl=Replace with:
+SearchForLbl=Search for
+DirectGrp=Direction
+DirectGrp0=Forward
+DirectGrp1=Backward
+
+[EnclSelDlg]
+Title=Enclose Selection
+CancelBtn=Cancel
+OkBtn=OK
+AfterLbl=Insert after selection
+BeforeLbl=Insert before selection
 
 [GoToDlg]
-0=Go to Line Number
-1=Line:
-2=OK
+Title=Go to Line Number
+OkBtn=OK
+LineLbl=Line:
 
 [SettingsDlg]
-0=Settings
-1=Apply
-2=Cancel
-3=Display
-4=Tab size
-5=Undo limit
-6=Options
-7=Show special chars
-8=Insert tabs as spaces
-9=Editor
-10=Save settings to
-11=Application
-12=Show status bar
-13=Word wrap
-14=Gutter
-15=Visible
-16=Autosize
-17=Show line numbers
-18=Start at zero
-19=Show leading zeros
-20=Selection mode
-21=Normal
-22=Line
-23=Column
-24=Application Data directory
-25=Program directory
+Title=Settings
+ApplyBtn=Apply
+CancelBtn=Cancel
+GASizeChk=Autosize
+GVisChk=Visible
+ShowLnNumChk=Show line numbers
+ShowLZChk=Show leading zeros
+ShSpChrChk=Show special chars
+StartZeroChk=Start at zero
+StatusBarChk=Show status bar
+TabAsSpcChk=Insert tabs as spaces
+TrayChk=Minimize to tray
+WrapChk=Word wrap
+GutterGrp=Gutter
+OptGrp=Options
+TabSizeLbl=Tab size
+UndoLimLbl=Undo limit
+SaveConfGrp=Save settings to
+SaveConfGrp0=Application Data directory
+SaveConfGrp1=Program directory
+SelModeGrp=Selection mode
+SelModeGrp0=Normal
+SelModeGrp1=Line
+SelModeGrp2=Column
+DisplayTab=Display
+EditorTab=Editor
+AppTab=Application

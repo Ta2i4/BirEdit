@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@mail.ru
 
 
-The Original Code is uEncloseDlg.pas by Aleksey Tatuyko, released 2008-11-05.
+The Original Code is uEncloseDlg.pas by Aleksey Tatuyko, released 2008-11-07.
 All Rights Reserved.
 
-$Id: uEncloseDlg.pas,v 1.1.7.199 2008/11/05 12:32:00 maelh Exp $
+$Id: uEncloseDlg.pas,v 1.1.8.201 2008/11/07 12:27:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit home page,
 located at http://BirEdit.FireForge.net
@@ -37,12 +37,13 @@ uses
 
 type
   TSelIns = class(TTntForm)
-    TntLabel1: TTntLabel;
-    TntLabel2: TTntLabel;
+    BeforeLbl: TTntLabel;
+    AfterLbl: TTntLabel;
     TntEdit1: TTntEdit;
     TntEdit2: TTntEdit;
-    TntButton1: TTntButton;
-    TntButton2: TTntButton;
+    OkBtn: TTntButton;
+    CancelBtn: TTntButton;
+    procedure TntEdit1Change(Sender: TObject);
   end;
 
 var
@@ -51,5 +52,10 @@ var
 implementation
 
 {$R *.DFM}
+
+procedure TSelIns.TntEdit1Change(Sender: TObject);
+begin
+  OkBtn.Enabled:=(not(TntEdit1.Text=''))or(not(TntEdit2.Text=''));
+end;
 
 end.

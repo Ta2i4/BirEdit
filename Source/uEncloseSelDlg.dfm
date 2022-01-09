@@ -15,14 +15,14 @@ object SelIns: TSelIns
   Position = poDesktopCenter
   PixelsPerInch = 96
   TextHeight = 13
-  object TntLabel1: TTntLabel
+  object BeforeLbl: TTntLabel
     Left = 8
     Top = 8
     Width = 104
     Height = 13
     Caption = 'Insert before selection'
   end
-  object TntLabel2: TTntLabel
+  object AfterLbl: TTntLabel
     Left = 8
     Top = 56
     Width = 95
@@ -35,6 +35,7 @@ object SelIns: TSelIns
     Width = 169
     Height = 21
     TabOrder = 0
+    OnChange = TntEdit1Change
   end
   object TntEdit2: TTntEdit
     Left = 8
@@ -42,18 +43,20 @@ object SelIns: TSelIns
     Width = 169
     Height = 21
     TabOrder = 1
+    OnChange = TntEdit1Change
   end
-  object TntButton1: TTntButton
+  object OkBtn: TTntButton
     Left = 192
     Top = 24
     Width = 75
     Height = 25
     Caption = 'OK'
     Default = True
+    Enabled = False
     ModalResult = 1
     TabOrder = 2
   end
-  object TntButton2: TTntButton
+  object CancelBtn: TTntButton
     Left = 192
     Top = 56
     Width = 75
