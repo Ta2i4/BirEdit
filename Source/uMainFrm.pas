@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@mail.ru
 
 
-The Original Code is uMainFrm.pas by Aleksey Tatuyko, released 2009-06-03.
+The Original Code is uMainFrm.pas by Aleksey Tatuyko, released 2009-06-05.
 All Rights Reserved.
 
-$Id: uMainFrm.pas, v 1.2.7.409 2009/06/03 00:07:00 maelh Exp $
+$Id: uMainFrm.pas, v 1.2.8.411 2009/06/05 04:56:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://fireforge.net/projects/biredit/
@@ -286,6 +286,12 @@ type
     N158: TMenuItem;
     N159: TMenuItem;
     N160: TMenuItem;
+    N71: TMenuItem;
+    N72: TMenuItem;
+    N161: TMenuItem;
+    N162: TMenuItem;
+    N163: TMenuItem;
+    N164: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure N2Click(Sender: TObject);
     procedure N3Click(Sender: TObject);
@@ -414,16 +420,25 @@ type
     procedure N158Click(Sender: TObject);
     procedure N159Click(Sender: TObject);
     procedure N160Click(Sender: TObject);
+    procedure N71Click(Sender: TObject);
+    procedure N72Click(Sender: TObject);
+    procedure N161Click(Sender: TObject);
+    procedure N162Click(Sender: TObject);
+    procedure N163Click(Sender: TObject);
   private
     fSearchFromCaret, gbSearchBackwards, gbSearchCaseSensitive,
     gbSearchFromCaret, gbSearchRegex, gbSearchSelectionOnly,
     gbSearchTextAtCaret, gbSearchWholeWords, gbTempSearchBackwards,
-    prevnoex, usesyn: Boolean;
+    prevnoex, usesyn, sddir, sudir: Boolean;
     prev, curcp: Integer;
     myfsize: Int64;
     MyFileName, gsReplaceText, gsReplaceTextHistory, gsSearchText,
     apppath: string;
     {gsSearchTextHistory, strSearchTextHistory: string;}
+    procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage;
+                                   const BasePath: string);
+    procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage;
+                                   const BasePath: string);
     procedure AddToClipboard;
     procedure ChangeClipboard;
     procedure DoSearchReplaceText(AReplace, ABackwards: Boolean);
@@ -442,19 +457,17 @@ type
     procedure ReplaceAgainExecute;
     procedure ReplaceBackwardsExecute;
     procedure WorkParams;
-    //this procedures added in v1.2.1 :
     procedure MySetTextStr(const Value: string);
     procedure MyLoadFromStreamEnc(Stream: TStream; Encoding: TEncoding);
     procedure MyLoadFromStream(Stream: TStream; cid: Byte);
     procedure MyLoadFromFile(const FileName: TFileName; cid: Byte);
     procedure MySaveToFileEnc(const FileName: TFileName; Encoding: TEncoding);
     procedure MySaveToFile(const FileName: TFileName; seid, fid: Integer);
-    procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage;
-                                   const BasePath: string);
-    procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage;
-                                   const BasePath: string);
     procedure MySetSynByFid(fid: Byte);
     procedure MySetSynByExt(fExt: string);
+    procedure MyShowDroppedDlg(const fValues: TStrings);
+    procedure MyScanDropFiles(const fValues: TStrings);
+    procedure MyOpenDropped(const FileName: TFileName);
   public
     mylang: string;
   end;
@@ -478,6 +491,7 @@ var
   mysn2: string = 'MB';
   mysn3: string = 'KB';
   mysn4: string = 'Byte(s)';
+  mysn5: string = 'read only';
   Main: TMain;
   ExcValsEdit, ExcValsFont, ExcValsGut: TStrings;
 
@@ -485,9 +499,121 @@ implementation
 
 uses
   BirEditAdv, uPrintPreviewDlg, uAboutDlg, uSearchDlg, uReplaceDlg,
-  uEncloseSelDlg, uConfirmReplaceDlg, uSettingsDlg, uGoTo;
+  uEncloseSelDlg, uConfirmReplaceDlg, uSettingsDlg, uGoTo, uDropped;
 
 {$R *.DFM}
+
+{  procedure MyOpen;
+  begin
+    if Open.Execute then MyOpenFile(Open.FileName, 0, Open.FilterIndex);
+  end;
+begin
+  if Edit.Modified then begin
+    case Application.MessageBox(PChar(mysg7), 'BirEdit',
+                                  MB_YESNOCANCEL + MB_ICONQUESTION) of
+      IDYES:
+        begin
+          if FileExists(MyFileName) then begin
+            MySaveFile(MyFileName, curcp, 1);
+            MyOpen;
+          end else
+          if Save.Execute then begin
+            Save.FileName := MyExtByFilter(Save.FilterIndex, Save.FileName);
+            MySaveFile(Save.FileName, Save.EncodingIndex, Save.FilterIndex);
+            MyOpen;
+          end;
+        end;
+      IDNO: MyOpen;
+    end;
+  end else MyOpen;
+}
+
+procedure TMain.MyOpenDropped(const FileName: TFileName);
+begin
+  if Edit.Modified then begin
+    case Application.MessageBox(PChar(mysg7), 'BirEdit',
+                                  MB_YESNOCANCEL + MB_ICONQUESTION) of
+      IDYES:
+        begin
+          if FileExists(MyFileName) then begin
+            MySaveFile(MyFileName, curcp, 1);
+            MyOpenFile(FileName, 0, 1);
+          end else
+          if Save.Execute then begin
+            Save.FileName := MyExtByFilter(Save.FilterIndex, Save.FileName);
+            MySaveFile(Save.FileName, Save.EncodingIndex, Save.FilterIndex);
+            MyOpenFile(FileName, 0, 1);
+          end;
+        end;
+      IDNO: MyOpenFile(FileName, 0, 1);
+    end;
+  end else MyOpenFile(FileName, 0, 1);
+end;
+
+procedure TMain.MyShowDroppedDlg(const fValues: TStrings);
+var
+  cnt, i: Integer;
+  dbox: TDropDlg;
+begin
+  cnt := 0;
+  dbox := TDropDlg.Create(Self);
+  with dbox do try
+    MyLoadLoc(dbox, 'DropDlg');
+    ChkLst.Items.Text := fValues.Text;
+    if ShowModal = mrOk then begin
+      for I := 0 to ChkLst.Count - 1 do if ChkLst.Checked[i] = True then begin
+        Inc(cnt);
+        if cnt = 1 then MyOpenDropped(ChkLst.Items.Strings[i])
+        else ShellExecute(Self.Handle, 'open', PChar(Application.ExeName),
+                    PChar('"' + ChkLst.Items.Strings[i] + '"'),
+                    PChar('"' + ExtractFilePath(ChkLst.Items.Strings[i]) + '"'),
+                    SW_SHOWNORMAL);
+      end;
+    end;
+  finally
+    dbox.Free;
+  end;
+end;
+
+procedure TMain.MyScanDropFiles(const fValues: TStrings);
+var
+  i, s: Integer;
+  tmpstrs: TStrings;
+
+  procedure MyScanDir(MyDir: string);
+  var
+    mys: TSearchRec;
+  begin
+    if FindFirst(MyDir + '*', faAnyFile, mys) = 0 then repeat
+      if (mys.Name = '.') or (mys.Name = '..') then Continue;
+      if (mys.Attr and faDirectory) <> 0
+      then begin
+        if sudir then MyScanDir(IncludeTrailingPathDelimiter(MyDir + mys.Name));
+      end else tmpstrs.Add(IncludeTrailingPathDelimiter(MyDir) + mys.Name);
+    until FindNext(mys) <> 0;
+  end;
+
+begin
+  s := fValues.Count;
+  if s < 1 then Exit else if (s = 1) and FileExists(fValues.Strings[0])
+  then MyOpenDropped(fValues.Strings[0]) else begin
+    tmpstrs := TStringList.Create;
+    try
+      tmpstrs.Text := fValues.Text;
+      for I := tmpstrs.Count - 1 downto 0 do begin
+        if DirectoryExists(tmpstrs.Strings[i]) then begin
+          if sddir
+          then MyScanDir(IncludeTrailingPathDelimiter(tmpstrs.Strings[i]));
+          tmpstrs.Delete(i);
+        end else if not (FileExists(tmpstrs.Strings[i])) then tmpstrs.Delete(i);
+      end;
+      if tmpstrs.Count = 1 then MyOpenDropped(tmpstrs.Strings[0]) else
+      if tmpstrs.Count > 1 then MyShowDroppedDlg(tmpstrs);
+    finally
+      tmpstrs.Free;
+    end;
+  end;
+end;
 
 procedure TMain.MySetTextStr(const Value: string);
 var
@@ -607,12 +733,14 @@ begin
       else MySaveToFileEnc(FileName, nil);
     end;
     curcp := seid;
-    if (fid > 1) and (fid <= 52) then MySetSynByFid(fid)
-    else MySetSynByExt(ExtractFileExt(FileName));
+    if usesyn then begin
+      if (fid > 1) and (fid <= 52) then MySetSynByFid(fid)
+      else MySetSynByExt(ExtractFileExt(FileName));
+    end else Edit.Highlighter := nil;
   except
     curcp := 0;
     Edit.Modified := True;
-    MySetSynByFid(1);
+    if usesyn then MySetSynByFid(1) else Edit.Highlighter := nil;
   end;
 end;
 
@@ -620,14 +748,16 @@ procedure TMain.LoadFromFile(const FileName: TFileName; cid, fid: Byte);
 begin
   try
     MyLoadFromFile(FileName, cid);
-    if (fid > 1) and (fid <=52) then MySetSynByFid(fid)
-    else MySetSynByExt(ExtractFileExt(FileName));
+    if usesyn then begin
+      if (fid > 1) and (fid <=52) then MySetSynByFid(fid)
+      else MySetSynByExt(ExtractFileExt(FileName));
+    end else Edit.Highlighter := nil;
   except
     Application.MessageBox(PChar(mysg1), 'BirEdit', MB_OK+MB_ICONSTOP);
     MyFileName := '';
     myfsize := 0;
     curcp := 0;
-    MySetSynByFid(1);
+    if usesyn then MySetSynByFid(1) else Edit.Highlighter := nil;
   end;
 end;
 
@@ -775,7 +905,7 @@ end;
 
 procedure TMain.EditDropFiles(Sender: TObject; X, Y: Integer; AFiles: TStrings);
 begin
-  MyOpenFile(AFiles.Strings[0], 0, 1);
+  MyScanDropFiles(AFiles);
 end;
 
 procedure TMain.EditReplaceText(Sender: TObject; const ASearch,
@@ -873,45 +1003,45 @@ begin
   N2.Caption := langini.ReadString('Main', '1', 'Exit');
   N3.Caption := langini.ReadString('Main', '2', 'Open');
   N4.Caption := langini.ReadString('Main', '3', 'Save');
-  N5.Caption := langini.ReadString('Main', '4', 'Save As...');
-  N7.Caption := langini.ReadString('Main', '5', 'Print Preview');
+  N5.Caption := langini.ReadString('Main', '4', 'Save as...');
+  N7.Caption := langini.ReadString('Main', '5', 'Print preview');
   N8.Caption := langini.ReadString('Main', '6', 'Print');
   N10.Caption := langini.ReadString('Main', '7', 'Edit');
   N11.Caption := langini.ReadString('Main', '8', 'Undo');
   N12.Caption := langini.ReadString('Main', '9', 'Redo');
-  N14.Caption := langini.ReadString('Main', '10', 'Select All');
+  N14.Caption := langini.ReadString('Main', '10', 'Select all');
   N15.Caption := langini.ReadString('Main', '11', 'Copy');
   N16.Caption := langini.ReadString('Main', '12', 'Paste');
   N17.Caption := langini.ReadString('Main', '13', 'Cut');
   mysn0 := langini.ReadString('Main', '14', 'TB');
   N38.Caption := langini.ReadString('Main', '15', 'Command...');
-  N30.Caption := langini.ReadString('Main', '16', 'Copy Add');
-  N37.Caption := langini.ReadString('Main', '17', 'Dublicate Selection');
-  N18.Caption := langini.ReadString('Main', '18', 'Replace Next');
-  N39.Caption := langini.ReadString('Main', '19', 'Copy All');
+  N30.Caption := langini.ReadString('Main', '16', 'Copy add');
+  N37.Caption := langini.ReadString('Main', '17', 'Dublicate selection');
+  N18.Caption := langini.ReadString('Main', '18', 'Replace next');
+  N39.Caption := langini.ReadString('Main', '19', 'Copy all');
   N41.Caption := langini.ReadString('Main', '20', 'Normal');
-  N46.Caption := langini.ReadString('Main', '21', 'Clear Clipboard');
+  N46.Caption := langini.ReadString('Main', '21', 'Clear clipboard');
   N40.Caption := langini.ReadString('Main', '22', 'Selection');
   N48.Caption := langini.ReadString('Main', '23', 'Color under cursor (RGB)');
   N49.Caption := langini.ReadString('Main', '24', 'Help');
   N50.Caption := langini.ReadString('Main', '25', 'About...');
   N56.Caption := langini.ReadString('Main', '26', 'Swap');
-  N57.Caption := langini.ReadString('Main', '27', 'Clear All');
+  N57.Caption := langini.ReadString('Main', '27', 'Clear all');
   N59.Caption := langini.ReadString('Main', '28', 'Clear');
   N60.Caption := langini.ReadString('Main', '29', 'Uppercase');
   N66.Caption := langini.ReadString('Main', '30', 'Convert');
   N68.Caption := langini.ReadString('Main', '31', 'Lowercase');
-  N69.Caption := langini.ReadString('Main', '32', 'Title Case');
-  N70.Caption := langini.ReadString('Main', '33', 'Invert Case');
-  N76.Caption := langini.ReadString('Main', '34', 'Sentence Case');
+  N69.Caption := langini.ReadString('Main', '32', 'Title case');
+  N70.Caption := langini.ReadString('Main', '33', 'Invert case');
+  N76.Caption := langini.ReadString('Main', '34', 'Sentence case');
   N77.Caption := langini.ReadString('Main', '35', 'Insert');
   N100.Caption := langini.ReadString('Main', '36', 'Filename');
   mysg1 := langini.ReadString('Main', '37', 'Cannot open file.');
-  N80.Caption := langini.ReadString('Main', '38', 'Open With...');
+  N80.Caption := langini.ReadString('Main', '38', 'Open with...');
   N86.Caption := langini.ReadString('Main', '39', 'Indent');
   N87.Caption := langini.ReadString('Main', '40', 'Unindent');
   N88.Caption := langini.ReadString('Main', '41', 'Block');
-  N90.Caption := langini.ReadString('Main', '42', 'Enclose Selection');
+  N90.Caption := langini.ReadString('Main', '42', 'Enclose selection');
   N43.Caption := langini.ReadString('Main', '43', 'Line');
   N99.Caption := langini.ReadString('Main', '44', 'Time/Date');
   N101.Caption := langini.ReadString('Main', '45', 'Options');
@@ -925,21 +1055,21 @@ begin
   N51.Caption := langini.ReadString('Main', '53', 'Font...');
   N117.Caption := langini.ReadString('Main', '54', 'Language');
   CRCap := langini.ReadString('Main', '55', 'Confirm replace');
-  N119.Caption := langini.ReadString('Main', '56', 'New Window');
-  N120.Caption := langini.ReadString('Main', '57', 'Launch');
-  N122.Caption := langini.ReadString('Main', '58', 'Empty Window');
-  N124.Caption := langini.ReadString('Main', '59', 'Execute Document');
+  N119.Caption := langini.ReadString('Main', '56', 'New window');
+  N120.Caption := langini.ReadString('Main', '57', 'Operations');
+  N122.Caption := langini.ReadString('Main', '58', 'Empty window');
+  N124.Caption := langini.ReadString('Main', '59', 'Execute document');
   N126.Caption := langini.ReadString('Main', '60', 'Internal');
   N127.Caption := langini.ReadString('Main', '61', 'Recent files');
   N130.Caption := langini.ReadString('Main', '62', 'Delete non-existent');
   N132.Caption := langini.ReadString('Main', '63', 'Clear list');
   N102.Caption := langini.ReadString('Main', '64', 'Filename and path');
-  N33.Caption := langini.ReadString('Main', '65', 'Replace Previous');
+  N33.Caption := langini.ReadString('Main', '65', 'Replace previous');
   mysg3 := StringReplace(langini.ReadString('Main', '66',
                       'File has "read-only" attribute.\nSave changes to file?'),
                       '\n', #13#10, [rfReplaceAll]);
   N26.Caption := langini.ReadString('Main', '67', 'Find...');
-  N27.Caption := langini.ReadString('Main', '68', 'Find Next');
+  N27.Caption := langini.ReadString('Main', '68', 'Find next');
   CRLab := langini.ReadString('Main', '69', 'Replace this occurence of "%s"?');
   myunk := langini.ReadString('Main', '70', 'Untitled');
   mysn1 := langini.ReadString('Main', '71', 'GB');
@@ -950,9 +1080,9 @@ begin
   CRBut2 := langini.ReadString('Main', '76', 'No');
   CRBut3 := langini.ReadString('Main', '77', 'Cancel');
   CRBut4 := langini.ReadString('Main', '78', 'Yes to all');
-  N28.Caption := langini.ReadString('Main', '79', 'Find Previous');
+  N28.Caption := langini.ReadString('Main', '79', 'Find previous');
   N29.Caption := langini.ReadString('Main', '80', 'Replace...');
-  N31.Caption := langini.ReadString('Main', '81', 'Goto...');
+  N31.Caption := langini.ReadString('Main', '81', 'Go to...');
   mysg4 := StringReplace(langini.ReadString('Main', '82',
                 'Current file has changed in other program.\nReopen the file?'),
                 '\n', #13#10, [rfReplaceAll]);
@@ -965,6 +1095,12 @@ begin
   N53.Caption := langini.ReadString('Main', '87', 'Auto');
   N74.Caption := langini.ReadString('Main', '88', 'Syntax');
   N75.Caption := langini.ReadString('Main', '89', 'Default');
+  N71.Caption := langini.ReadString('Main', '90', 'Quote selection');
+  N72.Caption := langini.ReadString('Main', '91', 'Dequote selection');
+  N161.Caption := langini.ReadString('Main', '92', 'Select to matching brace');
+  N162.Caption := langini.ReadString('Main', '93', 'Read only');
+  mysn5 := langini.ReadString('Main', '94', 'read only');
+  N163.Caption := langini.ReadString('Main', '95', 'Open in Explorer');
   N19.Caption := N11.Caption;
   N20.Caption := N12.Caption;
   N22.Caption := N17.Caption;
@@ -1004,62 +1140,65 @@ begin
   mysn2 := 'MB';
   mysn3 := 'KB';
   mysn4 := 'Byte(s)';
+  mysn5 := 'read only';
   myunk := 'Untitled';
   N1.Caption := 'File';
   N2.Caption := 'Exit';
   N3.Caption := 'Open';
   N4.Caption := 'Save';
-  N5.Caption := 'Save As...';
-  N7.Caption := 'Print Preview';
+  N5.Caption := 'Save as...';
+  N7.Caption := 'Print preview';
   N8.Caption := 'Print';
   N10.Caption := 'Edit';
   N11.Caption := 'Undo';
   N12.Caption := 'Redo';
-  N14.Caption := 'Select All';
+  N14.Caption := 'Select all';
   N15.Caption := 'Copy';
   N16.Caption := 'Paste';
   N17.Caption := 'Cut';
-  N18.Caption := 'Replace Next';
+  N18.Caption := 'Replace next';
   N26.Caption := 'Find...';
-  N27.Caption := 'Find Next';
-  N28.Caption := 'Find Previous';
+  N27.Caption := 'Find next';
+  N28.Caption := 'Find previous';
   N29.Caption := 'Replace...';
-  N30.Caption := 'Copy Add';
-  N31.Caption := 'Goto...';
+  N30.Caption := 'Copy add';
+  N31.Caption := 'Go to...';
   N32.Caption := 'Settings';
-  N33.Caption := 'Replace Previous';
+  N33.Caption := 'Replace previous';
   N36.Caption := 'Search';
-  N37.Caption := 'Dublicate Selection';
+  N37.Caption := 'Dublicate selection';
   N38.Caption := 'Command...';
-  N39.Caption := 'Copy All';
+  N39.Caption := 'Copy all';
   N40.Caption := 'Selection';
   N41.Caption := 'Normal';
   N42.Caption := 'Column';
   N43.Caption := 'Line';
   N44.Caption := 'Codepage';
-  N46.Caption := 'Clear Clipboard';
+  N46.Caption := 'Clear clipboard';
   N48.Caption := 'Color under cursor (RGB)';
   N49.Caption := 'Help';
   N50.Caption := 'About...';
   N51.Caption := 'Font...';
   N53.Caption := 'Auto';
   N56.Caption := 'Swap';
-  N57.Caption := 'Clear All';
+  N57.Caption := 'Clear all';
   N59.Caption := 'Clear';
   N60.Caption := 'Uppercase';
   N66.Caption := 'Convert';
   N68.Caption := 'Lowercase';
-  N69.Caption := 'Title Case';
-  N70.Caption := 'Invert Case';
+  N69.Caption := 'Title case';
+  N70.Caption := 'Invert case';
+  N71.Caption := 'Quote selection';
+  N72.Caption := 'Dequote selection';
   N74.Caption := 'Syntax';
   N75.Caption := 'Default';
-  N76.Caption := 'Sentence Case';
+  N76.Caption := 'Sentence case';
   N77.Caption := 'Insert';
-  N80.Caption := 'Open With...';
+  N80.Caption := 'Open with...';
   N86.Caption := 'Indent';
   N87.Caption := 'Unindent';
   N88.Caption := 'Block';
-  N90.Caption := 'Enclose Selection';
+  N90.Caption := 'Enclose selection';
   N99.Caption := 'Time/Date';
   N100.Caption := 'Filename';
   N101.Caption := 'Options';
@@ -1068,15 +1207,18 @@ begin
   N105.Caption := 'New';
   N114.Caption := 'Properties';
   N117.Caption := 'Language';
-  N119.Caption := 'New Window';
-  N120.Caption := 'Launch';
-  N122.Caption := 'Empty Window';
-  N124.Caption := 'Execute Document';
+  N119.Caption := 'New window';
+  N120.Caption := 'Operations';
+  N122.Caption := 'Empty window';
+  N124.Caption := 'Execute document';
   N126.Caption := 'Internal';
   N127.Caption := 'Recent files';
   N130.Caption := 'Delete non-existent';
   N132.Caption := 'Clear list';
   N141.Caption := 'Find mathing brace';
+  N161.Caption := 'Select to matching brace';
+  N162.Caption := 'Read only';
+  N163.Caption := 'Open in Explorer';
   N19.Caption := N11.Caption;
   N20.Caption := N12.Caption;
   N22.Caption := N17.Caption;
@@ -1524,6 +1666,10 @@ begin
                                         'AcceptDrag']), JvDragDrop1.AcceptDrag);
   JvTrayIcon1.Active := AppIni.ReadBoolean(AppIni.ConcatPaths([BasePath,
                                             'HideToTray']), JvTrayIcon1.Active);
+  sddir := AppIni.ReadBoolean(AppIni.ConcatPaths([BasePath, 'ScanDropFolders']),
+                                                   False);
+  sudir := AppIni.ReadBoolean(AppIni.ConcatPaths([BasePath, 'ScanSubFolders']),
+                                                   False);
   Status.Visible := AppIni.ReadBoolean(AppIni.ConcatPaths([BasePath,
                                                  'StatusBar']), Status.Visible);
   usesyn := AppIni.ReadBoolean(AppIni.ConcatPaths([BasePath, 'SynHighlight']),
@@ -1557,6 +1703,8 @@ begin
                          JvDragDrop1.AcceptDrag);
   AppIni.WriteBoolean(AppIni.ConcatPaths([BasePath, 'HideToTray']),
                          JvTrayIcon1.Active);
+  AppIni.WriteBoolean(AppIni.ConcatPaths([BasePath, 'ScanDropFolders']), sddir);
+  AppIni.WriteBoolean(AppIni.ConcatPaths([BasePath, 'ScanSubFolders']), sudir);
   AppIni.WriteBoolean(AppIni.ConcatPaths([BasePath, 'StatusBar']),
                          Status.Visible);
   AppIni.WriteBoolean(AppIni.ConcatPaths([BasePath, 'SynHighlight']), usesyn);
@@ -1795,6 +1943,23 @@ begin
   MySetSynByFid(52);
 end;
 
+procedure TMain.N161Click(Sender: TObject);
+begin
+  Edit.SetCaretAndSelection(Edit.CaretXY, Edit.CaretXY,
+                              Edit.GetMatchingBracketEx(Edit.CaretXY));
+end;
+
+procedure TMain.N162Click(Sender: TObject);
+begin
+  Edit.ReadOnly := N162.Checked;
+end;
+
+procedure TMain.N163Click(Sender: TObject);
+begin
+  ShellExecute(0, 'open', 'explorer', PChar('/select, "' + MyFileName + '"'),
+                 PChar('"' + ExtractFilePath(MyFileName) + '"'), SW_SHOWNORMAL);
+end;
+
 procedure TMain.N16Click(Sender: TObject);
 begin
   Edit.PasteFromClipboard;
@@ -1915,37 +2080,38 @@ var
   ChangeTrim: Boolean;
   SText: string;
 begin
-  if Edit.SelAvail then begin
-    ChangeTrim := (Edit.ActiveSelectionMode = smColumn)
-                    and (eoTrimTrailingSpaces in Edit.Options);
-    try
-      if ChangeTrim then Edit.Options := Edit.Options - [eoTrimTrailingSpaces];
-      SText := Edit.SelText;
-    finally
-      if ChangeTrim then Edit.Options := Edit.Options + [eoTrimTrailingSpaces];
-    end;
-    Clipboard.AsText := Clipboard.AsText + SText;
+  ChangeTrim := (Edit.ActiveSelectionMode = smColumn)
+                  and (eoTrimTrailingSpaces in Edit.Options);
+  try
+    if ChangeTrim then Edit.Options := Edit.Options - [eoTrimTrailingSpaces];
+    SText := Edit.SelText;
+  finally
+    if ChangeTrim then Edit.Options := Edit.Options + [eoTrimTrailingSpaces];
   end;
+  Clipboard.AsText := Clipboard.AsText + SText;
 end;
 
 procedure TMain.ChangeClipboard;
 var
   ChangeTrim: Boolean;
   SText, Temp: string;
+  bs, be, ce : TBufferCoord;
 begin
-  if Edit.SelAvail then begin
-    ChangeTrim := (Edit.ActiveSelectionMode = smColumn)
-                    and (eoTrimTrailingSpaces in Edit.Options);
-    try
-      if ChangeTrim then Edit.Options := Edit.Options - [eoTrimTrailingSpaces];
-      SText := Edit.SelText;
-    finally
-      if ChangeTrim then Edit.Options := Edit.Options + [eoTrimTrailingSpaces];
-    end;
-    Temp := Clipboard.AsText;
-    Clipboard.AsText := SText;
-    Edit.SelText := Temp;
+  bs := Edit.BlockBegin;
+  be := Edit.BlockEnd;
+  ce := Edit.CaretXY;
+  ChangeTrim := (Edit.ActiveSelectionMode = smColumn)
+                  and (eoTrimTrailingSpaces in Edit.Options);
+  try
+    if ChangeTrim then Edit.Options := Edit.Options - [eoTrimTrailingSpaces];
+    SText := Edit.SelText;
+  finally
+    if ChangeTrim then Edit.Options := Edit.Options + [eoTrimTrailingSpaces];
   end;
+  Temp := Clipboard.AsText;
+  Clipboard.AsText := SText;
+  Edit.SelText := Temp;
+  Edit.SetCaretAndSelection(ce, bs, be);
 end;
 
 procedure TMain.N38Click(Sender: TObject);
@@ -1966,11 +2132,15 @@ begin
   gtbox := TGoToDlg.Create(Self);
   with gtbox do try
     MyLoadLoc(gtbox, 'GoToDlg');
-    JvSpinEdit1.MaxValue := Edit.Lines.Count;
-    JvSpinEdit1.Value := Edit.CaretY;
+    Spin1.MinValue := 1;
+    Spin1.MaxValue := Edit.Lines.Count;
+    Spin1.Value := Edit.CaretY;
+    Spin2.MinValue := 1;
+    Spin2.MaxValue := MaxInt;
+    Spin2.Value := Edit.CaretX;
     if ShowModal = mrOk then begin
-      lnumber.Y := JvSpinEdit1.AsInteger;
-      lnumber.X := 1;
+      lnumber.Y := Spin1.AsInteger;
+      lnumber.X := Spin2.AsInteger;
       Edit.ExecuteCommand(17, 'A', @lnumber);
     end;
   finally
@@ -1992,6 +2162,8 @@ begin
     Check2.Checked := Edit.Gutter.UseFontStyle;
     Check3.Checked := Edit.Gutter.Gradient;
     Check4.Checked := usesyn;
+    Check5.Checked := sddir;
+    Check6.Checked := sudir;
     WrapChk.Checked := Edit.WordWrap;
     GASizeChk.Checked := Edit.Gutter.AutoSize;
     ShowLZChk.Checked := Edit.Gutter.LeadingZeros;
@@ -2032,6 +2204,8 @@ begin
       JvTrayIcon1.Active := TrayChk.Checked;
       Status.Visible := StatusBarChk.Checked;
       usesyn := Check4.Checked;
+      sddir := Check5.Checked;
+      sudir := Check6.Checked;
       Rcnt.Capacity := Spin1.AsInteger;
       Edit.MaxScrollWidth := Spin2.AsInteger;
       Edit.MaxUndo := Spin3.AsInteger;
@@ -2123,6 +2297,16 @@ begin
   Edit.ExecuteCommand(627, 'A', @Edit.Lines);
 end;
 
+procedure TMain.N71Click(Sender: TObject);
+begin
+  Edit.SelText := QuotedStr(Edit.SelText);
+end;
+
+procedure TMain.N72Click(Sender: TObject);
+begin
+  Edit.SelText := AnsiDequotedStr(Edit.SelText, '''');
+end;
+
 procedure TMain.N75Click(Sender: TObject);
 begin
   MySetSynByFid(1);
@@ -2198,13 +2382,13 @@ end;
 
 procedure TMain.N37Click(Sender: TObject);
 var
-  x, y: integer;
+  sc, ec, ce: TBufferCoord;
 begin
-  x := Edit.SelStart;
-  y := Edit.SelEnd;
+  sc := Edit.BlockBegin;
+  ec := Edit.BlockEnd;
+  ce := Edit.CaretXY;
   Edit.SelText := Edit.SelText + Edit.SelText;
-  Edit.SelStart := x;
-  Edit.SelEnd := y;
+  Edit.SetCaretAndSelection(ce, sc, ec);
 end;
 
 procedure TMain.N99Click(Sender: TObject);
@@ -2390,6 +2574,8 @@ begin
   N59.Enabled := lc and nro;
   N65.Enabled := cpa and sav and nro;
   N66.Enabled := lc and nro;
+  N71.Enabled := sav and nro;
+  N72.Enabled := sav and nro;
   N77.Enabled := nro;
   N80.Enabled := fe;
   N85.Enabled := lc and nro;
@@ -2404,6 +2590,8 @@ begin
   N119.Enabled := fe;
   N124.Enabled := fe;
   N127.Enabled := Rcnt.Strings.Count > 0;
+  N162.Checked := not nro;
+  N163.Enabled := fe;
   if fe then begin
     Status.Panels.Items[2].Text := MyBytesToStr(myfsize);
     if ExtractFilePath(MyFileName) = ''
@@ -2414,22 +2602,14 @@ begin
     Status.Panels.Items[2].Text := '';
   end;
   if fm then capt := '* ' + capt;
-  if nro = False then capt := capt + ' [read only]';
+  if nro = False then capt := capt + ' [' + mysn5 + ']';
   Caption := capt;
   JvTrayIcon1.Hint := Caption;
 end;
 
 procedure TMain.JvDragDrop1Drop(Sender: TObject; Pos: TPoint; Value: TStrings);
-{var
-  i:Integer;}
 begin
-  //for i:=0 to Value.Count-1 do begin
-  //  if i=0 then begin
-  MyOpenFile(Value.Strings[0], 0, 1);
-  //  end;
-    //ToDo: if i>0 then do command ['biredit.exe "file[i]"']
-    //ToDo: if i>5 then 'Are you sure do you want open these files?'
-  //end;
+  MyScanDropFiles(Value);
 end;
 
 procedure TMain.N119Click(Sender: TObject);

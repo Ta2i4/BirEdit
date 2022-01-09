@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@mail.ru
 
 
-The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-24.
+The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-06-05.
 All Rights Reserved.
 
-$Id: uGoTo.pas, v 1.2.1.399 2009/05/24 09:17:00 maelh Exp $
+$Id: uGoTo.pas, v 1.2.8.411 2009/06/05 04:55:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://fireforge.net/projects/biredit/
@@ -38,9 +38,11 @@ uses
 type
   TGoToDlg = class(TForm)
     LineLbl: TLabel;
-    JvSpinEdit1: TJvSpinEdit;
+    Spin1: TJvSpinEdit;
     OkBtn: TButton;
-    procedure JvSpinEdit1KeyDown(Sender: TObject; var Key: Word;
+    ChrLbl: TLabel;
+    Spin2: TJvSpinEdit;
+    procedure Spin1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   end;
 
@@ -51,7 +53,7 @@ implementation
 
 {$R *.DFM}
 
-procedure TGoToDlg.JvSpinEdit1KeyDown(Sender: TObject; var Key: Word;
+procedure TGoToDlg.Spin1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = 27 then ModalResult := mrCancel;

@@ -2,7 +2,7 @@ object Main: TMain
   Left = 353
   Top = 233
   Caption = 'Untitled - BirEdit'
-  ClientHeight = 397
+  ClientHeight = 417
   ClientWidth = 592
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,7 +20,7 @@ object Main: TMain
     Left = 0
     Top = 0
     Width = 592
-    Height = 378
+    Height = 398
     Align = alClient
     ActiveLineColor = clInfoBk
     Font.Charset = DEFAULT_CHARSET
@@ -45,7 +45,7 @@ object Main: TMain
   end
   object Status: TStatusBar
     Left = 0
-    Top = 378
+    Top = 398
     Width = 592
     Height = 19
     Panels = <
@@ -96,11 +96,16 @@ object Main: TMain
         OnClick = N4Click
       end
       object N5: TMenuItem
-        Caption = 'Save As...'
+        Caption = 'Save as...'
         Hint = 'Save As...'
         ImageIndex = 14
         ShortCut = 117
         OnClick = N5Click
+      end
+      object N162: TMenuItem
+        AutoCheck = True
+        Caption = 'Read only'
+        OnClick = N162Click
       end
       object N47: TMenuItem
         Caption = '-'
@@ -141,14 +146,14 @@ object Main: TMain
         Caption = '-'
       end
       object N120: TMenuItem
-        Caption = 'Launch'
+        Caption = 'Operations'
         object N119: TMenuItem
-          Caption = 'New Window'
+          Caption = 'New window'
           ShortCut = 32846
           OnClick = N119Click
         end
         object N122: TMenuItem
-          Caption = 'Empty Window'
+          Caption = 'Empty window'
           ShortCut = 32847
           OnClick = N122Click
         end
@@ -156,14 +161,22 @@ object Main: TMain
           Caption = '-'
         end
         object N124: TMenuItem
-          Caption = 'Execute Document'
+          Caption = 'Execute document'
           ShortCut = 16460
           OnClick = N124Click
         end
         object N80: TMenuItem
-          Caption = 'Open With...'
+          Caption = 'Open with...'
           ShortCut = 32844
           OnClick = N80Click
+        end
+        object N163: TMenuItem
+          Caption = 'Open in Explorer'
+          ShortCut = 32837
+          OnClick = N163Click
+        end
+        object N164: TMenuItem
+          Caption = '-'
         end
         object N38: TMenuItem
           Caption = 'Command...'
@@ -175,7 +188,7 @@ object Main: TMain
         Caption = '-'
       end
       object N7: TMenuItem
-        Caption = 'Print Preview'
+        Caption = 'Print preview'
         OnClick = N7Click
       end
       object N8: TMenuItem
@@ -254,12 +267,12 @@ object Main: TMain
         OnClick = N15Click
       end
       object N39: TMenuItem
-        Caption = 'Copy All'
+        Caption = 'Copy all'
         ShortCut = 32835
         OnClick = N39Click
       end
       object N30: TMenuItem
-        Caption = 'Copy Add'
+        Caption = 'Copy add'
         ShortCut = 16453
         OnClick = N30Click
       end
@@ -283,16 +296,16 @@ object Main: TMain
         OnClick = N59Click
       end
       object N57: TMenuItem
-        Caption = 'Clear All'
+        Caption = 'Clear all'
         Hint = 'Clear All'
         OnClick = N57Click
       end
       object N46: TMenuItem
-        Caption = 'Clear Clipboard'
+        Caption = 'Clear clipboard'
         OnClick = N46Click
       end
       object N14: TMenuItem
-        Caption = 'Select All'
+        Caption = 'Select all'
         ShortCut = 16449
         OnClick = N14Click
       end
@@ -315,14 +328,24 @@ object Main: TMain
           Caption = '-'
         end
         object N90: TMenuItem
-          Caption = 'Enclose Selection'
+          Caption = 'Enclose selection'
           ShortCut = 32849
           OnClick = N90Click
         end
         object N37: TMenuItem
-          Caption = 'Dublicate Selection'
+          Caption = 'Dublicate selection'
           ShortCut = 32836
           OnClick = N37Click
+        end
+        object N71: TMenuItem
+          Caption = 'Quote selection'
+          ShortCut = 16465
+          OnClick = N71Click
+        end
+        object N72: TMenuItem
+          Caption = 'Dequote selection'
+          ShortCut = 24657
+          OnClick = N72Click
         end
       end
       object N66: TMenuItem
@@ -338,17 +361,17 @@ object Main: TMain
           OnClick = N68Click
         end
         object N70: TMenuItem
-          Caption = 'Invert Case'
+          Caption = 'Invert case'
           ShortCut = 49225
           OnClick = N70Click
         end
         object N69: TMenuItem
-          Caption = 'Title Case'
+          Caption = 'Title case'
           ShortCut = 49236
           OnClick = N69Click
         end
         object N76: TMenuItem
-          Caption = 'Sentence Case'
+          Caption = 'Sentence case'
           ShortCut = 49235
           OnClick = N76Click
         end
@@ -388,12 +411,12 @@ object Main: TMain
         OnClick = N26Click
       end
       object N27: TMenuItem
-        Caption = 'Find Next'
+        Caption = 'Find next'
         ShortCut = 114
         OnClick = N27Click
       end
       object N28: TMenuItem
-        Caption = 'Find Previous'
+        Caption = 'Find previous'
         ShortCut = 8306
         OnClick = N28Click
       end
@@ -406,12 +429,12 @@ object Main: TMain
         OnClick = N29Click
       end
       object N18: TMenuItem
-        Caption = 'Replace Next'
+        Caption = 'Replace next'
         ShortCut = 115
         OnClick = N18Click
       end
       object N33: TMenuItem
-        Caption = 'Replace Previous'
+        Caption = 'Replace previous'
         ShortCut = 8307
         OnClick = N33Click
       end
@@ -419,14 +442,19 @@ object Main: TMain
         Caption = '-'
       end
       object N31: TMenuItem
-        Caption = 'Goto...'
+        Caption = 'Go to...'
         ShortCut = 16455
         OnClick = N31Click
       end
       object N141: TMenuItem
         Caption = 'Find mathing brace'
-        ShortCut = 24642
+        ShortCut = 16450
         OnClick = N141Click
+      end
+      object N161: TMenuItem
+        Caption = 'Select to matching brace'
+        ShortCut = 24642
+        OnClick = N161Click
       end
     end
     object N101: TMenuItem
@@ -902,11 +930,11 @@ object Main: TMain
       OnClick = N15Click
     end
     object N45: TMenuItem
-      Caption = 'Copy All'
+      Caption = 'Copy all'
       OnClick = N39Click
     end
     object N55: TMenuItem
-      Caption = 'Copy Add'
+      Caption = 'Copy add'
       OnClick = N30Click
     end
     object N24: TMenuItem
@@ -922,15 +950,15 @@ object Main: TMain
       OnClick = N59Click
     end
     object N95: TMenuItem
-      Caption = 'Clear All'
+      Caption = 'Clear all'
       OnClick = N57Click
     end
     object N96: TMenuItem
-      Caption = 'Clear Clipboard'
+      Caption = 'Clear clipboard'
       OnClick = N46Click
     end
     object N25: TMenuItem
-      Caption = 'Select All'
+      Caption = 'Select all'
       OnClick = N14Click
     end
   end

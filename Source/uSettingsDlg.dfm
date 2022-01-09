@@ -3,8 +3,8 @@ object SettingsDlg: TSettingsDlg
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Settings'
-  ClientHeight = 368
-  ClientWidth = 594
+  ClientHeight = 349
+  ClientWidth = 374
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,8 +16,8 @@ object SettingsDlg: TSettingsDlg
   PixelsPerInch = 96
   TextHeight = 13
   object ApplyBtn: TButton
-    Left = 10
-    Top = 335
+    Left = 15
+    Top = 315
     Width = 75
     Height = 25
     Caption = 'Apply'
@@ -27,7 +27,7 @@ object SettingsDlg: TSettingsDlg
   end
   object CancelBtn: TButton
     Left = 100
-    Top = 335
+    Top = 315
     Width = 75
     Height = 25
     Cancel = True
@@ -38,8 +38,8 @@ object SettingsDlg: TSettingsDlg
   object PageControl1: TPageControl
     Left = 0
     Top = 0
-    Width = 594
-    Height = 330
+    Width = 374
+    Height = 305
     ActivePage = AppTab
     Align = alTop
     TabOrder = 2
@@ -48,7 +48,7 @@ object SettingsDlg: TSettingsDlg
       ImageIndex = 2
       object Lbl1: TLabel
         Left = 10
-        Top = 80
+        Top = 120
         Width = 99
         Height = 13
         Caption = 'Recent files capacity'
@@ -56,7 +56,7 @@ object SettingsDlg: TSettingsDlg
       object TrayChk: TCheckBox
         Left = 10
         Top = 10
-        Width = 560
+        Width = 340
         Height = 17
         Caption = 'Minimize to tray'
         TabOrder = 0
@@ -64,7 +64,7 @@ object SettingsDlg: TSettingsDlg
       object StatusBarChk: TCheckBox
         Left = 10
         Top = 30
-        Width = 560
+        Width = 340
         Height = 17
         Caption = 'Show status bar'
         TabOrder = 1
@@ -72,20 +72,36 @@ object SettingsDlg: TSettingsDlg
       object GVisChk: TCheckBox
         Left = 10
         Top = 50
-        Width = 560
+        Width = 340
         Height = 17
         Caption = 'Show gutter'
         TabOrder = 2
       end
       object Spin1: TJvSpinEdit
         Left = 10
-        Top = 100
+        Top = 135
         Width = 120
         Height = 21
         MaxValue = 100.000000000000000000
         MinValue = 1.000000000000000000
         Value = 10.000000000000000000
+        TabOrder = 5
+      end
+      object Check5: TCheckBox
+        Left = 10
+        Top = 70
+        Width = 340
+        Height = 17
+        Caption = 'Scan dropped folders'
         TabOrder = 3
+      end
+      object Check6: TCheckBox
+        Left = 10
+        Top = 90
+        Width = 340
+        Height = 17
+        Caption = 'Scan subfolders'
+        TabOrder = 4
       end
     end
     object EditorTab: TTabSheet
@@ -93,8 +109,8 @@ object SettingsDlg: TSettingsDlg
       object PageCtrl3: TPageControl
         Left = 0
         Top = 0
-        Width = 586
-        Height = 302
+        Width = 366
+        Height = 277
         ActivePage = EditOptsTab
         Align = alClient
         TabOrder = 0
@@ -177,9 +193,9 @@ object SettingsDlg: TSettingsDlg
             TabOrder = 1
           end
           object WrapChk: TCheckBox
-            Left = 350
-            Top = 30
-            Width = 220
+            Left = 10
+            Top = 200
+            Width = 320
             Height = 17
             Caption = 'Word wrap'
             TabOrder = 9
@@ -240,9 +256,9 @@ object SettingsDlg: TSettingsDlg
               'Block')
           end
           object Check1: TCheckBox
-            Left = 350
-            Top = 10
-            Width = 220
+            Left = 10
+            Top = 180
+            Width = 320
             Height = 17
             Caption = 'Read only'
             TabOrder = 8
@@ -270,9 +286,9 @@ object SettingsDlg: TSettingsDlg
               'Top to Bottom')
           end
           object Check4: TCheckBox
-            Left = 350
-            Top = 50
-            Width = 220
+            Left = 10
+            Top = 220
+            Width = 320
             Height = 17
             Caption = 'Use syntax highlighting'
             TabOrder = 10
@@ -284,8 +300,8 @@ object SettingsDlg: TSettingsDlg
           object OptsList: TCheckListBox
             Left = 0
             Top = 0
-            Width = 578
-            Height = 276
+            Width = 358
+            Height = 251
             Align = alClient
             ItemHeight = 13
             Items.Strings = (
@@ -348,7 +364,7 @@ object SettingsDlg: TSettingsDlg
       object ShowLZChk: TCheckBox
         Left = 150
         Top = 30
-        Width = 420
+        Width = 200
         Height = 17
         Caption = 'Leading zeros'
         TabOrder = 4
@@ -356,7 +372,7 @@ object SettingsDlg: TSettingsDlg
       object StartZeroChk: TCheckBox
         Left = 150
         Top = 90
-        Width = 420
+        Width = 200
         Height = 17
         Caption = 'Zero start'
         TabOrder = 7
@@ -364,7 +380,7 @@ object SettingsDlg: TSettingsDlg
       object GASizeChk: TCheckBox
         Left = 150
         Top = 10
-        Width = 420
+        Width = 200
         Height = 17
         Caption = 'Autosize'
         TabOrder = 3
@@ -372,7 +388,7 @@ object SettingsDlg: TSettingsDlg
       object ShowLnNumChk: TCheckBox
         Left = 150
         Top = 50
-        Width = 420
+        Width = 200
         Height = 17
         Caption = 'Show line numbers'
         TabOrder = 5
@@ -390,7 +406,7 @@ object SettingsDlg: TSettingsDlg
       object Check2: TCheckBox
         Left = 150
         Top = 70
-        Width = 420
+        Width = 200
         Height = 17
         Caption = 'Use font style'
         TabOrder = 6
@@ -407,7 +423,7 @@ object SettingsDlg: TSettingsDlg
       object Check3: TCheckBox
         Left = 150
         Top = 110
-        Width = 420
+        Width = 200
         Height = 17
         Caption = 'Use gradient'
         TabOrder = 8

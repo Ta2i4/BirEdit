@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@mail.ru
 
 
-The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-31.
+The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-06-05.
 All Rights Reserved.
 
-$Id: BirEdit.dpr, v 1.2.4.406 2009/05/31 07:58:00 maelh Exp $
+$Id: BirEdit.dpr, v 1.2.8.411 2009/06/05 04:56:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://fireforge.net/projects/biredit/
@@ -45,7 +45,8 @@ uses
   uPrintPreviewDlg in 'uPrintPreviewDlg.pas' {Preview},
   uReplaceDlg in 'uReplaceDlg.pas',
   uSearchDlg in 'uSearchDlg.pas' {SearchForm},
-  uSettingsDlg in 'uSettingsDlg.pas' {SettingsDlg};
+  uSettingsDlg in 'uSettingsDlg.pas' {SettingsDlg},
+  uDropped in 'uDropped.pas' {DropDlg};
 
 {$R *.res}
 

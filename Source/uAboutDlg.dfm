@@ -42,7 +42,7 @@ object About: TAbout
     Top = 29
     Width = 86
     Height = 13
-    Caption = 'Version 1.2.7.409'
+    Caption = 'Version 1.2.8.411'
   end
   object lbl3: TLabel
     Left = 10

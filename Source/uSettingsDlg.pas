@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@mail.ru
 
 
-The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-06-03.
+The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-06-05.
 All Rights Reserved.
 
-$Id: uSettingsDlg.pas, v 1.2.7.409 2009/06/03 00:08:00 maelh Exp $
+$Id: uSettingsDlg.pas, v 1.2.8.411 2009/06/05 04:56:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://fireforge.net/projects/biredit/
@@ -83,6 +83,8 @@ type
     AdvTab: TTabSheet;
     OptsList: TCheckListBox;
     Check4: TCheckBox;
+    Check5: TCheckBox;
+    Check6: TCheckBox;
   end;
 
 var

@@ -69,6 +69,9 @@
 			<DCCReference Include="uSettingsDlg.pas">
 				<Form>SettingsDlg</Form>
 			</DCCReference>
+			<DCCReference Include="uDropped.pas">
+				<Form>DropDlg</Form>
+			</DCCReference>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
@@ -100,8 +103,8 @@
 						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">2</VersionInfo>
-						<VersionInfo Name="Release">7</VersionInfo>
-						<VersionInfo Name="Build">409</VersionInfo>
+						<VersionInfo Name="Release">8</VersionInfo>
+						<VersionInfo Name="Build">411</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
 						<VersionInfo Name="PreRelease">False</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -113,13 +116,13 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">© 2008-2009 Aleksey Tatuyko</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">BirEdit text editor</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">1.2.7.409</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.2.8.411</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
 						<VersionInfoKeys Name="LegalCopyright">© 2008-2009 Aleksey Tatuyko</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename"/>
 						<VersionInfoKeys Name="ProductName">BirEdit text editor</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductVersion">1.2.7</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">1.2.8</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments">BirEdit text editor</VersionInfoKeys>
 					</VersionInfoKeys>
 				</Delphi.Personality>
