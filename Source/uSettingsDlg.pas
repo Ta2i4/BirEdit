@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uSettingsDlg.pas by Alexey Tatuyko, released 2009-10-02.
+The Original Code is uSettingsDlg.pas by Alexey Tatuyko, released 2009-12-17.
 All Rights Reserved.
 
-$Id: uSettingsDlg.pas, v 1.3.2.530 2009/10/02 00:54:00 maelh Exp $
+$Id: uSettingsDlg.pas, v 1.3.3.606 2009/12/17 03:46:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.googlecode.com/
@@ -94,6 +94,7 @@ type
     Check16: TCheckBox;
     Check17: TCheckBox;
     Check18: TCheckBox;
+    lbl14: TLabel;
     procedure FormCreate(Sender: TObject);
   private
     function GetChk1: Boolean;

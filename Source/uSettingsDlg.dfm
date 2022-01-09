@@ -58,6 +58,14 @@ object SettingsDlg: TSettingsDlg
         Height = 13
         Caption = 'Recent files capacity'
       end
+      object lbl14: TLabel
+        Tag = 115
+        Left = 10
+        Top = 280
+        Width = 285
+        Height = 13
+        Caption = '[*] Not recommended. Incompatible with non-latin symbols.'
+      end
       object Check7: TCheckBox
         Tag = 201
         Left = 10
@@ -119,12 +127,12 @@ object SettingsDlg: TSettingsDlg
         Top = 135
         Width = 340
         Height = 17
-        Caption = 'Use syntax highlighting'
+        Caption = 'Use syntax highlighting [*]'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
-        Font.Style = []
+        Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 5
       end

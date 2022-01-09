@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uAboutDlg.pas by Alexey Tatuyko, released 2009-10-02.
+The Original Code is uAboutDlg.pas by Alexey Tatuyko, released 2009-12-17.
 All Rights Reserved.
 
-$Id: uAboutDlg.pas, v 1.3.2.530 2009/10/02 00:49:00 maelh Exp $
+$Id: uAboutDlg.pas, v 1.3.3.606 2009/12/17 05:36:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.googlecode.com/
@@ -47,6 +47,8 @@ type
     Tab3: TTabSheet;
     Memo1: TMemo;
     Memo2: TMemo;
+    Tab2: TTabSheet;
+    Memo3: TMemo;
   end;
 
 implementation

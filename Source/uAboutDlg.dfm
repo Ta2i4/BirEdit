@@ -40,7 +40,7 @@ object About: TAbout
     Top = 29
     Width = 86
     Height = 13
-    Caption = 'Version 1.3.2.530'
+    Caption = 'Version 1.3.3.606'
   end
   object btn1: TButton
     Left = 414
@@ -87,6 +87,31 @@ object About: TAbout
           ''
           'Contacts:'
           'E-mail: tatuich@gmail.com')
+        ReadOnly = True
+        ScrollBars = ssVertical
+        TabOrder = 0
+      end
+    end
+    object Tab2: TTabSheet
+      Caption = 'Thanks'
+      ImageIndex = 2
+      object Memo3: TMemo
+        Left = 0
+        Top = 0
+        Width = 471
+        Height = 210
+        Align = alClient
+        Lines.Strings = (
+          'Third party libs used:'
+          '- FastMM 4.95 CVS (http://sourceforge.net/projects/fastmm/)'
+          '- JVCL 3.38 (http://sourceforge.net/projects/jvcl/)'
+          
+            '- SynEdit 2009/12/14 CVS (http://sourceforge.net/projects/synedi' +
+            't/)'
+          '- VCL Fix Pack 1.4 (http://andy.jgknet.de/)'
+          ''
+          'Special thanks:'
+          '- Oleg Domani (http://viacoding.ucoz.ru/)')
         ReadOnly = True
         ScrollBars = ssVertical
         TabOrder = 0

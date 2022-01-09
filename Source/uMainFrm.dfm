@@ -71,14 +71,12 @@ object Main: TMain
       object N105: TMenuItem
         Caption = 'New'
         Hint = 'New'
-        ImageIndex = 0
         ShortCut = 113
         OnClick = N105Click
       end
       object N3: TMenuItem
         Caption = 'Open'
         Hint = 'Open'
-        ImageIndex = 1
         ShortCut = 16463
         OnClick = N3Click
       end
@@ -91,14 +89,12 @@ object Main: TMain
       object N4: TMenuItem
         Caption = 'Save'
         Hint = 'Save'
-        ImageIndex = 2
         ShortCut = 16467
         OnClick = N4Click
       end
       object N5: TMenuItem
         Caption = 'Save as...'
         Hint = 'Save As...'
-        ImageIndex = 14
         ShortCut = 117
         OnClick = N5Click
       end
@@ -233,7 +229,6 @@ object Main: TMain
       object N2: TMenuItem
         Caption = 'Exit'
         Hint = 'Exit'
-        ImageIndex = 13
         ShortCut = 32883
         OnClick = N2Click
       end
@@ -243,14 +238,12 @@ object Main: TMain
       object N11: TMenuItem
         Caption = 'Undo'
         Hint = 'Undo'
-        ImageIndex = 3
         ShortCut = 16474
         OnClick = N11Click
       end
       object N12: TMenuItem
         Caption = 'Redo'
         Hint = 'Redo'
-        ImageIndex = 4
         ShortCut = 24666
         OnClick = N12Click
       end
@@ -260,14 +253,12 @@ object Main: TMain
       object N17: TMenuItem
         Caption = 'Cut'
         Hint = 'Cut'
-        ImageIndex = 5
         ShortCut = 16472
         OnClick = N17Click
       end
       object N15: TMenuItem
         Caption = 'Copy'
         Hint = 'Copy'
-        ImageIndex = 6
         ShortCut = 16451
         OnClick = N15Click
       end
@@ -284,7 +275,6 @@ object Main: TMain
       object N16: TMenuItem
         Caption = 'Paste'
         Hint = 'Paste'
-        ImageIndex = 7
         ShortCut = 16470
         OnClick = N16Click
       end
@@ -296,7 +286,6 @@ object Main: TMain
       object N59: TMenuItem
         Caption = 'Clear'
         Hint = 'Clear'
-        ImageIndex = 16
         ShortCut = 46
         OnClick = N59Click
       end
@@ -331,11 +320,6 @@ object Main: TMain
         end
         object N89: TMenuItem
           Caption = '-'
-        end
-        object N90: TMenuItem
-          Caption = 'Enclose selection'
-          ShortCut = 32849
-          OnClick = N90Click
         end
         object N37: TMenuItem
           Caption = 'Dublicate selection'
@@ -379,32 +363,6 @@ object Main: TMain
           Caption = 'Sentence case'
           ShortCut = 49235
           OnClick = MyChangeCase
-        end
-      end
-      object N77: TMenuItem
-        Caption = 'Insert'
-        object N48: TMenuItem
-          Caption = 'Color under cursor (RGB)'
-          ShortCut = 32854
-          OnClick = N48Click
-        end
-        object N99: TMenuItem
-          Caption = 'Time/Date'
-          ShortCut = 16500
-          OnClick = N99Click
-        end
-        object N78: TMenuItem
-          Caption = '-'
-        end
-        object N100: TMenuItem
-          Caption = 'Filename'
-          ShortCut = 16504
-          OnClick = N100Click
-        end
-        object N102: TMenuItem
-          Caption = 'Filename and path'
-          ShortCut = 24696
-          OnClick = N102Click
         end
       end
     end
@@ -460,6 +418,45 @@ object Main: TMain
         Caption = 'Select to matching brace'
         ShortCut = 24642
         OnClick = N161Click
+      end
+    end
+    object N77: TMenuItem
+      Caption = 'Insert'
+      object N165: TMenuItem
+        Caption = 'Data'
+        object N169: TMenuItem
+          Caption = 'Computer name'
+          OnClick = N169Click
+        end
+        object N170: TMenuItem
+          Caption = 'User name'
+          OnClick = N170Click
+        end
+      end
+      object N90: TMenuItem
+        Caption = 'Enclose selection'
+        ShortCut = 32849
+        OnClick = N90Click
+      end
+      object N48: TMenuItem
+        Caption = 'Color under cursor (RGB)'
+        ShortCut = 32854
+        OnClick = N48Click
+      end
+      object N99: TMenuItem
+        Caption = 'Time/Date'
+        ShortCut = 16500
+        OnClick = N99Click
+      end
+      object N100: TMenuItem
+        Caption = 'Filename'
+        ShortCut = 16504
+        OnClick = N100Click
+      end
+      object N102: TMenuItem
+        Caption = 'Filename and path'
+        ShortCut = 24696
+        OnClick = N102Click
       end
     end
     object N101: TMenuItem
@@ -978,12 +975,14 @@ object Main: TMain
   end
   object JvTimer3: TJvTimer
     Interval = 100
+    ThreadPriority = tpLowest
     OnTimer = JvTimer3Timer
     Left = 448
     Top = 32
   end
   object JvTimer4: TJvTimer
     Interval = 100
+    ThreadPriority = tpLowest
     OnTimer = JvTimer4Timer
     Left = 480
     Top = 32

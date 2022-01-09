@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uMainFrm.pas by Alexey Tatuyko, released 2009-10-02.
+The Original Code is uMainFrm.pas by Alexey Tatuyko, released 2009-12-17.
 All Rights Reserved.
 
-$Id: uMainFrm.pas, v 1.3.2.530 2009/10/02 00:52:00 maelh Exp $
+$Id: uMainFrm.pas, v 1.3.3.606 2009/12/17 03:57:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.googlecode.com/
@@ -136,7 +136,6 @@ type
     N131: TMenuItem;
     N132: TMenuItem;
     N80: TMenuItem;
-    N78: TMenuItem;
     N100: TMenuItem;
     N102: TMenuItem;
     N135: TMenuItem;
@@ -297,6 +296,9 @@ type
     N168: TMenuItem;
     N7: TMenuItem;
     PageDlg: TPageSetupDialog;
+    N165: TMenuItem;
+    N169: TMenuItem;
+    N170: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure N2Click(Sender: TObject);
     procedure N3Click(Sender: TObject);
@@ -369,6 +371,8 @@ type
     procedure N168Click(Sender: TObject);
     procedure N7Click(Sender: TObject);
     procedure N166Click(Sender: TObject);
+    procedure N169Click(Sender: TObject);
+    procedure N170Click(Sender: TObject);
   private
     fSearchFromCaret, gbSearchBackwards, gbSearchCaseSensitive, sddir, sudir,
     gbSearchFromCaret, gbSearchRegex, gbSearchSelectionOnly, prevnoex, psafc,
@@ -636,11 +640,12 @@ var
   var
     mys: TSearchRec;
   begin
+    MyDir := IncludeTrailingPathDelimiter(MyDir);
     if FindFirst(MyDir + '*', faAnyFile, mys) = 0 then repeat
       if (mys.Name = '.') or (mys.Name = '..') then Continue;
       if not ((mys.Attr and faDirectory) <> 0)
-      then tmpstrs.Add(IncludeTrailingPathDelimiter(MyDir) + mys.Name) else
-      if sudir then MyScanDir(IncludeTrailingPathDelimiter(MyDir + mys.Name));
+      then tmpstrs.Add(MyDir + mys.Name) else
+      if sudir then MyScanDir(MyDir + mys.Name);
     until FindNext(mys) <> 0;
   end;
 
@@ -654,7 +659,7 @@ begin
       for I := tmpstrs.Count - 1 downto 0 do begin
         if DirectoryExists(tmpstrs.Strings[i]) then begin
           if sddir
-          then MyScanDir(IncludeTrailingPathDelimiter(tmpstrs.Strings[i]));
+          then MyScanDir(tmpstrs.Strings[i]);
           tmpstrs.Delete(i);
         end else if not (FileExists(tmpstrs.Strings[i])) then tmpstrs.Delete(i);
       end;
@@ -1158,6 +1163,9 @@ begin
   N163.Caption := langini.ReadString('Main', '95', 'Open in Explorer');
   N166.Caption := langini.ReadString('Main', '96', 'Page setup');
   N167.Caption := langini.ReadString('Main', '97', 'Printer setup');
+  N165.Caption := langini.ReadString('Main', '98', 'Data');
+  N169.Caption := langini.ReadString('Main', '99', 'Computer name');
+  N170.Caption := langini.ReadString('Main', '100', 'User name');
   N19.Caption := N11.Caption;
   N20.Caption := N12.Caption;
   N22.Caption := N17.Caption;
@@ -1275,9 +1283,12 @@ begin
   N161.Caption := 'Select to matching brace';
   N162.Caption := 'Read only';
   N163.Caption := 'Open in Explorer';
+  N165.Caption := 'Data';
   N166.Caption := 'Page setup';
   N167.Caption := 'Printer setup';
   N168.Caption := 'Print preview';
+  N169.Caption := 'Computer name';
+  N170.Caption := 'User name';
   N19.Caption := N11.Caption;
   N20.Caption := N12.Caption;
   N22.Caption := N17.Caption;
@@ -1912,6 +1923,18 @@ begin
   end;
 end;
 
+procedure TMain.N169Click(Sender: TObject);
+var
+  i: DWORD;
+  p: PChar;
+begin
+  i := 255;
+  GetMem(p, i);
+  GetComputerName(p, i);
+  Edit.SelText := p;
+  FreeMem(p);
+end;
+
 procedure TMain.N16Click(Sender: TObject);
 var
   bs: TBufferCoord;
@@ -1919,6 +1942,18 @@ begin
   if Edit.SelAvail then bs := Edit.BlockBegin else bs := Edit.CaretXY;
   Edit.PasteFromClipboard;
   if psafc then Edit.CaretXY := bs;
+end;
+
+procedure TMain.N170Click(Sender: TObject);
+var
+  i: DWORD;
+  p: PChar;
+begin
+  i := 255;
+  GetMem(p, i);
+  GetUserName(p, i);
+  Edit.SelText := p;
+  FreeMem(p);
 end;
 
 procedure TMain.N17Click(Sender: TObject);
