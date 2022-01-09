@@ -41,7 +41,7 @@ object About: TAbout
     Top = 29
     Width = 80
     Height = 13
-    Caption = 'version 2.0.1.49'
+    Caption = 'version 2.0.2.68'
   end
   object btn1: TButton
     Left = 414
@@ -99,11 +99,11 @@ object About: TAbout
         Lines.Strings = (
           'Third party libs used:'
           
-            '- FastMM v4.97 2010/10/23 SVN (http://sourceforge.net/projects/f' +
+            '- FastMM v4.97 2010/11/10 SVN (http://sourceforge.net/projects/f' +
             'astmm/)'
           '- JVCL v3.40 (http://sourceforge.net/projects/jvcl/)'
           
-            '- SynEdit 2010/09/14 SVN (http://sourceforge.net/projects/synedi' +
+            '- SynEdit 2010/11/29 SVN (http://sourceforge.net/projects/synedi' +
             't/)'
           ''
           'Special thanks:'
