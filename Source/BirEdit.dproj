@@ -43,7 +43,7 @@
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
 			<DCCReference Include="uMainFrm.pas">
-				<Form>Editor</Form>
+				<Form>Main</Form>
 				<DesignClass>TForm</DesignClass>
 			</DCCReference>
 			<DCCReference Include="BirEditAdv.pas"/>
@@ -100,8 +100,8 @@
 						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">2</VersionInfo>
-						<VersionInfo Name="Release">2</VersionInfo>
-						<VersionInfo Name="Build">400</VersionInfo>
+						<VersionInfo Name="Release">4</VersionInfo>
+						<VersionInfo Name="Build">406</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
 						<VersionInfo Name="PreRelease">False</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -113,13 +113,13 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">© 2008-2009 Aleksey Tatuyko</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">BirEdit text editor</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">1.2.2.400</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.2.4.406</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
 						<VersionInfoKeys Name="LegalCopyright">© 2008-2009 Aleksey Tatuyko</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename"/>
 						<VersionInfoKeys Name="ProductName">BirEdit text editor</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductVersion">1.2.2</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">1.2.4</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments">BirEdit text editor</VersionInfoKeys>
 					</VersionInfoKeys>
 				</Delphi.Personality>

@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@mail.ru
 
 
-The Original Code is uMainFrm.pas by Aleksey Tatuyko, released 2009-05-25.
+The Original Code is uMainFrm.pas by Aleksey Tatuyko, released 2009-05-31.
 All Rights Reserved.
 
-$Id: uMainFrm.pas, v 1.2.2.400 2009/05/25 00:05:00 maelh Exp $
+$Id: uMainFrm.pas, v 1.2.4.406 2009/05/31 07:58:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://fireforge.net/projects/biredit/
@@ -37,10 +37,11 @@ uses
   Forms, Graphics, SysUtils, SynEdit, SynEditPrint, ImgList, ExtCtrls, ShellAPI,
   JvTimer, JvDebugHandler, JvComponentBase, JvDragDrop, ShlObj, SynEditTypes,
   SynEditRegexSearch, SynEditSearch, Clipbrd, IniFiles, JvTrayIcon, StdCtrls,
-  ExtDlgs, JvBaseDlg, JvWinDialogs, SynEditMiscClasses;
+  ExtDlgs, JvBaseDlg, JvWinDialogs, SynEditMiscClasses, JvMRUManager, CheckLst,
+  JvAppStorage, JvAppIniStorage, JvFormPlacement;
 
 type
-  TEditor = class(TForm)
+  TMain = class(TForm, IJvAppStorageHandler)
     Edit: TSynEdit;
     MainMenu: TMainMenu;
     N1: TMenuItem;
@@ -148,6 +149,22 @@ type
     N36: TMenuItem;
     N34: TMenuItem;
     N35: TMenuItem;
+    N40: TMenuItem;
+    N41: TMenuItem;
+    N42: TMenuItem;
+    N43: TMenuItem;
+    Rcnt: TJvMRUManager;
+    AppIni: TJvAppIniFileStorage;
+    FormIni: TJvFormStorage;
+    N44: TMenuItem;
+    N47: TMenuItem;
+    N53: TMenuItem;
+    N54: TMenuItem;
+    N58: TMenuItem;
+    N61: TMenuItem;
+    N62: TMenuItem;
+    N63: TMenuItem;
+    N64: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure N2Click(Sender: TObject);
     procedure N3Click(Sender: TObject);
@@ -206,43 +223,47 @@ type
     procedure N48Click(Sender: TObject);
     procedure N51Click(Sender: TObject);
     procedure N32Click(Sender: TObject);
-    procedure JvTrayIcon1Click(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure FormResize(Sender: TObject);
     procedure EditReplaceText(Sender: TObject; const ASearch, AReplace: string;
       Line, Column: Integer; var Action: TSynReplaceAction);
-    procedure EditChange(Sender: TObject);
     procedure N38Click(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure N18Click(Sender: TObject);
     procedure N33Click(Sender: TObject);
+    procedure N41Click(Sender: TObject);
+    procedure N43Click(Sender: TObject);
+    procedure N42Click(Sender: TObject);
+    procedure RcntClick(Sender: TObject; const RecentName, Caption: string;
+      UserData: Integer);
+    procedure N53Click(Sender: TObject);
+    procedure N54Click(Sender: TObject);
+    procedure N58Click(Sender: TObject);
+    procedure N61Click(Sender: TObject);
+    procedure N62Click(Sender: TObject);
+    procedure N63Click(Sender: TObject);
+    procedure N64Click(Sender: TObject);
+    procedure EditDropFiles(Sender: TObject; X, Y: Integer; AFiles: TStrings);
   private
     fSearchFromCaret, gbSearchBackwards, gbSearchCaseSensitive,
     gbSearchFromCaret, gbSearchRegex, gbSearchSelectionOnly,
-    gbSearchTextAtCaret, gbSearchWholeWords, gbTempSearchBackwards, prevnoex,
-    ismax: Boolean;
+    gbSearchTextAtCaret, gbSearchWholeWords, gbTempSearchBackwards,
+    prevnoex: Boolean;
     prev, curcp: Integer;
     myfsize: Int64;
-    MyFileName, gsReplaceText, gsReplaceTextHistory, gsSearchText,
-    {gsSearchTextHistory, strSearchTextHistory,} mydatadir: string;
-    procedure AddRecentItem(RecFileName: TFileName);
+    MyFileName, gsReplaceText, gsReplaceTextHistory, gsSearchText: string;
+    {gsSearchTextHistory, strSearchTextHistory: string;}
     procedure AddToClipboard;
     procedure ChangeClipboard;
-    procedure ClearClipboard;
     procedure DoSearchReplaceText(AReplace, ABackwards: Boolean);
     procedure ShowSearchReplaceDialog(AReplace: Boolean);
     procedure FindExecute;
     procedure FindAgainExecute;
     procedure FindBackwardsExecute;
     procedure ItemClick(Sender: TObject);
-    procedure LoadFromFile(const FileName: TFileName);
-    procedure LoadMyApp;
+    procedure LoadFromFile(const FileName: TFileName; cid: Byte);
+    procedure LoadAppLoc;
     procedure LoadTranslate(const lang: string);
     procedure MyLoadLoc(AWnd: TForm; ASectionInIni:string);
-    procedure MyOpenFile(OpenFileName: TFileName);
+    procedure MyOpenFile(OpenFileName: TFileName; cid: Byte);
     procedure MySaveFile(SaveFileName: TFileName; seId: Integer);
-    procedure RecentItemClick(sender: TObject);
-    procedure ReloadRecentItems;
     procedure ReplaceExecute;
     procedure ReplaceAgainExecute;
     procedure ReplaceBackwardsExecute;
@@ -250,11 +271,14 @@ type
     //this procedures added in v1.2.1 :
     procedure MySetTextStr(const Value: string);
     procedure MyLoadFromStreamEnc(Stream: TStream; Encoding: TEncoding);
-    procedure MyLoadFromStream(Stream: TStream);
-    procedure MyLoadFromFile(const FileName: TFileName);
+    procedure MyLoadFromStream(Stream: TStream; cid: Byte);
+    procedure MyLoadFromFile(const FileName: TFileName; cid: Byte);
     procedure MySaveToFileEnc(const FileName: TFileName; Encoding: TEncoding);
     procedure MySaveToFile(const FileName: TFileName; seid: Integer);
-    procedure MySaveSettings;
+    procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage;
+                                   const BasePath: string);
+    procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage;
+                                   const BasePath: string);
   public
     mylang: string;
   end;
@@ -278,8 +302,8 @@ var
   mysn2: string = 'MB';
   mysn3: string = 'KB';
   mysn4: string = 'Byte(s)';
-  Editor: TEditor;
-  ini: TIniFile;
+  Main: TMain;
+  ExcValsEdit, ExcValsFont, ExcValsGut: TStrings;
 
 implementation
 
@@ -289,7 +313,7 @@ uses
 
 {$R *.DFM}
 
-procedure TEditor.MySetTextStr(const Value: string);
+procedure TMain.MySetTextStr(const Value: string);
 var
   P, Start, LB: PChar;
   S: string;
@@ -331,7 +355,7 @@ begin
   end;
 end;
 
-procedure TEditor.MyLoadFromStreamEnc(Stream: TStream; Encoding: TEncoding);
+procedure TMain.MyLoadFromStreamEnc(Stream: TStream; Encoding: TEncoding);
 var
   Size: Integer;
   Buffer: TBytes;
@@ -353,18 +377,26 @@ begin
   end;
 end;
 
-procedure TEditor.MyLoadFromStream(Stream: TStream);
+procedure TMain.MyLoadFromStream(Stream: TStream; cid: Byte);
 begin
-  MyLoadFromStreamEnc(Stream, nil);
+  case cid of
+    0: MyLoadFromStreamEnc(Stream, nil);
+    1: MyLoadFromStreamEnc(Stream, TEncoding.Default);
+    2: MyLoadFromStreamEnc(Stream, TEncoding.ASCII);
+    3: MyLoadFromStreamEnc(Stream, TEncoding.Unicode);
+    4: MyLoadFromStreamEnc(Stream, TEncoding.BigEndianUnicode);
+    5: MyLoadFromStreamEnc(Stream, TEncoding.UTF8);
+    6: MyLoadFromStreamEnc(Stream, TEncoding.UTF7);
+  end;
 end;
 
-procedure TEditor.MyLoadFromFile(const FileName: TFileName);
+procedure TMain.MyLoadFromFile(const FileName: TFileName; cid: Byte);
 var
   Stream: TStream;
 begin
   Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
   try
-    MyLoadFromStream(Stream);
+    MyLoadFromStream(Stream, cid);
     myfsize := Stream.Size;
     MyFileName := FileName;
   finally
@@ -372,7 +404,7 @@ begin
   end;
 end;
 
-procedure TEditor.MySaveToFileEnc(const FileName: TFileName; Encoding: TEncoding);
+procedure TMain.MySaveToFileEnc(const FileName: TFileName; Encoding: TEncoding);
 var
   Stream: TStream;
 begin
@@ -387,7 +419,7 @@ begin
   end;
 end;
 
-procedure TEditor.MySaveToFile(const FileName: TFileName; seid: Integer);
+procedure TMain.MySaveToFile(const FileName: TFileName; seid: Integer);
 begin
   try
     case seid of
@@ -405,10 +437,10 @@ begin
   end;
 end;
 
-procedure TEditor.LoadFromFile(const FileName: TFileName);
+procedure TMain.LoadFromFile(const FileName: TFileName; cid: Byte);
 begin
   try
-    MyLoadFromFile(FileName);
+    MyLoadFromFile(FileName, cid);
   except
     Application.MessageBox(PChar(mysg1), 'BirEdit', MB_OK+MB_ICONSTOP);
     MyFileName := '';
@@ -417,7 +449,7 @@ begin
   end;
 end;
 
-procedure TEditor.MyLoadLoc(AWnd: TForm; ASectionInIni: string);
+procedure TMain.MyLoadLoc(AWnd: TForm; ASectionInIni: string);
 var
   i,j: Integer;
   langini: TIniFile;
@@ -445,6 +477,15 @@ begin
         then (AWnd.Components[i] as TLabel).Caption
                := langini.ReadString(ASectionInIni,AWnd.Components[i].Name,
                                        (AWnd.Components[i] as TLabel).Caption);
+        if AWnd.Components[i].ClassType = TComboBox
+        then begin
+          if (AWnd.Components[i] as TComboBox).Items.Count > 0 then
+            for j := 0 to (AWnd.Components[i] as TComboBox).Items.Count - 1 do
+              (AWnd.Components[i] as TComboBox).Items.Strings[j]
+                := langini.ReadString(ASectionInIni, AWnd.Components[i].Name
+                                        + IntToStr(j),
+                          (AWnd.Components[i] as TComboBox).Items.Strings[j]);
+        end;
         if AWnd.Components[i].ClassType = TRadioGroup
         then begin
           (AWnd.Components[i] as TRadioGroup).Caption
@@ -461,6 +502,15 @@ begin
         then (AWnd.Components[i] as TTabSheet).Caption
                := langini.ReadString(ASectionInIni, AWnd.Components[i].Name,
                                      (AWnd.Components[i] as TTabSheet).Caption);
+        if AWnd.Components[i].ClassType = TCheckListBox
+        then begin
+          if (AWnd.Components[i] as TCheckListBox).Count > 0 then
+            for j := 0 to (AWnd.Components[i] as TCheckListBox).Count - 1 do
+                          (AWnd.Components[i] as TCheckListBox).Items.Strings[j]
+                    := langini.ReadString(ASectionInIni, AWnd.Components[i].Name
+                                            + IntToStr(j),
+                        (AWnd.Components[i] as TCheckListBox).Items.Strings[j]);
+        end;
       end;
     end;
     langini.Free;
@@ -469,7 +519,7 @@ end;
 
 {Find and Replace}
 
-procedure TEditor.ShowSearchReplaceDialog(AReplace: boolean);
+procedure TMain.ShowSearchReplaceDialog(AReplace: boolean);
 var
   dlg: TSearchForm;
 begin
@@ -521,7 +571,7 @@ begin
   end;
 end;
 
-procedure TEditor.DoSearchReplaceText(AReplace, ABackwards: Boolean);
+procedure TMain.DoSearchReplaceText(AReplace, ABackwards: Boolean);
 var Options: TSynSearchOptions;
 begin
   if AReplace then Options := [ssoPrompt, ssoReplace, ssoReplaceAll]
@@ -542,13 +592,12 @@ begin
   if ConfirmReplace <> nil then ConfirmReplace.Free;
 end;
 
-procedure TEditor.EditChange(Sender: TObject);
+procedure TMain.EditDropFiles(Sender: TObject; X, Y: Integer; AFiles: TStrings);
 begin
-  Status.Panels.Items[0].Text := IntToStr(Edit.CaretY) + ':'
-                                   + IntToStr(Edit.CaretX);
+  MyOpenFile(AFiles.Strings[0], 0);
 end;
 
-procedure TEditor.EditReplaceText(Sender: TObject; const ASearch,
+procedure TMain.EditReplaceText(Sender: TObject; const ASearch,
   AReplace: string; Line, Column: Integer; var Action: TSynReplaceAction);
 var
   APos: TPoint;
@@ -583,57 +632,57 @@ begin
   end;
 end;
 
-procedure TEditor.FindExecute;
+procedure TMain.FindExecute;
 begin
   // Show find box
   gbtempSearchBackwards := False;
   ShowSearchReplaceDialog(False);
 end;
 
-procedure TEditor.FindAgainExecute;
+procedure TMain.FindAgainExecute;
 begin
   gbtempSearchBackwards := False;
 	if (gsSearchText = '') then ShowSearchReplaceDialog(False)
   else DoSearchReplaceText(False, False);
 end;
 
-procedure TEditor.FindBackwardsExecute;
+procedure TMain.FindBackwardsExecute;
 begin
 	gbtempSearchBackwards := True;
 	if (gsSearchText = '') then ShowSearchReplaceDialog(False)
   else DoSearchReplaceText(False, True);
 end;
 
-procedure TEditor.ReplaceExecute;
+procedure TMain.ReplaceExecute;
 begin
   ShowSearchReplaceDialog(True);
 end;
 
-procedure TEditor.N18Click(Sender: TObject);
+procedure TMain.N18Click(Sender: TObject);
 begin
   ReplaceAgainExecute;
 end;
 
-procedure TEditor.N33Click(Sender: TObject);
+procedure TMain.N33Click(Sender: TObject);
 begin
   ReplaceBackwardsExecute;
 end;
 
-procedure TEditor.ReplaceAgainExecute;
+procedure TMain.ReplaceAgainExecute;
 begin
   gbtempSearchBackwards := False;
 	if (gsSearchText = '') then ShowSearchReplaceDialog(True)
   else DoSearchReplaceText(True, False);
 end;
 
-procedure TEditor.ReplaceBackwardsExecute;
+procedure TMain.ReplaceBackwardsExecute;
 begin
 	gbtempSearchBackwards := True;
 	if (gsSearchText = '') then ShowSearchReplaceDialog(True)
   else DoSearchReplaceText(True, True);
 end;
 
-procedure TEditor.LoadTranslate(const lang: string);
+procedure TMain.LoadTranslate(const lang: string);
 var
   i: Integer;
   langini: TIniFile;
@@ -666,8 +715,10 @@ begin
   N37.Caption := langini.ReadString('Main', '17', 'Dublicate Selection');
   N18.Caption := langini.ReadString('Main', '18', 'Replace Next');
   N39.Caption := langini.ReadString('Main', '19', 'Copy All');
+  N41.Caption := langini.ReadString('Main', '20', 'Normal');
   N45.Caption := N39.Caption;
   N46.Caption:=langini.ReadString('Main','21','Clear Clipboard');
+  N40.Caption := langini.ReadString('Main', '22', 'Selection');
   N48.Caption:=langini.ReadString('Main','23','Color under cursor (RGB)');
   N49.Caption:=langini.ReadString('Main','24','Help');
   N50.Caption:=langini.ReadString('Main','25','About...');
@@ -691,6 +742,7 @@ begin
   N87.Caption:=langini.ReadString('Main','40','Unindent');
   N88.Caption:=langini.ReadString('Main','41','Block');
   N90.Caption:=langini.ReadString('Main','42','Enclose Selection');
+  N43.Caption := langini.ReadString('Main','43','Line');
   N95.Caption:=N57.Caption;
   N96.Caption:=N46.Caption;
   N99.Caption:=langini.ReadString('Main','44','Time/Date');
@@ -698,6 +750,7 @@ begin
   mysg2:=langini.ReadString('Main','46','Text not found.');
   N104.Caption:=langini.ReadString('Main','47','Revert');
   N105.Caption:=langini.ReadString('Main','48','New');
+  N42.Caption := langini.ReadString('Main', '49', 'Column');
   N36.Caption:=langini.ReadString('Main','50','Search');
   N141.Caption:=langini.ReadString('Main','51','Find mathing brace');
   N114.Caption:=langini.ReadString('Main','52','Properties');
@@ -732,875 +785,17 @@ begin
   N31.Caption:=langini.ReadString('Main','81','Goto...');
   mysg4:=StringReplace(langini.ReadString('Main','82','Current file has changed in other program.\nReopen the file?'),'\n',#13#10,[rfReplaceAll]);
   mysg5:=StringReplace(langini.ReadString('Main','83','File is no more exists.\nSave the file?'),'\n',#13#10,[rfReplaceAll]);
+  N44.Caption := langini.ReadString('Main','84','Codepage');
   mysg7:=StringReplace(langini.ReadString('Main','85','File has changed.\nSave the file?'),'\n',#13#10,[rfReplaceAll]);
   N32.Caption:=langini.ReadString('Main','86','Settings');
+  N53.Caption := langini.ReadString('Main','87','Auto');
   Save.FileName := myunk + '.txt';
   langini.Free;
   for I := 1 to N117.Count - 1 do if CompareStr(N117.Items[i].Hint, mylang) = 0
   then N117.Items[i].Checked := True;
 end;
 
-procedure TEditor.ItemClick(Sender: TObject);
-begin
-  with (Sender as TMenuItem) do begin
-    mylang := Hint;
-    if FileExists(ExtractFilePath(Application.ExeName) + 'lang\' + mylang)
-    then begin
-      LoadTranslate(mylang);
-      Checked := True;
-    end;
-  end;
-end;
-
-procedure TEditor.RecentItemClick(Sender: TObject);
-  procedure MyLoadF(fFileName: TFileName);
-  begin
-    if Edit.Modified then begin
-      case Application.MessageBox(PChar(mysg7), 'BirEdit',
-                                  MB_YESNOCANCEL + MB_ICONQUESTION) of
-        IDYES:
-          begin
-            if FileExists(MyFileName) then begin
-              MySaveFile(MyFileName, curcp);
-              MyOpenFile(fFileName);
-            end else
-            if Save.Execute then begin
-              MySaveFile(Save.FileName, Save.EncodingIndex);
-              MyOpenFile(fFileName);
-            end;
-            end;
-        IDNO: MyOpenFile(fFileName);
-      end;
-    end else MyOpenFile(fFileName);
-  end;
-begin
-  with (Sender as TMenuItem) do if FileExists(Hint) then MyLoadF(Hint);
-end;
-
-procedure TEditor.ReloadRecentItems;
-var
-  reci: Byte;
-  recs: string;
-  RecItem: TMenuItem;
-begin
-  for reci := N127.Count downto 4 do N127.Items[reci - 1].Free;
-  for reci := 0 to 9 do begin
-    recs := ini.ReadString('Recent', 'File' + IntToStr(reci), '');
-    if not (recs = '') then begin
-      RecItem := TMenuItem.Create(N127);
-      RecItem.Caption := ExpandFileName(recs);
-      RecItem.Hint := ExpandFileName(recs);
-      RecItem.AutoCheck := False;
-      RecItem.Checked := False;
-      RecItem.RadioItem := False;
-      RecItem.OnClick := RecentItemClick;
-      N127.Add(RecItem);
-    end;
-  end;
-end;
-
-procedure TEditor.AddRecentItem(RecFileName: TFileName);
-var
-  reci, recn: 0..9;
-begin
-  recn := 0;
-  for reci := 0 to 9 do begin
-    if CompareText(ini.ReadString('Recent', 'File' + IntToStr(reci), ''),
-                     RecFileName) = 0
-    then ini.WriteString('Recent', 'File' + IntToStr(reci), '');
-    if ini.ReadString('Recent', 'File' + IntToStr(reci), '') <> '' then begin
-      ini.WriteString('Recent', 'File' + IntToStr(recn),
-                        ini.ReadString('Recent', 'File' + IntToStr(reci), ''));
-      if reci <> recn
-      then ini.WriteString('Recent', 'File' + IntToStr(reci), '');
-      Inc(recn);
-    end;
-  end;
-  for reci := 9 downto 1
-  do ini.WriteString('Recent', 'File' + IntToStr(reci),
-                     ini.ReadString('Recent', 'File' + IntToStr(reci - 1), ''));
-  ini.WriteString('Recent', 'File0', RecFileName);
-  ini.UpdateFile;
-  ReloadRecentItems;
-end;
-
-procedure TEditor.MyOpenFile(OpenFileName: TFileName);
-begin
-  if ExtractFilePath(OpenFileName) = ''
-  then OpenFileName := ExtractFilePath(Application.ExeName) + OpenFileName;
-  Edit.ClearAll;
-  LoadFromFile(OpenFileName);
-  AddRecentItem(OpenFileName);
-  prev := FileAge(OpenFileName);
-end;
-
-procedure TEditor.MySaveFile(SaveFileName: TFileName; seId: Integer);
-begin
-  if ExtractFilePath(SaveFileName) = ''
-  then SaveFileName := ExtractFilePath(Application.ExeName) + SaveFileName;
-  if FileExists(SaveFileName) then begin
-    if FileIsReadOnly(SaveFileName) then begin
-      if Application.MessageBox(PChar(mysg3), 'BirEdit',
-                                  MB_YESNO + MB_ICONQUESTION) = IDYES
-      then begin
-        if FileSetReadOnly(SaveFileName, False)
-        then MySaveToFile(SaveFileName, seId);
-        FileSetReadOnly(SaveFileName, True);
-      end else Exit;
-    end else MySaveToFile(SaveFileName, seId);
-  end else MySaveToFile(SaveFileName, seId);
-  AddRecentItem(SaveFileName);
-  prev := FileAge(SaveFileName);
-end;
-
-procedure TEditor.WorkParams;
-var
-  ToCreate, ToPaste, ToPrint, ToQuit: Boolean;
-  ParamFile:                          TFileName;
-  i:                                  Integer;
-begin
-  ToCreate := False;
-  ToPaste := False;
-  ToPrint := False;
-  ToQuit := False;
-  for i := 0 to ParamCount do begin
-    if not (i = 0) then begin
-      if (ParamStr(i)[1]= '/') then begin
-        if CompareText(ParamStr(i), '/n') = 0 then ToCreate := True;
-        if CompareText(ParamStr(i), '/p') = 0 then ToPrint := True;
-        if CompareText(ParamStr(i), '/c') = 0 then ToPaste := True;
-        if CompareText(ParamStr(i), '/q') = 0 then ToQuit := True;
-      end else if FileExists(ParamStr(i)) then ParamFile := ParamStr(i);
-    end;
-  end;
-  if ExtractFilePath(ParamFile) = ''
-  then ParamFile := ExtractFilePath(Application.ExeName) + ParamFile;
-  if FileExists(ParamFile) then begin
-    MyOpenFile(ParamFile);
-    if ToPrint then begin
-      synprint1.SynEdit := Edit;
-      synprint1.Wrap := True;
-      synprint1.Print;
-    end;
-  end else if ToCreate then MySaveFile(ParamFile, 0);
-  if ToPaste then Edit.PasteFromClipboard;
-  if ToQuit then Application.Terminate;
-end;
-
-procedure TEditor.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  MySaveSettings;
-  ini.Free;
-end;
-
-procedure TEditor.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-begin
-  if Edit.Modified then begin
-    case Application.MessageBox(PChar(mysg7), 'BirEdit',
-                                  MB_YESNOCANCEL + MB_ICONQUESTION) of
-      IDCANCEL: CanClose := False;
-      IDYES:
-        begin
-          if FileExists(MyFileName) then begin
-            MySaveFile(MyFileName, curcp);
-            CanClose := True;
-          end else
-          if Save.Execute then begin
-            MySaveFile(Save.FileName, Save.EncodingIndex);
-            CanClose := True;
-          end else CanClose := False;
-        end;
-      IDNO: CanClose := True;
-    end;
-  end;
-end;
-
-procedure TEditor.LoadMyApp;
-var
-  fstyle:   Byte;
-  langsrw:  TSearchRec;
-  LangItem: TMenuItem;
-  langini:  TIniFile;
-begin
-  mydatadir := MyGetSpecialFolder(Self.Handle, CSIDL_APPDATA) + '\BirEdit\';
-  ForceDirectories(mydatadir);
-  ini := TIniFile.Create(mydatadir + 'biredit.ini');
-  SetBounds(ini.ReadInteger('GUI', 'MainWnd.Left', Editor.Left),
-              ini.ReadInteger('GUI', 'MainWnd.Top', Editor.Top),
-              ini.ReadInteger('GUI', 'MainWnd.Width', Editor.Width),
-              ini.ReadInteger('GUI', 'MainWnd.Height', Editor.Height));
-  if ini.ReadBool('GUI', 'MainWnd.Maximized', False)
-  then WindowState := wsMaximized;
-  ismax := (WindowState = wsMaximized);
-  JvTrayIcon1.Active := ini.ReadBool('Application', 'MinimizeToTray',
-                                       JvTrayIcon1.Active);
-  Status.Visible := ini.ReadBool('Application', 'ShowStatusBar',
-                                   Status.Visible);
-  Edit.WordWrap := ini.ReadBool('Application', 'WordWrap', Edit.WordWrap);
-  Edit.Gutter.AutoSize := ini.ReadBool('Editor', 'GutterAutoSize',
-                                         Edit.Gutter.AutoSize);
-  Edit.Gutter.Color := ini.ReadInteger('Editor', 'GutterColor', Edit.Gutter.Color);
-  Edit.Gutter.DigitCount := ini.ReadInteger('Editor', 'GutterDigitCount',
-                                              Edit.Gutter.DigitCount);
-  Edit.Gutter.Font.Color := ini.ReadInteger('Editor', 'GutterFontColor',
-                                              Edit.Gutter.Font.Color);
-  Edit.Gutter.LeadingZeros := ini.ReadBool('Editor', 'GutterLeadingZeros',
-                                             Edit.Gutter.LeadingZeros);
-  Edit.Gutter.Visible := ini.ReadBool('Editor', 'GutterVisible',
-                                        Edit.Gutter.Visible);
-  Edit.Gutter.ZeroStart := ini.ReadBool('Editor', 'GutterZeroStart',
-                                          Edit.Gutter.ZeroStart);
-  Edit.MaxUndo := ini.ReadInteger('Editor', 'MaxUndo', Edit.MaxUndo);
-  Edit.Options := TSynEditorOptions(ini.ReadInteger('Editor', 'Options',
-                                                      Integer(Edit.Options)));
-  Edit.SelectionMode := TSynSelectionMode(ini.ReadInteger('Editor',
-                                    'SelectionMode', Byte(Edit.SelectionMode)));
-  Edit.Gutter.ShowLineNumbers := ini.ReadBool('Editor', 'ShowLineNumbers',
-                                                Edit.Gutter.ShowLineNumbers);
-  Edit.TabWidth := ini.ReadInteger('Editor', 'TabWidth', Edit.TabWidth);
-  Edit.Font.Charset := ini.ReadInteger('Font', 'Charset', Edit.Font.Charset);
-  Edit.Font.Color := ini.ReadInteger('Font', 'Color', Edit.Font.Color);
-  Edit.Font.Height := ini.ReadInteger('Font', 'Height', Edit.Font.Height);
-  Edit.Font.Orientation := ini.ReadInteger('Font', 'Orientation',
-                                             Edit.Font.Orientation);
-  Edit.Font.Name := ini.ReadString('Font', 'Name', Edit.Font.Name);
-  Edit.Font.Pitch := TFontPitch(ini.ReadInteger('Font', 'Pitch',
-                                                  Byte(Edit.Font.Pitch)));
-  Edit.Font.Size := ini.ReadInteger('Font', 'Size', Edit.Font.Size);
-  fstyle := ini.ReadInteger('Font', 'Style', Byte(Edit.Font.Style));
-  Edit.Font.Style := TFontStyles(fstyle);
-  mylang := ini.ReadString('GUI', 'Lang', '');
-  if FindFirst(ExtractFilePath(Application.ExeName) + 'lang\' + '*.lng',
-                 faAnyFile, langsrw) = 0
-  then begin
-    repeat
-      if (langsrw.Attr and faDirectory) <> 0 then Continue
-      else begin
-        LangItem := TMenuItem.Create(N117);
-        langini := TIniFile.Create(ExtractFilePath(Application.ExeName)
-                                     + 'lang\' + langsrw.Name);
-        LangItem.Caption := langini.ReadString('TranslationInfo', 'Name',
-                                                 ExtractFileName(langsrw.Name));
-        langini.Free;
-        LangItem.Hint := ExtractFileName(langsrw.Name);
-        LangItem.AutoCheck := True;
-        LangItem.Checked := False;
-        LangItem.RadioItem := True;
-        LangItem.OnClick := ItemClick;
-        N117.Add(LangItem);
-     end;
-    until FindNext(langsrw) <> 0;
-  end;
-  FindClose(langsrw);
-  if FileExists(ExtractFilePath(Application.ExeName) + 'lang\' + mylang)
-  then LoadTranslate(mylang);
-end;
-
-procedure TEditor.FormCreate(Sender: TObject);
-begin
-  curcp := 0;
-  JvTrayIcon1.Icon := Application.Icon;
-  dlg1.Icon := Application.Icon;
-  LoadMyApp;
-  WorkParams;
-  ReloadRecentItems;
-  Status.Panels.Items[0].Text := IntToStr(Edit.CaretY) + ':'
-                                   + IntToStr(Edit.CaretX);
-end;
-
-procedure TEditor.MySaveSettings;
-begin
-  if Editor.WindowState = wsMaximized
-  then ini.WriteBool('GUI', 'MainWnd.Maximized', True)
-  else begin
-    ini.WriteBool('GUI', 'MainWnd.Maximized', False);
-    ini.WriteInteger('GUI', 'MainWnd.Height', Editor.Height);
-    ini.WriteInteger('GUI', 'MainWnd.Left', Editor.Left);
-    ini.WriteInteger('GUI', 'MainWnd.Top', Editor.Top);
-    ini.WriteInteger('GUI', 'MainWnd.Width', Editor.Width);
-  end;
-  ini.WriteString('GUI', 'Lang', mylang);
-  ini.WriteBool('Application', 'MinimizeToTray', JvTrayIcon1.Active);
-  ini.WriteBool('Application', 'ShowStatusBar', Status.Visible);
-  ini.WriteBool('Application', 'WordWrap', Edit.WordWrap);
-  ini.WriteBool('Editor', 'GutterAutoSize', Edit.Gutter.AutoSize);
-  ini.WriteInteger('Editor', 'GutterColor', Edit.Gutter.Color);
-  ini.WriteInteger('Editor', 'GutterDigitCount', Edit.Gutter.DigitCount);
-  ini.WriteInteger('Editor', 'GutterFontColor', Edit.Gutter.Font.Color);
-  ini.WriteBool('Editor', 'GutterLeadingZeros', Edit.Gutter.LeadingZeros);
-  ini.WriteBool('Editor', 'GutterVisible', Edit.Gutter.Visible);
-  ini.WriteBool('Editor', 'GutterZeroStart', Edit.Gutter.ZeroStart);
-  ini.WriteInteger('Editor', 'MaxUndo', Edit.MaxUndo);
-  ini.WriteInteger('Editor', 'Options', Integer(Edit.Options));
-  ini.WriteInteger('Editor', 'SelectionMode', Byte(Edit.SelectionMode));
-  ini.WriteBool('Editor', 'ShowLineNumbers', Edit.Gutter.ShowLineNumbers);
-  ini.WriteInteger('Editor', 'TabWidth', Edit.TabWidth);
-  { font saving }
-  ini.WriteInteger('Font', 'Charset', Edit.Font.Charset);
-  ini.WriteInteger('Font', 'Color', Edit.Font.Color);
-  ini.WriteInteger('Font', 'Height', Edit.Font.Height);
-  ini.WriteInteger('Font', 'Orientation', Edit.Font.Orientation);
-  ini.WriteString('Font', 'Name', Edit.Font.Name);
-  ini.WriteInteger('Font', 'Pitch', Byte(Edit.Font.Pitch));
-  ini.WriteInteger('Font', 'Size', Edit.Font.Size);
-  ini.WriteInteger('Font', 'Style', Byte(Edit.Font.Style));
-end;
-
-procedure TEditor.FormResize(Sender: TObject);
-begin
-  ismax := ((WindowState = wsMinimized) and ismax)
-             or (WindowState = wsMaximized);
-end;
-
-procedure TEditor.N2Click(Sender: TObject);
-begin
-  Close;
-end;
-
-procedure TEditor.N3Click(Sender: TObject);
-  procedure MyOpen;
-  begin
-    if Open.Execute then MyOpenFile(Open.FileName);
-  end;
-begin
-  if Edit.Modified then begin
-    case Application.MessageBox(PChar(mysg7), 'BirEdit',
-                                  MB_YESNOCANCEL + MB_ICONQUESTION) of
-      IDYES:
-        begin
-          if FileExists(MyFileName) then begin
-            MySaveFile(MyFileName, curcp);
-            MyOpen;
-          end else
-          if Save.Execute then begin
-            MySaveFile(Save.FileName, Save.EncodingIndex);
-            MyOpen;
-          end;
-        end;
-      IDNO: MyOpen;
-    end;
-  end else MyOpen;
-end;
-
-procedure TEditor.N4Click(Sender: TObject);
-begin
-  MySaveFile(MyFileName, curcp);
-end;
-
-procedure TEditor.N5Click(Sender: TObject);
-begin
-  if Save.Execute then MySaveFile(Save.FileName, Save.EncodingIndex);
-end;
-
-procedure TEditor.N7Click(Sender: TObject);
-var
-  prwdlg: TPreview;
-begin
-  synprint1.SynEdit := Edit;
-  synprint1.Wrap := True;
-  prwdlg := TPreview.Create(Self);
-  with prwdlg do try
-    MyLoadLoc(prwdlg, 'PrevDlg');
-    SynEditPrintPreview.UpdatePreview;
-    ShowModal;
-  finally
-    prwdlg.Free;
-  end;
-end;
-
-procedure TEditor.N8Click(Sender: TObject);
-begin
-  synprint1.SynEdit := Edit;
-  synprint1.Wrap := True;
-  synprint1.Print;
-end;
-
-procedure TEditor.N11Click(Sender: TObject);
-begin
-  Edit.Undo;
-end;
-
-procedure TEditor.N12Click(Sender: TObject);
-begin
-  Edit.Redo;
-end;
-
-procedure TEditor.N141Click(Sender: TObject);
-begin
-  Edit.FindMatchingBracket;
-end;
-
-procedure TEditor.N14Click(Sender: TObject);
-begin
-  Edit.SelectAll;
-end;
-
-procedure TEditor.N15Click(Sender: TObject);
-begin
-  Edit.CopyToClipboard;
-end;
-
-procedure TEditor.N16Click(Sender: TObject);
-begin
-  Edit.PasteFromClipboard;
-end;
-
-procedure TEditor.N17Click(Sender: TObject);
-begin
-  Edit.CutToClipboard;
-end;
-
-procedure TEditor.N26Click(Sender: TObject);
-begin
-  FindExecute;
-end;
-
-procedure TEditor.N27Click(Sender: TObject);
-begin
-  FindAgainExecute;
-end;
-
-procedure TEditor.N28Click(Sender: TObject);
-begin
-  FindBackwardsExecute;
-end;
-
-procedure TEditor.N29Click(Sender: TObject);
-begin
-  ReplaceExecute;
-end;
-
-procedure TEditor.N50Click(Sender: TObject);
-var
-  aboutdlg: TAbout;
-begin
-  aboutdlg := TAbout.Create(Self);
-  with aboutdlg do try
-    Image1.Picture.Icon := Application.Icon;
-    ShowModal;
-  finally
-    aboutdlg.Free;
-  end;
-end;
-
-procedure TEditor.N51Click(Sender: TObject);
-begin
-  FontDialog1.Font := Edit.Font;
-  if FontDialog1.Execute then Edit.Font := FontDialog1.Font;
-end;
-
-procedure TEditor.N57Click(Sender: TObject);
-begin
-  Edit.ExecuteCommand(508, 'A', @Edit.lines);
-end;
-
-procedure TEditor.N39Click(Sender: TObject);
-begin
-  Clipboard.AsText := Edit.Text;
-end;
-
-procedure TEditor.N46Click(Sender: TObject);
-begin
-  ClearClipboard;
-end;
-
-procedure TEditor.N48Click(Sender: TObject);
-var
-  DC: HDC;
-  MyColor: Cardinal;
-begin
-  DC := GetDC(0);
-  MyColor := GetPixel(DC, Mouse.CursorPos.X, Mouse.CursorPos.Y);
-  ReleaseDC(0, DC);
-  Edit.SelText := '$' + IntToHex(GetRValue(MyColor), 2)
-            + IntToHex(GetGValue(MyColor), 2) + IntToHex(GetBValue(MyColor), 2);
-end;
-
-procedure TEditor.AddToClipboard;
-var
-  ChangeTrim: Boolean;
-  SText: string;
-begin
-  if Edit.SelAvail then begin
-    ChangeTrim := (Edit.ActiveSelectionMode = smColumn)
-                    and (eoTrimTrailingSpaces in Edit.Options);
-    try
-      if ChangeTrim then Edit.Options := Edit.Options - [eoTrimTrailingSpaces];
-      SText := Edit.SelText;
-    finally
-      if ChangeTrim then Edit.Options := Edit.Options + [eoTrimTrailingSpaces];
-    end;
-    Clipboard.AsText := Clipboard.AsText + SText;
-  end;
-end;
-
-procedure TEditor.ChangeClipboard;
-var
-  ChangeTrim: Boolean;
-  SText, Temp: string;
-begin
-  if Edit.SelAvail then begin
-    ChangeTrim := (Edit.ActiveSelectionMode = smColumn)
-                    and (eoTrimTrailingSpaces in Edit.Options);
-    try
-      if ChangeTrim then Edit.Options := Edit.Options - [eoTrimTrailingSpaces];
-      SText := Edit.SelText;
-    finally
-      if ChangeTrim then Edit.Options := Edit.Options + [eoTrimTrailingSpaces];
-    end;
-    Temp := Clipboard.AsText;
-    Clipboard.AsText := SText;
-    Edit.SelText := Temp;
-  end;
-end;
-
-procedure TEditor.ClearClipboard;
-begin
-  Clipboard.Clear;
-end;
-
-procedure TEditor.N38Click(Sender: TObject);
-begin
-  dlg1.Execute;
-end;
-
-procedure TEditor.N30Click(Sender: TObject);
-begin
-  AddToClipboard;
-end;
-
-procedure TEditor.N31Click(Sender: TObject);
-var
-  lnumber: TPoint;
-  gtbox: TGoToDlg;
-begin
-  gtbox := TGoToDlg.Create(Self);
-  with gtbox do try
-    JvSpinEdit1.MaxValue := Edit.Lines.Count;
-    JvSpinEdit1.Value := Edit.CaretY;
-    MyLoadLoc(gtbox, 'GoToDlg');
-    if ShowModal = mrOk then begin
-      lnumber.Y := JvSpinEdit1.AsInteger;
-      lnumber.X := 1;
-      Edit.ExecuteCommand(17, 'A', @lnumber);
-    end;
-  finally
-    gtbox.Free;
-  end;
-end;
-
-procedure TEditor.N32Click(Sender: TObject);
-var
-  setdlg: TSettingsDlg;
-begin
-  setdlg := TSettingsDlg.Create(Self);
-  with setdlg do try
-    JvSpinEdit1.AsInteger := Edit.TabWidth;
-    JvSpinEdit2.AsInteger := Edit.MaxUndo;
-    GVisChk.Checked := Edit.Gutter.Visible;
-    GASizeChk.Checked := Edit.Gutter.AutoSize;
-    ShowLnNumChk.Checked := Edit.Gutter.ShowLineNumbers;
-    StartZeroChk.Checked := Edit.Gutter.ZeroStart;
-    ShowLZChk.Checked := Edit.Gutter.LeadingZeros;
-    ShSpChrChk.Checked := eoShowSpecialChars in Edit.Options;
-    StatusBarChk.Checked := Status.Visible;
-    WrapChk.Checked := Edit.WordWrap;
-    TabAsSpcChk.Checked := eoTabsToSpaces in Edit.Options;
-    TrayChk.Checked := JvTrayIcon1.Active;
-    SelModeGrp.ItemIndex := Byte(Edit.SelectionMode);
-    MyLoadLoc(setdlg, 'SettingsDlg');
-    if ShowModal = mrOk then begin
-      Edit.TabWidth := JvSpinEdit1.AsInteger;
-      Edit.MaxUndo := JvSpinEdit2.AsInteger;
-      Edit.Gutter.Visible := GVisChk.Checked;
-      Edit.Gutter.AutoSize := GASizeChk.Checked;
-      Edit.Gutter.ShowLineNumbers := ShowLnNumChk.Checked;
-      Edit.Gutter.ZeroStart := StartZeroChk.Checked;
-      Edit.Gutter.LeadingZeros := ShowLZChk.Checked;
-      if ShSpChrChk.Checked
-      then Edit.Options := Edit.Options + [eoShowSpecialChars]
-      else Edit.Options := Edit.Options - [eoShowSpecialChars];
-      if TabAsSpcChk.Checked
-      then Edit.Options := Edit.Options + [eoTabsToSpaces]
-      else Edit.Options := Edit.Options - [eoTabsToSpaces];
-      Status.Visible := StatusBarChk.Checked;
-      Edit.WordWrap := WrapChk.Checked;
-      JvTrayIcon1.Active := TrayChk.Checked;
-      Edit.SelectionMode := TSynSelectionMode(SelModeGrp.ItemIndex);
-      MySaveSettings;
-    end;
-  finally
-    setdlg.Free;
-  end;
-end;
-
-procedure TEditor.N56Click(Sender: TObject);
-begin
-  ChangeClipboard;
-end;
-
-procedure TEditor.N59Click(Sender: TObject);
-begin
-  Edit.ExecuteCommand(502, 'A', @Edit.Lines);
-end;
-
-procedure TEditor.N60Click(Sender: TObject);
-begin
-  Edit.ExecuteCommand(625, 'A', @Edit.Lines);
-end;
-
-procedure TEditor.N68Click(Sender: TObject);
-begin
-  Edit.ExecuteCommand(626, 'A', @Edit.Lines);
-end;
-
-procedure TEditor.N69Click(Sender: TObject);
-begin
-  Edit.ExecuteCommand(623, 'A', @Edit.Lines);
-end;
-
-procedure TEditor.N70Click(Sender: TObject);
-begin
-  Edit.ExecuteCommand(627, 'A', @Edit.Lines);
-end;
-
-procedure TEditor.N76Click(Sender: TObject);
-begin
-  if not (Edit.SelText = '')
-  then Edit.SelText := WideLowerCase(Edit.SelText[1]) +
-                     WideLowerCase(Copy(Edit.SelText, 2, Length(Edit.SelText)));
-end;
-
-procedure TEditor.N86Click(Sender: TObject);
-begin
-  if Edit.SelLength > 0 then Edit.ExecuteCommand(610, 'A', @Edit.Lines)
-  else Edit.ExecuteCommand(612, 'A', @Edit.Lines);
-end;
-
-procedure TEditor.N87Click(Sender: TObject);
-begin
-  if Edit.SelLength > 0 then Edit.ExecuteCommand(611, 'A', @Edit.Lines)
-  else Edit.ExecuteCommand(613, 'A', @Edit.Lines);
-end;
-
-procedure TEditor.N90Click(Sender: TObject);
-var
-  sidlg: TSelIns;
-begin
-  sidlg := TSelIns.Create(Self);
-  with sidlg do try
-    MyLoadLoc(sidlg, 'EnclSelDlg');
-    if ShowModal = mrOk
-    then Edit.SelText := Edit1.Text + Edit.SelText + Edit2.Text;
-  finally
-    sidlg.Free;
-  end;
-end;
-
-procedure TEditor.N37Click(Sender: TObject);
-var
-  x, y: integer;
-begin
-  x := Edit.SelStart;
-  y := Edit.SelEnd;
-  Edit.SelText := Edit.SelText + Edit.SelText;
-  Edit.SelStart := x;
-  Edit.SelEnd := y;
-end;
-
-procedure TEditor.N99Click(Sender: TObject);
-begin
-  Edit.SelText := DateTimeToStr(Now);
-end;
-
-procedure TEditor.Popup1Popup(Sender: TObject);
-begin
-  if not (Edit.SelLength > 0) then Edit.ExecuteCommand(198, 'A', @Edit.Lines);
-end;
-
-procedure TEditor.N104Click(Sender: TObject);
-begin
-  MyOpenFile(MyFileName);
-end;
-
-procedure TEditor.N105Click(Sender: TObject);
-  procedure MyNewDoc;
-  begin
-    Edit.ClearAll;
-    MyFileName := '';
-  end;
-begin
-  if Edit.Modified then begin
-    case Application.MessageBox(PChar(mysg7), 'BirEdit',
-                                  MB_YESNOCANCEL + MB_ICONQUESTION) of
-      IDYES:
-        begin
-          if FileExists(MyFileName) then begin
-            MySaveFile(MyFileName, curcp);
-            MyNewDoc;
-          end else
-          if Save.Execute then begin
-            MySaveFile(Save.FileName, Save.EncodingIndex);
-            MyNewDoc;
-          end;
-        end;
-      IDNO: MyNewDoc;
-    end;
-  end;
-end;
-
-procedure TEditor.N114Click(Sender: TObject);
-begin
-  MyShowFileProperties(MyFileName);
-end;
-
-procedure TEditor.JvTimer1Timer(Sender: TObject);
-begin
-  if Edit.InsertMode then Status.Panels.Items[1].Text := 'Insert'
-  else Status.Panels.Items[1].Text := 'Overwrite';
-  case curcp of
-    1: Status.Panels.Items[3].Text := 'ASCII';
-    2: Status.Panels.Items[3].Text := 'UTF-16 little endian';
-    3: Status.Panels.Items[3].Text := 'UTF-16 big endian';
-    4: Status.Panels.Items[3].Text := 'UTF-8';
-    5: Status.Panels.Items[3].Text := 'UTF-7';
-    else Status.Panels.Items[3].Text := 'Ansi';
-  end;
-end;
-
-procedure TEditor.JvTimer3Timer(Sender: TObject);
-begin
-  if FileExists(MyFileName) then begin
-    if (FileAge(MyFileName) <> prev) and (prev <> 0) then begin
-      if Application.MessageBox(PChar(mysg4), 'BirEdit',
-                                  MB_YESNO + MB_ICONQUESTION) = IDYES
-      then N104.Click;
-      prev := FileAge(MyFileName);
-    end;
-  end else begin
-    if (prevnoex = False) and not (MyFileName = '') then begin
-      if Application.MessageBox(PChar(mysg5), 'BirEdit',
-                                  MB_YESNO + MB_ICONQUESTION) = IDYES
-      then begin
-        MySaveFile(MyFileName, curcp);
-        prev := FileAge(MyFileName);
-      end;
-      prevnoex := True;
-    end;
-  end;
-end;
-
-procedure TEditor.JvTimer4Timer(Sender: TObject);
-var
-  cpas, fe, fm ,lc, red, selt, stxt, und, stxt2: Boolean;
-  capt: string;
-begin
-  fe := FileExists(MyFileName);
-  cpas := Edit.CanPaste;
-  fm := Edit.Modified;
-  lc := (Edit.Lines.Count > 0);
-  und := Edit.CanUndo;
-  red := Edit.CanRedo;
-  selt := (Edit.SelLength > 0);
-  stxt := not (gsSearchText = '');
-  stxt2 := not (gsReplaceText = '');
-  N4.Enabled := fe;
-  N7.Enabled := lc;
-  N8.Enabled := lc;
-  N11.Enabled := und;
-  N12.Enabled := red;
-  N14.Enabled := lc;
-  N15.Enabled := selt;
-  N16.Enabled := cpas;
-  N17.Enabled := selt;
-  N18.Enabled := stxt2;
-  N33.Enabled := stxt2;
-  N19.Enabled :=und;
-  N20.Enabled := red;
-  N22.Enabled := selt;
-  N23.Enabled := selt;
-  N24.Enabled := cpas;
-  N25.Enabled := lc;
-  N27.Enabled := stxt;
-  N28.Enabled := stxt;
-  N30.Enabled := selt;
-  N36.Enabled := lc;
-  N37.Enabled := selt;
-  N39.Enabled := lc;
-  N45.Enabled := lc;
-  N46.Enabled := cpas;
-  N55.Enabled := selt;
-  N56.Enabled := cpas;
-  N57.Enabled := lc;
-  N59.Enabled := lc;
-  N65.Enabled := cpas;
-  N66.Enabled := lc;
-  N80.Enabled := fe;
-  N85.Enabled := lc;
-  N90.Enabled := selt;
-  N95.Enabled := lc;
-  N96.Enabled := cpas;
-  N100.Enabled := fe;
-  N102.Enabled := fe;
-  N104.Enabled := fe;
-  N114.Enabled := fe;
-  N124.Enabled := fe;
-  N127.Enabled := (N127.Count > 3);
-  if fe then begin
-    Status.Panels.Items[2].Text := MyBytesToStr(myfsize);
-    if ExtractFilePath(MyFileName) = ''
-    then capt := ExtractFilePath(Application.ExeName) + MyFileName+ ' - BirEdit'
-    else capt := MyFileName + ' - BirEdit';
-  end else begin
-    capt := myunk + ' - BirEdit';
-    Status.Panels.Items[2].Text := '';
-  end;
-  if fm then Caption := '* ' + capt else Caption := capt;
-  JvTrayIcon1.Hint := Caption;
-end;
-
-procedure TEditor.JvTrayIcon1Click(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  //надо запоминать позицию до сворачивания в трей
-  if ismax then WindowState := wsMaximized else WindowState := wsNormal;
-    // restore window
-  SetForegroundWindow(Self.Handle);
-  JvTrayIcon1.IconVisible := False; // hide tray icon
-end;
-
-procedure TEditor.JvDragDrop1Drop(Sender: TObject; Pos: TPoint; Value: TStrings);
-{var
-  i:Integer;}
-begin
-  //for i:=0 to Value.Count-1 do begin
-  //  if i=0 then begin
-  MyOpenFile(Value.Strings[0]);
-  //  end;
-    //ToDo: if i>0 then do command ['biredit.exe "file[i]"']
-    //ToDo: if i>5 then 'Are you sure do you want open these files?'
-  //end;
-end;
-
-procedure TEditor.N119Click(Sender: TObject);
-begin
-  ShellExecute(Self.Handle, 'open', PChar(Application.ExeName),
-                 PChar('"' + MyFileName + '"'), nil, SW_SHOWNORMAL);
-end;
-
-procedure TEditor.N122Click(Sender: TObject);
-begin
-  ShellExecute(Self.Handle, 'open', PChar(Application.ExeName), nil, nil,
-                 SW_SHOWNORMAL);
-end;
-
-procedure TEditor.N124Click(Sender: TObject);
-begin
-  ShellExecute(Self.Handle, 'open', PChar(MyFileName), nil,
-                 PChar(ExtractFilePath(MyFileName)), SW_SHOWNORMAL);
-end;
-
-procedure TEditor.N126Click(Sender: TObject);
+procedure TMain.N126Click(Sender: TObject);
 begin
   //internal localization
   //return all strings to English
@@ -1656,12 +851,18 @@ begin
   N37.Caption:='Dublicate Selection';
   N38.Caption := 'Command...';
   N39.Caption:='Copy All';
-  N45.Caption:=N39.Caption;
+  N40.Caption := 'Selection';
+  N41.Caption := 'Normal';
+  N42.Caption := 'Column';
+  N43.Caption := 'Line';
+  N44.Caption := 'Codepage';
+  N45.Caption := N39.Caption;
   N46.Caption:='Clear Clipboard';
   N48.Caption:='Color under cursor (RGB)';
   N49.Caption:='Help';
   N50.Caption:='About...';
   N51.Caption:='Font...';
+  N53.Caption := 'Auto';
   N55.Caption:=N30.Caption;
   N56.Caption:='Swap';
   N57.Caption:='Clear All';
@@ -1703,41 +904,945 @@ begin
   mylang:='';
 end;
 
-procedure TEditor.N132Click(Sender: TObject);
-var
-  reci: 0..9;
+procedure TMain.ItemClick(Sender: TObject);
 begin
-  for reci := 0 to 9 do ini.WriteString('Recent', 'File' + IntToStr(reci), '');
-  ini.UpdateFile;
-  ReloadRecentItems;
+  with (Sender as TMenuItem) do begin
+    mylang := Hint;
+    if FileExists(ExtractFilePath(Application.ExeName) + 'lang\' + mylang)
+    then begin
+      LoadTranslate(mylang);
+      Checked := True;
+    end;
+  end;
 end;
 
-procedure TEditor.N130Click(Sender: TObject);
-var
-  reci: 0..9;
+procedure TMain.MyOpenFile(OpenFileName: TFileName; cid: Byte);
 begin
-  for reci := 0 to 9 do
-  if not (FileExists(ini.ReadString('Recent', 'File' + IntToStr(reci), '')))
-  then ini.WriteString('Recent', 'File' + IntToStr(reci), '');
-  ini.UpdateFile;
-  ReloadRecentItems;
+  if ExtractFilePath(OpenFileName) = ''
+  then OpenFileName := ExtractFilePath(Application.ExeName) + OpenFileName;
+  Edit.ClearAll;
+  LoadFromFile(OpenFileName, cid);
+  Rcnt.Add(OpenFileName, 0);
+  prev := FileAge(OpenFileName);
 end;
 
-procedure TEditor.N80Click(Sender: TObject);
+procedure TMain.MySaveFile(SaveFileName: TFileName; seId: Integer);
+begin
+  if ExtractFilePath(SaveFileName) = ''
+  then SaveFileName := ExtractFilePath(Application.ExeName) + SaveFileName;
+  if FileExists(SaveFileName) then begin
+    if FileIsReadOnly(SaveFileName) then begin
+      if Application.MessageBox(PChar(mysg3), 'BirEdit',
+                                  MB_YESNO + MB_ICONQUESTION) = IDYES
+      then begin
+        if FileSetReadOnly(SaveFileName, False)
+        then MySaveToFile(SaveFileName, seId);
+        FileSetReadOnly(SaveFileName, True);
+      end else Exit;
+    end else MySaveToFile(SaveFileName, seId);
+  end else MySaveToFile(SaveFileName, seId);
+  Rcnt.Add(SaveFileName, 0);
+  prev := FileAge(SaveFileName);
+end;
+
+procedure TMain.WorkParams;
+var
+  ToCreate, ToPaste, ToPrint, ToQuit: Boolean;
+  ParamFile:                          TFileName;
+  i:                                  Integer;
+begin
+  ToCreate := False;
+  ToPaste := False;
+  ToPrint := False;
+  ToQuit := False;
+  for i := 0 to ParamCount do begin
+    if not (i = 0) then begin
+      if (ParamStr(i)[1]= '/') then begin
+        if CompareText(ParamStr(i), '/n') = 0 then ToCreate := True;
+        if CompareText(ParamStr(i), '/p') = 0 then ToPrint := True;
+        if CompareText(ParamStr(i), '/c') = 0 then ToPaste := True;
+        if CompareText(ParamStr(i), '/q') = 0 then ToQuit := True;
+      end else if FileExists(ParamStr(i)) then ParamFile := ParamStr(i);
+    end;
+  end;
+  if ExtractFilePath(ParamFile) = ''
+  then ParamFile := ExtractFilePath(Application.ExeName) + ParamFile;
+  if FileExists(ParamFile) then begin
+    MyOpenFile(ParamFile, 0);
+    if ToPrint then begin
+      synprint1.SynEdit := Edit;
+      synprint1.Wrap := True;
+      synprint1.Print;
+    end;
+  end else if ToCreate then MySaveFile(ParamFile, 0);
+  if ToPaste then Edit.PasteFromClipboard;
+  if ToQuit then Application.Terminate;
+end;
+
+procedure TMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  if Edit.Modified then begin
+    case Application.MessageBox(PChar(mysg7), 'BirEdit',
+                                  MB_YESNOCANCEL + MB_ICONQUESTION) of
+      IDCANCEL: CanClose := False;
+      IDYES:
+        begin
+          if FileExists(MyFileName) then begin
+            MySaveFile(MyFileName, curcp);
+            CanClose := True;
+          end else
+          if Save.Execute then begin
+            MySaveFile(Save.FileName, Save.EncodingIndex);
+            CanClose := True;
+          end else CanClose := False;
+        end;
+      IDNO: CanClose := True;
+    end;
+  end;
+end;
+
+procedure TMain.LoadAppLoc;
+var
+  langsrw:  TSearchRec;
+  LangItem: TMenuItem;
+  langini:  TIniFile;
+begin
+  if FindFirst(ExtractFilePath(Application.ExeName) + 'lang\' + '*.lng',
+                 faAnyFile, langsrw) = 0
+  then begin
+    repeat
+      if (langsrw.Attr and faDirectory) <> 0 then Continue
+      else begin
+        LangItem := TMenuItem.Create(N117);
+        langini := TIniFile.Create(ExtractFilePath(Application.ExeName)
+                                     + 'lang\' + langsrw.Name);
+        LangItem.Caption := langini.ReadString('TranslationInfo', 'Name',
+                                                 ExtractFileName(langsrw.Name));
+        langini.Free;
+        LangItem.Hint := ExtractFileName(langsrw.Name);
+        LangItem.AutoCheck := True;
+        LangItem.Checked := False;
+        LangItem.RadioItem := True;
+        LangItem.OnClick := ItemClick;
+        N117.Add(LangItem);
+     end;
+    until FindNext(langsrw) <> 0;
+  end;
+  FindClose(langsrw);
+  if FileExists(ExtractFilePath(Application.ExeName) + 'lang\' + mylang)
+  then LoadTranslate(mylang);
+end;
+
+procedure TMain.FormCreate(Sender: TObject);
+begin
+  curcp := 0;
+  JvTrayIcon1.Icon := Application.Icon;
+  dlg1.Icon := Application.Icon;
+  AppIni.FileName := 'biredit.ini';
+end;
+
+procedure TMain.ReadFromAppStorage(AppStorage: TJvCustomAppStorage;
+                                     const BasePath: string);
+begin
+  JvDragDrop1.AcceptDrag := AppIni.ReadBoolean(AppIni.ConcatPaths([BasePath,
+                                        'AcceptDrag']), JvDragDrop1.AcceptDrag);
+  JvTrayIcon1.Active := AppIni.ReadBoolean(AppIni.ConcatPaths([BasePath,
+                                            'HideToTray']), JvTrayIcon1.Active);
+  Status.Visible := AppIni.ReadBoolean(AppIni.ConcatPaths([BasePath,
+                                                 'StatusBar']), Status.Visible);
+  Rcnt.Capacity := AppIni.ReadInteger(AppIni.ConcatPaths([BasePath, 'Recent']),
+                                        Rcnt.Capacity);
+  mylang:= AppIni.ReadString(AppIni.ConcatPaths([BasePath, 'Language']), '');
+  AppIni.ReadPersistent('Editor', Edit, True, True, ExcValsEdit);
+  AppIni.ReadPersistent('Editor.BookMarkOptions', Edit.BookMarkOptions);
+  AppIni.ReadPersistent('Editor.Font', Edit.Font, True, True, ExcValsFont);
+  AppIni.ReadProperty('Editor.Font.Style', Edit.Font, 'Style', True, True);
+  AppIni.ReadPersistent('Editor.Gutter', Edit.Gutter, True, True, ExcValsGut);
+  AppIni.ReadPersistent('Editor.Gutter.Font', Edit.Gutter.Font, True, True,
+                           ExcValsFont);
+  AppIni.ReadProperty('Editor.Gutter.Font.Style', Edit.Gutter.Font, 'Style',
+                         True, True);
+  AppIni.ReadProperty('Editor.Options', Edit, 'Options', True, True);
+  AppIni.ReadPersistent('Editor.SelectedColor', Edit.SelectedColor);
+  AppIni.ReadPersistent('Editor.WordWrapGlyph', Edit.WordWrapGlyph);
+  N40.Items[Byte(Edit.SelectionMode)].Checked := True;
+  JvDragDrop1.AcceptDrag := not (eoDropFiles in Edit.Options);
+  LoadAppLoc;
+  WorkParams;
+end;
+
+procedure TMain.WriteToAppStorage(AppStorage: TJvCustomAppStorage;
+                                    const BasePath: string);
+begin
+  AppIni.WriteBoolean(AppIni.ConcatPaths([BasePath, 'AcceptDrag']),
+                         JvDragDrop1.AcceptDrag);
+  AppIni.WriteBoolean(AppIni.ConcatPaths([BasePath, 'HideToTray']),
+                         JvTrayIcon1.Active);
+  AppIni.WriteBoolean(AppIni.ConcatPaths([BasePath, 'StatusBar']),
+                         Status.Visible);
+  AppIni.WriteInteger(AppIni.ConcatPaths([BasePath, 'Recent']), Rcnt.Capacity);
+  AppIni.WriteString(AppIni.ConcatPaths([BasePath, 'Language']), mylang);
+  AppIni.WritePersistent('Editor', Edit, True, ExcValsEdit);
+  AppIni.WritePersistent('Editor.BookMarkOptions', Edit.BookMarkOptions);
+  AppIni.WritePersistent('Editor.Font', Edit.Font, True, ExcValsFont);
+  AppIni.WriteProperty('Editor.Font.Style', Edit.Font, 'Style', True);
+  AppIni.WritePersistent('Editor.Gutter', Edit.Gutter, True, ExcValsGut);
+  AppIni.WritePersistent('Editor.Gutter.Font', Edit.Gutter.Font, True,
+                            ExcValsFont);
+  AppIni.WriteProperty('Editor.Gutter.Font.Style', Edit.Gutter.Font, 'Style',
+                          True);
+  AppIni.WriteProperty('Editor.Options', Edit, 'Options', True);
+  AppIni.WritePersistent('Editor.SelectedColor', Edit.SelectedColor);
+  AppIni.WritePersistent('Editor.WordWrapGlyph', Edit.WordWrapGlyph);
+end;
+
+procedure TMain.RcntClick(Sender: TObject; const RecentName, Caption: string;
+  UserData: Integer);
+  procedure MyOpen;
+  begin
+    MyOpenFile(RecentName, 0);
+  end;
+begin
+  if Edit.Modified then begin
+    case Application.MessageBox(PChar(mysg7), 'BirEdit',
+                                  MB_YESNOCANCEL + MB_ICONQUESTION) of
+      IDYES:
+        begin
+          if FileExists(MyFileName) then begin
+            MySaveFile(MyFileName, curcp);
+            MyOpen;
+          end else
+          if Save.Execute then begin
+            MySaveFile(Save.FileName, Save.EncodingIndex);
+            MyOpen;
+          end;
+        end;
+      IDNO: MyOpen;
+    end;
+  end else MyOpen;
+end;
+
+procedure TMain.N2Click(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TMain.N3Click(Sender: TObject);
+  procedure MyOpen;
+  begin
+    if Open.Execute then MyOpenFile(Open.FileName, 0);
+  end;
+begin
+  if Edit.Modified then begin
+    case Application.MessageBox(PChar(mysg7), 'BirEdit',
+                                  MB_YESNOCANCEL + MB_ICONQUESTION) of
+      IDYES:
+        begin
+          if FileExists(MyFileName) then begin
+            MySaveFile(MyFileName, curcp);
+            MyOpen;
+          end else
+          if Save.Execute then begin
+            MySaveFile(Save.FileName, Save.EncodingIndex);
+            MyOpen;
+          end;
+        end;
+      IDNO: MyOpen;
+    end;
+  end else MyOpen;
+end;
+
+procedure TMain.N4Click(Sender: TObject);
+begin
+  MySaveFile(MyFileName, curcp);
+end;
+
+procedure TMain.N5Click(Sender: TObject);
+begin
+  if Save.Execute then MySaveFile(Save.FileName, Save.EncodingIndex);
+end;
+
+procedure TMain.N7Click(Sender: TObject);
+var
+  prwdlg: TPreview;
+begin
+  synprint1.SynEdit := Edit;
+  synprint1.Wrap := True;
+  prwdlg := TPreview.Create(Self);
+  with prwdlg do try
+    MyLoadLoc(prwdlg, 'PrevDlg');
+    SynEditPrintPreview.UpdatePreview;
+    ShowModal;
+  finally
+    prwdlg.Free;
+  end;
+end;
+
+procedure TMain.N8Click(Sender: TObject);
+begin
+  synprint1.SynEdit := Edit;
+  synprint1.Wrap := True;
+  synprint1.Print;
+end;
+
+procedure TMain.N11Click(Sender: TObject);
+begin
+  Edit.Undo;
+end;
+
+procedure TMain.N12Click(Sender: TObject);
+begin
+  Edit.Redo;
+end;
+
+procedure TMain.N141Click(Sender: TObject);
+begin
+  Edit.FindMatchingBracket;
+end;
+
+procedure TMain.N14Click(Sender: TObject);
+begin
+  Edit.SelectAll;
+end;
+
+procedure TMain.N15Click(Sender: TObject);
+begin
+  Edit.CopyToClipboard;
+end;
+
+procedure TMain.N16Click(Sender: TObject);
+begin
+  Edit.PasteFromClipboard;
+end;
+
+procedure TMain.N17Click(Sender: TObject);
+begin
+  Edit.CutToClipboard;
+end;
+
+procedure TMain.N26Click(Sender: TObject);
+begin
+  FindExecute;
+end;
+
+procedure TMain.N27Click(Sender: TObject);
+begin
+  FindAgainExecute;
+end;
+
+procedure TMain.N28Click(Sender: TObject);
+begin
+  FindBackwardsExecute;
+end;
+
+procedure TMain.N29Click(Sender: TObject);
+begin
+  ReplaceExecute;
+end;
+
+procedure TMain.N50Click(Sender: TObject);
+var
+  aboutdlg: TAbout;
+begin
+  aboutdlg := TAbout.Create(Self);
+  with aboutdlg do try
+    Image1.Picture.Icon := Application.Icon;
+    ShowModal;
+  finally
+    aboutdlg.Free;
+  end;
+end;
+
+procedure TMain.N51Click(Sender: TObject);
+begin
+  FontDialog1.Font.Assign(Edit.Font);
+  if FontDialog1.Execute then begin
+    Edit.Font.Assign(FontDialog1.Font);
+    WriteToAppStorage(AppIni, AppIni.DefaultSection);
+  end;
+end;
+
+procedure TMain.N53Click(Sender: TObject);
+begin
+  MyOpenFile(MyFileName, 0);
+end;
+
+procedure TMain.N54Click(Sender: TObject);
+begin
+  MyOpenFile(MyFileName, 1);
+end;
+
+procedure TMain.N57Click(Sender: TObject);
+begin
+  Edit.ExecuteCommand(508, 'A', @Edit.lines);
+end;
+
+procedure TMain.N58Click(Sender: TObject);
+begin
+  MyOpenFile(MyFileName, 2);
+end;
+
+procedure TMain.N39Click(Sender: TObject);
+begin
+  Clipboard.AsText := Edit.Text;
+end;
+
+procedure TMain.N41Click(Sender: TObject);
+begin
+  Edit.SelectionMode := smNormal;
+  N40.Items[Byte(Edit.SelectionMode)].Checked := True;
+  WriteToAppStorage(AppIni, AppIni.DefaultSection);
+end;
+
+procedure TMain.N42Click(Sender: TObject);
+begin
+  Edit.SelectionMode := smColumn;
+  N40.Items[Byte(Edit.SelectionMode)].Checked := True;
+  WriteToAppStorage(AppIni, AppIni.DefaultSection);
+end;
+
+procedure TMain.N43Click(Sender: TObject);
+begin
+  Edit.SelectionMode := smLine;
+  N40.Items[Byte(Edit.SelectionMode)].Checked := True;
+  WriteToAppStorage(AppIni, AppIni.DefaultSection);
+end;
+
+procedure TMain.N46Click(Sender: TObject);
+begin
+  Clipboard.Clear;
+end;
+
+procedure TMain.N48Click(Sender: TObject);
+var
+  DC: HDC;
+  MyColor: Cardinal;
+begin
+  DC := GetDC(0);
+  MyColor := GetPixel(DC, Mouse.CursorPos.X, Mouse.CursorPos.Y);
+  ReleaseDC(0, DC);
+  Edit.SelText := '$' + IntToHex(GetRValue(MyColor), 2)
+            + IntToHex(GetGValue(MyColor), 2) + IntToHex(GetBValue(MyColor), 2);
+end;
+
+procedure TMain.AddToClipboard;
+var
+  ChangeTrim: Boolean;
+  SText: string;
+begin
+  if Edit.SelAvail then begin
+    ChangeTrim := (Edit.ActiveSelectionMode = smColumn)
+                    and (eoTrimTrailingSpaces in Edit.Options);
+    try
+      if ChangeTrim then Edit.Options := Edit.Options - [eoTrimTrailingSpaces];
+      SText := Edit.SelText;
+    finally
+      if ChangeTrim then Edit.Options := Edit.Options + [eoTrimTrailingSpaces];
+    end;
+    Clipboard.AsText := Clipboard.AsText + SText;
+  end;
+end;
+
+procedure TMain.ChangeClipboard;
+var
+  ChangeTrim: Boolean;
+  SText, Temp: string;
+begin
+  if Edit.SelAvail then begin
+    ChangeTrim := (Edit.ActiveSelectionMode = smColumn)
+                    and (eoTrimTrailingSpaces in Edit.Options);
+    try
+      if ChangeTrim then Edit.Options := Edit.Options - [eoTrimTrailingSpaces];
+      SText := Edit.SelText;
+    finally
+      if ChangeTrim then Edit.Options := Edit.Options + [eoTrimTrailingSpaces];
+    end;
+    Temp := Clipboard.AsText;
+    Clipboard.AsText := SText;
+    Edit.SelText := Temp;
+  end;
+end;
+
+procedure TMain.N38Click(Sender: TObject);
+begin
+  dlg1.Execute;
+end;
+
+procedure TMain.N30Click(Sender: TObject);
+begin
+  AddToClipboard;
+end;
+
+procedure TMain.N31Click(Sender: TObject);
+var
+  lnumber: TPoint;
+  gtbox: TGoToDlg;
+begin
+  gtbox := TGoToDlg.Create(Self);
+  with gtbox do try
+    MyLoadLoc(gtbox, 'GoToDlg');
+    JvSpinEdit1.MaxValue := Edit.Lines.Count;
+    JvSpinEdit1.Value := Edit.CaretY;
+    if ShowModal = mrOk then begin
+      lnumber.Y := JvSpinEdit1.AsInteger;
+      lnumber.X := 1;
+      Edit.ExecuteCommand(17, 'A', @lnumber);
+    end;
+  finally
+    gtbox.Free;
+  end;
+end;
+
+procedure TMain.N32Click(Sender: TObject);
+var
+  I: Byte;
+  setdlg: TSettingsDlg;
+begin
+  setdlg := TSettingsDlg.Create(Self);
+  with setdlg do try
+    MyLoadLoc(setdlg, 'SettingsDlg');
+    TrayChk.Checked := JvTrayIcon1.Active;
+    StatusBarChk.Checked := Status.Visible;
+    Check1.Checked := Edit.ReadOnly;
+    Check2.Checked := Edit.Gutter.UseFontStyle;
+    Check3.Checked := Edit.Gutter.Gradient;
+    WrapChk.Checked := Edit.WordWrap;
+    GASizeChk.Checked := Edit.Gutter.AutoSize;
+    ShowLZChk.Checked := Edit.Gutter.LeadingZeros;
+    GVisChk.Checked := Edit.Gutter.Visible;
+    ShowLnNumChk.Checked := Edit.Gutter.ShowLineNumbers;
+    StartZeroChk.Checked := Edit.Gutter.ZeroStart;
+    Combo1.ItemIndex := Byte(Edit.InsertCaret);
+    Combo2.ItemIndex := Byte(Edit.OverwriteCaret);
+    Combo3.ItemIndex := Byte(Edit.ScrollHintFormat);
+    SMCombo.ItemIndex := Byte(Edit.SelectionMode);
+    Spin1.MinValue := 1;
+    Spin1.MaxValue := MaxInt;
+    Spin1.AsInteger := Rcnt.Capacity;
+    Spin2.MinValue := 1;
+    Spin2.MaxValue := MaxInt;
+    Spin2.AsInteger := Edit.MaxScrollWidth;
+    Spin3.MinValue := 0;
+    Spin3.MaxValue := MaxInt;
+    Spin3.AsInteger := Edit.MaxUndo;
+    Spin4.MinValue := - MaxInt - 1;
+    Spin4.MaxValue := MaxInt;
+    Spin4.AsInteger := Edit.RightEdge;
+    Spin5.MinValue := 1;
+    Spin5.MaxValue := MAXBYTE + 1;
+    Spin5.AsInteger := Edit.TabWidth;
+    Spin6.MinValue := 2;
+    Spin6.MaxValue := MaxInt;
+    Spin6.AsInteger := Edit.Gutter.DigitCount;
+    Spin7.MinValue := 0;
+    Spin7.MaxValue := MaxInt;
+    Spin7.AsInteger := Edit.Gutter.LineNumberStart;
+    Spin8.MinValue := 2;
+    Spin8.MaxValue := MaxInt;
+    Spin8.AsInteger := Edit.Gutter.GradientSteps;
+    for I := 0 to 26
+    do OptsList.Checked[i] := TSynEditorOption(i) in Edit.Options;
+    if ShowModal = mrOk then begin
+      JvTrayIcon1.Active := TrayChk.Checked;
+      Status.Visible := StatusBarChk.Checked;
+      Rcnt.Capacity := Spin1.AsInteger;
+      Edit.MaxScrollWidth := Spin2.AsInteger;
+      Edit.MaxUndo := Spin3.AsInteger;
+      Edit.RightEdge := Spin4.AsInteger;
+      Edit.TabWidth := Spin5.AsInteger;
+      Edit.InsertCaret := TSynEditCaretType(Combo1.ItemIndex);
+      Edit.OverwriteCaret := TSynEditCaretType(Combo2.ItemIndex);
+      Edit.ScrollHintFormat := TScrollHintFormat(Combo3.ItemIndex);
+      Edit.SelectionMode := TSynSelectionMode(SMCombo.ItemIndex);
+      Edit.Gutter.AutoSize := GASizeChk.Checked;
+      Edit.Gutter.LeadingZeros := ShowLZChk.Checked;
+      Edit.Gutter.DigitCount := Spin6.AsInteger;
+      Edit.Gutter.LineNumberStart := Spin7.AsInteger;
+      Edit.Gutter.ShowLineNumbers := ShowLnNumChk.Checked;
+      Edit.Gutter.UseFontStyle := Check2.Checked;
+      Edit.Gutter.Visible := GVisChk.Checked;
+      Edit.Gutter.ZeroStart := StartZeroChk.Checked;
+      Edit.Gutter.Gradient := Check3.Checked;
+      Edit.Gutter.GradientSteps := Spin8.AsInteger;
+      Edit.WordWrap := WrapChk.Checked;
+      for I := 0 to 26 do if OptsList.Checked[i] = True
+      then Edit.Options := Edit.Options + [TSynEditorOption(i)]
+      else Edit.Options := Edit.Options - [TSynEditorOption(i)];
+      JvDragDrop1.AcceptDrag := not (eoDropFiles in Edit.Options);
+      N40.Items[Byte(Edit.SelectionMode)].Checked := True;
+      WriteToAppStorage(AppIni, AppIni.DefaultSection);
+    end;
+  finally
+    setdlg.Free;
+  end;
+end;
+
+procedure TMain.N56Click(Sender: TObject);
+begin
+  ChangeClipboard;
+end;
+
+procedure TMain.N59Click(Sender: TObject);
+begin
+  Edit.ExecuteCommand(502, 'A', @Edit.Lines);
+end;
+
+procedure TMain.N60Click(Sender: TObject);
+begin
+  Edit.ExecuteCommand(625, 'A', @Edit.Lines);
+end;
+
+procedure TMain.N61Click(Sender: TObject);
+begin
+  MyOpenFile(MyFileName, 3);
+end;
+
+procedure TMain.N62Click(Sender: TObject);
+begin
+  MyOpenFile(MyFileName, 4);
+end;
+
+procedure TMain.N63Click(Sender: TObject);
+begin
+  MyOpenFile(MyFileName, 5);
+end;
+
+procedure TMain.N64Click(Sender: TObject);
+begin
+  MyOpenFile(MyFileName, 6);
+end;
+
+procedure TMain.N68Click(Sender: TObject);
+begin
+  Edit.ExecuteCommand(626, 'A', @Edit.Lines);
+end;
+
+procedure TMain.N69Click(Sender: TObject);
+begin
+  Edit.ExecuteCommand(623, 'A', @Edit.Lines);
+end;
+
+procedure TMain.N70Click(Sender: TObject);
+begin
+  Edit.ExecuteCommand(627, 'A', @Edit.Lines);
+end;
+
+procedure TMain.N76Click(Sender: TObject);
+begin
+  if not (Edit.SelText = '')
+  then Edit.SelText := WideLowerCase(Edit.SelText[1]) +
+                     WideLowerCase(Copy(Edit.SelText, 2, Length(Edit.SelText)));
+end;
+
+procedure TMain.N86Click(Sender: TObject);
+begin
+  if Edit.SelLength > 0 then Edit.ExecuteCommand(610, 'A', @Edit.Lines)
+  else Edit.ExecuteCommand(612, 'A', @Edit.Lines);
+end;
+
+procedure TMain.N87Click(Sender: TObject);
+begin
+  if Edit.SelLength > 0 then Edit.ExecuteCommand(611, 'A', @Edit.Lines)
+  else Edit.ExecuteCommand(613, 'A', @Edit.Lines);
+end;
+
+procedure TMain.N90Click(Sender: TObject);
+var
+  sidlg: TSelIns;
+begin
+  sidlg := TSelIns.Create(Self);
+  with sidlg do try
+    MyLoadLoc(sidlg, 'EnclSelDlg');
+    if ShowModal = mrOk
+    then Edit.SelText := Edit1.Text + Edit.SelText + Edit2.Text;
+  finally
+    sidlg.Free;
+  end;
+end;
+
+procedure TMain.N37Click(Sender: TObject);
+var
+  x, y: integer;
+begin
+  x := Edit.SelStart;
+  y := Edit.SelEnd;
+  Edit.SelText := Edit.SelText + Edit.SelText;
+  Edit.SelStart := x;
+  Edit.SelEnd := y;
+end;
+
+procedure TMain.N99Click(Sender: TObject);
+begin
+  Edit.SelText := DateTimeToStr(Now);
+end;
+
+procedure TMain.Popup1Popup(Sender: TObject);
+begin
+  if not (Edit.SelLength > 0) then Edit.ExecuteCommand(198, 'A', @Edit.Lines);
+end;
+
+procedure TMain.N104Click(Sender: TObject);
+begin
+  MyOpenFile(MyFileName, 0);
+end;
+
+procedure TMain.N105Click(Sender: TObject);
+  procedure MyNewDoc;
+  begin
+    Edit.ClearAll;
+    MyFileName := '';
+  end;
+begin
+  if Edit.Modified then begin
+    case Application.MessageBox(PChar(mysg7), 'BirEdit',
+                                  MB_YESNOCANCEL + MB_ICONQUESTION) of
+      IDYES:
+        begin
+          if FileExists(MyFileName) then begin
+            MySaveFile(MyFileName, curcp);
+            MyNewDoc;
+          end else
+          if Save.Execute then begin
+            MySaveFile(Save.FileName, Save.EncodingIndex);
+            MyNewDoc;
+          end;
+        end;
+      IDNO: MyNewDoc;
+    end;
+  end;
+end;
+
+procedure TMain.N114Click(Sender: TObject);
+begin
+  MyShowFileProperties(MyFileName);
+end;
+
+procedure TMain.JvTimer1Timer(Sender: TObject);
+begin
+  Status.Panels.Items[0].Text := IntToStr(Edit.CaretY) + ':'
+                                   + IntToStr(Edit.CaretX);
+  if Edit.InsertMode then Status.Panels.Items[1].Text := 'Insert'
+  else Status.Panels.Items[1].Text := 'Overwrite';
+  case curcp of
+    1: Status.Panels.Items[3].Text := 'ASCII';
+    2: Status.Panels.Items[3].Text := 'UTF-16 little endian';
+    3: Status.Panels.Items[3].Text := 'UTF-16 big endian';
+    4: Status.Panels.Items[3].Text := 'UTF-8';
+    5: Status.Panels.Items[3].Text := 'UTF-7';
+    else Status.Panels.Items[3].Text := 'Ansi';
+  end;
+end;
+
+procedure TMain.JvTimer3Timer(Sender: TObject);
+begin
+  if FileExists(MyFileName) then begin
+    if (FileAge(MyFileName) <> prev) and (prev <> 0) then begin
+      if Application.MessageBox(PChar(mysg4), 'BirEdit',
+                                  MB_YESNO + MB_ICONQUESTION) = IDYES
+      then N104.Click;
+      prev := FileAge(MyFileName);
+    end;
+  end else begin
+    if (prevnoex = False) and not (MyFileName = '') then begin
+      if Application.MessageBox(PChar(mysg5), 'BirEdit',
+                                  MB_YESNO + MB_ICONQUESTION) = IDYES
+      then begin
+        MySaveFile(MyFileName, curcp);
+        prev := FileAge(MyFileName);
+      end;
+      prevnoex := True;
+    end;
+  end;
+end;
+
+procedure TMain.JvTimer4Timer(Sender: TObject);
+var
+  cpas, fe, fm ,lc, red, selt, stxt, und, stxt2: Boolean;
+  capt: string;
+begin
+  fe := FileExists(MyFileName);
+  cpas := Edit.CanPaste and not Edit.ReadOnly;
+  fm := Edit.Modified;
+  lc := (Edit.Lines.Count > 0);
+  und := Edit.CanUndo and not Edit.ReadOnly;
+  red := Edit.CanRedo and not Edit.ReadOnly;
+  selt := Edit.SelAvail;
+  stxt := not (gsSearchText = '');
+  stxt2 := not (gsReplaceText = '');
+  N4.Enabled := fe;
+  N7.Enabled := lc;
+  N8.Enabled := lc;
+  N11.Enabled := und;
+  N12.Enabled := red;
+  N14.Enabled := lc;
+  N15.Enabled := selt;
+  N16.Enabled := cpas;
+  N17.Enabled := selt;
+  N18.Enabled := stxt2;
+  N33.Enabled := stxt2;
+  N19.Enabled :=und;
+  N20.Enabled := red;
+  N22.Enabled := selt;
+  N23.Enabled := selt;
+  N24.Enabled := cpas;
+  N25.Enabled := lc;
+  N27.Enabled := stxt;
+  N28.Enabled := stxt;
+  N30.Enabled := selt;
+  N36.Enabled := lc;
+  N37.Enabled := selt;
+  N39.Enabled := lc;
+  N44.Enabled := fe;
+  N45.Enabled := lc;
+  N46.Enabled := cpas;
+  N55.Enabled := selt;
+  N56.Enabled := cpas;
+  N57.Enabled := lc;
+  N59.Enabled := lc;
+  N65.Enabled := cpas;
+  N66.Enabled := lc;
+  N80.Enabled := fe;
+  N85.Enabled := lc;
+  N90.Enabled := selt;
+  N95.Enabled := lc;
+  N96.Enabled := cpas;
+  N100.Enabled := fe;
+  N102.Enabled := fe;
+  N104.Enabled := fe;
+  N114.Enabled := fe;
+  N119.Enabled := fe;
+  N124.Enabled := fe;
+  N127.Enabled := Rcnt.Strings.Count > 0;
+  if fe then begin
+    Status.Panels.Items[2].Text := MyBytesToStr(myfsize);
+    if ExtractFilePath(MyFileName) = ''
+    then capt := ExtractFilePath(Application.ExeName) + MyFileName+ ' - BirEdit'
+    else capt := MyFileName + ' - BirEdit';
+  end else begin
+    capt := myunk + ' - BirEdit';
+    Status.Panels.Items[2].Text := '';
+  end;
+  if fm then Caption := '* ' + capt else Caption := capt;
+  JvTrayIcon1.Hint := Caption;
+end;
+
+procedure TMain.JvDragDrop1Drop(Sender: TObject; Pos: TPoint; Value: TStrings);
+{var
+  i:Integer;}
+begin
+  //for i:=0 to Value.Count-1 do begin
+  //  if i=0 then begin
+  MyOpenFile(Value.Strings[0], 0);
+  //  end;
+    //ToDo: if i>0 then do command ['biredit.exe "file[i]"']
+    //ToDo: if i>5 then 'Are you sure do you want open these files?'
+  //end;
+end;
+
+procedure TMain.N119Click(Sender: TObject);
+begin
+  ShellExecute(Self.Handle, 'open', PChar(Application.ExeName),
+                 PChar('"' + MyFileName + '"'),
+                 PChar('"' + ExtractFilePath(MyFileName) + '"'), SW_SHOWNORMAL);
+end;
+
+procedure TMain.N122Click(Sender: TObject);
+begin
+  ShellExecute(Self.Handle, 'open', PChar(Application.ExeName), nil,
+        PChar('"' + ExtractFilePath(Application.ExeName) + '"'), SW_SHOWNORMAL);
+end;
+
+procedure TMain.N124Click(Sender: TObject);
+begin
+  ShellExecute(Self.Handle, 'open', PChar(MyFileName), nil,
+                 PChar('"' + ExtractFilePath(MyFileName) + '"'), SW_SHOWNORMAL);
+end;
+
+procedure TMain.N132Click(Sender: TObject);
+begin
+  Rcnt.Clear;
+end;
+
+procedure TMain.N130Click(Sender: TObject);
+begin
+  Rcnt.RemoveInvalid;
+end;
+
+procedure TMain.N80Click(Sender: TObject);
 begin
   ShellExecute(Self.Handle, 'open', 'rundll32.exe',
                  PChar('shell32.dll,OpenAs_RunDLL ' + MyFileName),
-                 PChar(ExtractFilePath(MyFileName)), SW_SHOWNORMAL);
+                 PChar('"' + ExtractFilePath(MyFileName) + '"'), SW_SHOWNORMAL);
 end;
 
-procedure TEditor.N100Click(Sender: TObject);
+procedure TMain.N100Click(Sender: TObject);
 begin
   Edit.SelText := ExtractFileName(MyFileName);
 end;
 
-procedure TEditor.N102Click(Sender: TObject);
+procedure TMain.N102Click(Sender: TObject);
 begin
   Edit.SelText := MyFileName;
 end;
+
+initialization
+  ExcValsEdit := TStringList.Create;
+  ExcValsFont := TStringList.Create;
+  ExcValsGut := TStringList.Create;
+  try
+    ExcValsEdit.Add('Align');
+    ExcValsEdit.Add('AlignWithMargins');
+    ExcValsEdit.Add('Anchors');
+    ExcValsEdit.Add('BookMarkOptions');
+    ExcValsEdit.Add('BorderStyle');
+    ExcValsEdit.Add('Constraints');
+    ExcValsEdit.Add('Ctl3D');
+    ExcValsEdit.Add('Cursor');
+    ExcValsEdit.Add('Enabled');
+    ExcValsEdit.Add('Font');
+    ExcValsEdit.Add('Font');
+    ExcValsEdit.Add('Gutter');
+    ExcValsEdit.Add('Height');
+    ExcValsEdit.Add('HelpContext');
+    ExcValsEdit.Add('HelpKeyword');
+    ExcValsEdit.Add('HelpType');
+    ExcValsEdit.Add('Hint');
+    ExcValsEdit.Add('ImeMode');
+    ExcValsEdit.Add('ImeName');
+    ExcValsEdit.Add('Keystrokes');
+    ExcValsEdit.Add('Left');
+    ExcValsEdit.Add('Lines');
+    ExcValsEdit.Add('Margins');
+    ExcValsEdit.Add('Name');
+    ExcValsEdit.Add('Options');
+    ExcValsEdit.Add('ParentColor');
+    ExcValsEdit.Add('ParentCtl3D');
+    ExcValsEdit.Add('ParentCustomHint');
+    ExcValsEdit.Add('ParentFont');
+    ExcValsEdit.Add('ParentShowHint');
+    ExcValsEdit.Add('PopupMenu');
+    ExcValsEdit.Add('ScrollBars');
+    ExcValsEdit.Add('SelectedColor');
+    ExcValsEdit.Add('ShowHint');
+    ExcValsEdit.Add('TabOrder');
+    ExcValsEdit.Add('TabStop');
+    ExcValsEdit.Add('Tag');
+    ExcValsEdit.Add('Top');
+    ExcValsEdit.Add('Visible');
+    ExcValsEdit.Add('WantReturns');
+    ExcValsEdit.Add('WantTabs');
+    ExcValsEdit.Add('Width');
+    ExcValsEdit.Add('WordWrapGlyph');
+    ExcValsFont.Add('Style');
+    ExcValsGut.Add('Cursor');
+    ExcValsGut.Add('Font');
+  except
+    Application.Terminate;
+  end;
+
+finalization
+  ExcValsEdit.Free;
+  ExcValsFont.Free;
+  ExcValsGut.Free;
 
 end.

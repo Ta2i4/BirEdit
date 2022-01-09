@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@mail.ru
 
 
-The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-24.
+The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-31.
 All Rights Reserved.
 
-$Id: BirEditAdv.pas, v 1.2.1.399 2009/05/24 09:15:00 maelh Exp $
+$Id: BirEditAdv.pas, v 1.2.4.406 2009/05/31 07:59:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://fireforge.net/projects/biredit/
@@ -33,10 +33,9 @@ unit BirEditAdv;
 interface
 
 uses
-  Windows, SysUtils, ShellAPI, uMainFrm, ShlObj;
+  SysUtils, ShellAPI, uMainFrm;
 
   function MyBytesToStr(const mfSize: UInt64): string;
-  function MyGetSpecialFolder(callerhndl: THandle; Ident: Integer): string;
   procedure MyShowFileProperties(filename: string);
 
 implementation
@@ -57,19 +56,6 @@ begin
   if mfSize >= i64KB
   then Result := Format('%.2f ' + mysn3, [mfSize / i64KB])
   else Result := IntToStr(mfSize) + ' ' + mysn4;
-end;
-
-function MyGetSpecialFolder(callerhndl: THandle; Ident: Integer): string;
-var
-  mBuf: PChar;
-begin
-  mBuf := StrAlloc(MAX_PATH);
-  if SHGetSpecialFolderPath(callerhndl, mBuf, Ident, True) = False
-    then
-      Result := ''
-    else
-      Result := mBuf;
-  StrDispose(mBuf);
 end;
 
 procedure MyShowFileProperties(filename: string);

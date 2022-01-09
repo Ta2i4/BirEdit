@@ -1,4 +1,4 @@
-object Editor: TEditor
+object Main: TMain
   Left = 353
   Top = 233
   Caption = 'Untitled - BirEdit'
@@ -12,10 +12,8 @@ object Editor: TEditor
   Font.Style = []
   Menu = MainMenu
   OldCreateOrder = False
-  OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
-  OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
   object Edit: TSynEdit
@@ -32,12 +30,17 @@ object Editor: TEditor
     Font.Style = []
     PopupMenu = Popup1
     TabOrder = 0
+    Gutter.AutoSize = True
     Gutter.Font.Charset = DEFAULT_CHARSET
     Gutter.Font.Color = clBlack
     Gutter.Font.Height = -11
     Gutter.Font.Name = 'Courier New'
     Gutter.Font.Style = []
-    OnChange = EditChange
+    Gutter.ShowLineNumbers = True
+    Gutter.Gradient = True
+    Options = [eoAltSetsColumnMode, eoAutoIndent, eoDisableScrollArrows, eoDragDropEditing, eoEnhanceEndKey, eoGroupUndo, eoHideShowScrollbars, eoRightMouseMovesCursor, eoScrollHintFollows, eoShowScrollHint, eoSmartTabDelete, eoSmartTabs, eoTrimTrailingSpaces]
+    ScrollHintFormat = shfTopToBottom
+    OnDropFiles = EditDropFiles
     OnReplaceText = EditReplaceText
   end
   object Status: TStatusBar
@@ -62,7 +65,7 @@ object Editor: TEditor
   object MainMenu: TMainMenu
     AutoHotkeys = maManual
     Left = 208
-    Top = 64
+    Top = 72
     object N1: TMenuItem
       Caption = 'File'
       object N105: TMenuItem
@@ -99,6 +102,41 @@ object Editor: TEditor
         ShortCut = 117
         OnClick = N5Click
       end
+      object N47: TMenuItem
+        Caption = '-'
+      end
+      object N44: TMenuItem
+        Caption = 'Codepage'
+        object N53: TMenuItem
+          Caption = 'Auto'
+          Default = True
+          OnClick = N53Click
+        end
+        object N54: TMenuItem
+          Caption = 'Ansi'
+          OnClick = N54Click
+        end
+        object N58: TMenuItem
+          Caption = 'ASCII'
+          OnClick = N58Click
+        end
+        object N61: TMenuItem
+          Caption = 'UTF-16 little endian'
+          OnClick = N61Click
+        end
+        object N62: TMenuItem
+          Caption = 'UTF-16 big endian'
+          OnClick = N62Click
+        end
+        object N63: TMenuItem
+          Caption = 'UTF-8'
+          OnClick = N63Click
+        end
+        object N64: TMenuItem
+          Caption = 'UTF-7'
+          OnClick = N64Click
+        end
+      end
       object N135: TMenuItem
         Caption = '-'
       end
@@ -111,7 +149,7 @@ object Editor: TEditor
         end
         object N122: TMenuItem
           Caption = 'Empty Window'
-          ShortCut = 32816
+          ShortCut = 32847
           OnClick = N122Click
         end
         object N123: TMenuItem
@@ -129,6 +167,7 @@ object Editor: TEditor
         end
         object N38: TMenuItem
           Caption = 'Command...'
+          ShortCut = 32850
           OnClick = N38Click
         end
       end
@@ -368,12 +407,12 @@ object Editor: TEditor
       end
       object N18: TMenuItem
         Caption = 'Replace Next'
-        ShortCut = 16498
+        ShortCut = 115
         OnClick = N18Click
       end
       object N33: TMenuItem
         Caption = 'Replace Previous'
-        ShortCut = 24690
+        ShortCut = 8307
         OnClick = N33Click
       end
       object N35: TMenuItem
@@ -399,6 +438,32 @@ object Editor: TEditor
       object N32: TMenuItem
         Caption = 'Settings'
         OnClick = N32Click
+      end
+      object N40: TMenuItem
+        Caption = 'Selection'
+        object N41: TMenuItem
+          AutoCheck = True
+          Caption = 'Normal'
+          Checked = True
+          Default = True
+          RadioItem = True
+          ShortCut = 24654
+          OnClick = N41Click
+        end
+        object N43: TMenuItem
+          AutoCheck = True
+          Caption = 'Line'
+          RadioItem = True
+          ShortCut = 24652
+          OnClick = N43Click
+        end
+        object N42: TMenuItem
+          AutoCheck = True
+          Caption = 'Column'
+          RadioItem = True
+          ShortCut = 24643
+          OnClick = N42Click
+        end
       end
       object N52: TMenuItem
         Caption = '-'
@@ -585,6 +650,7 @@ object Editor: TEditor
     Font.Height = -13
     Font.Name = 'Courier New'
     Font.Style = []
+    Device = fdBoth
     Options = [fdEffects, fdFixedPitchOnly]
     Left = 208
     Top = 120
@@ -592,7 +658,6 @@ object Editor: TEditor
   object JvTrayIcon1: TJvTrayIcon
     IconIndex = 0
     Visibility = [tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide, tvAutoHideIcon, tvRestoreClick]
-    OnClick = JvTrayIcon1Click
     Left = 480
     Top = 64
   end
@@ -613,5 +678,40 @@ object Editor: TEditor
   object dlg1: TJvRunDialog
     Left = 520
     Top = 32
+  end
+  object Rcnt: TJvMRUManager
+    Duplicates = dupIgnore
+    IniStorage = FormIni
+    RecentMenu = N127
+    ShowAccelChar = False
+    OnClick = RcntClick
+    Left = 440
+    Top = 120
+  end
+  object AppIni: TJvAppIniFileStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    StorageOptions.BooleanAsString = False
+    StorageOptions.EnumerationAsString = False
+    StorageOptions.TypedIntegerAsString = False
+    StorageOptions.DateTimeAsString = False
+    StorageOptions.DefaultIfReadConvertError = True
+    AutoFlush = True
+    AutoReload = True
+    Location = flUserFolder
+    DefaultSection = 'General'
+    SubStorages = <>
+    SynchronizeFlushReload = True
+    Left = 520
+    Top = 120
+  end
+  object FormIni: TJvFormStorage
+    AppStorage = AppIni
+    AppStoragePath = 'General\'
+    Options = [fpSize, fpLocation]
+    VersionCheck = fpvcNocheck
+    StoredValues = <>
+    Left = 480
+    Top = 120
   end
 end

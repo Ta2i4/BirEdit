@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@mail.ru
 
 
-The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-24.
+The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-31.
 All Rights Reserved.
 
-$Id: uSettingsDlg.pas, v 1.2.1.399 2009/05/24 09:18:00 maelh Exp $
+$Id: uSettingsDlg.pas, v 1.2.4.406 2009/05/31 07:00:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://fireforge.net/projects/biredit/
@@ -33,33 +33,55 @@ unit uSettingsDlg;
 interface
 
 uses
-  Forms, Classes, Controls, StdCtrls, Mask, JvExMask, JvSpin, ComCtrls,
-  ExtCtrls;
+  Forms, Classes, Controls, StdCtrls, Mask, JvExMask, JvSpin, ComCtrls, CheckLst;
 
 type
   TSettingsDlg = class(TForm)
     ApplyBtn: TButton;
     CancelBtn: TButton;
     PageControl1: TPageControl;
-    DisplayTab: TTabSheet;
-    GutterGrp: TGroupBox;
-    GVisChk: TCheckBox;
-    GASizeChk: TCheckBox;
-    ShowLnNumChk: TCheckBox;
-    StartZeroChk: TCheckBox;
-    ShowLZChk: TCheckBox;
-    StatusBarChk: TCheckBox;
     EditorTab: TTabSheet;
     UndoLimLbl: TLabel;
-    JvSpinEdit2: TJvSpinEdit;
-    OptGrp: TGroupBox;
-    ShSpChrChk: TCheckBox;
-    TabAsSpcChk: TCheckBox;
-    SelModeGrp: TRadioGroup;
+    Spin3: TJvSpinEdit;
     WrapChk: TCheckBox;
     TabSizeLbl: TLabel;
-    JvSpinEdit1: TJvSpinEdit;
+    Spin5: TJvSpinEdit;
+    AppTab: TTabSheet;
     TrayChk: TCheckBox;
+    StatusBarChk: TCheckBox;
+    GVisChk: TCheckBox;
+    PageCtrl3: TPageControl;
+    EditOptsTab: TTabSheet;
+    GutterTab: TTabSheet;
+    ShowLZChk: TCheckBox;
+    StartZeroChk: TCheckBox;
+    GASizeChk: TCheckBox;
+    ShowLnNumChk: TCheckBox;
+    SMLbl: TLabel;
+    SMCombo: TComboBox;
+    Lbl1: TLabel;
+    Spin1: TJvSpinEdit;
+    Lbl2: TLabel;
+    Combo1: TComboBox;
+    Spin2: TJvSpinEdit;
+    Lbl3: TLabel;
+    Lbl4: TLabel;
+    Combo2: TComboBox;
+    Check1: TCheckBox;
+    Lbl5: TLabel;
+    Spin4: TJvSpinEdit;
+    Lbl6: TLabel;
+    Combo3: TComboBox;
+    Lbl7: TLabel;
+    Spin6: TJvSpinEdit;
+    Check2: TCheckBox;
+    Lbl8: TLabel;
+    Spin7: TJvSpinEdit;
+    Check3: TCheckBox;
+    Lbl9: TLabel;
+    Spin8: TJvSpinEdit;
+    AdvTab: TTabSheet;
+    OptsList: TCheckListBox;
   end;
 
 var

@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@mail.ru
 
 
-The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-25.
+The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-31.
 All Rights Reserved.
 
-$Id: uAboutDlg.pas, v 1.2.2.400 2009/05/25 00:06:00 maelh Exp $
+$Id: uAboutDlg.pas, v 1.2.4.406 2009/05/31 08:00:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://fireforge.net/projects/biredit/
@@ -66,8 +66,8 @@ procedure TAbout.FormShow(Sender: TObject);
 var
   x, y: Integer;
 begin
-  x := ((Editor.Width - Width) div 2) + Editor.Left;
-  y := ((Editor.Height - Height) div 2) + Editor.Top;
+  x := ((Main.Width - Width) div 2) + Main.Left;
+  y := ((Main.Height - Height) div 2) + Main.Top;
   if x < Screen.DesktopLeft then x := Screen.DesktopLeft;
   if y < Screen.DesktopTop then y := Screen.DesktopTop;
   SetBounds(x, y, Width, Height);
