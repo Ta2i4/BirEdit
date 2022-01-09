@@ -2,4 +2,4 @@ This program requires the following third party components:
 ===========================================================
 - SynEdit (http://sourceforge.net/projects/synedit/)
 - JVCL (http://sourceforge.net/projects/jvcl/)
-- FastMM (http://sourceforge.net/projects/fastmm/)
+- FastMM5 (https://github.com/pleriche/FastMM5)

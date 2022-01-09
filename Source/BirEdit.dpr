@@ -1,6 +1,6 @@
 {-------------------------------------------------------------------------------
 BirEdit text editor.
-Copyright (C) 2008-2011 Alexey Tatuyko
+Copyright (C) 2008-2022 Alexey Tatuyko
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,22 +18,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is BirEdit.dpr by Alexey Tatuyko, released 2011-09-10.
-All Rights Reserved.
-
-$Id: BirEdit.dpr, v 2.1.0.90 2011/09/10 04:56:00 tatuich Exp $
+The Original Code is BirEdit.dpr by Alexey Tatuyko. All Rights Reserved.
 
 You may retrieve the latest version of this file at the BirEdit project page,
-located at http://biredit.googlecode.com/
+located at https://github.com/Ta2i4/BirEdit
 
 }
 
 program BirEdit;
 
-{$SetPEFlags $20}
-
 uses
-  FastMM4,
+  FastMM5 in '../Libs/FastMM5.pas',
   IniFiles,
   Registry,
   Windows,
