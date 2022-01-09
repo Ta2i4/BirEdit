@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@mail.ru
 
 
-The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-24.
+The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-07-27.
 All Rights Reserved.
 
-$Id: uEncloseDlg.pas, v 1.2.1.399 2009/05/24 09:17:00 maelh Exp $
+$Id: uEncloseDlg.pas, v 1.3.0.463 2009/07/27 05:27:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://fireforge.net/projects/biredit/
@@ -42,8 +42,8 @@ type
     Edit1: TEdit;
     Edit2: TEdit;
     OkBtn: TButton;
-    CancelBtn: TButton;
     procedure Edit1Change(Sender: TObject);
+    procedure Edit1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   end;
 
 var
@@ -56,6 +56,12 @@ implementation
 procedure TSelIns.Edit1Change(Sender: TObject);
 begin
   OkBtn.Enabled := (not (Edit1.Text = '')) or (not (Edit2.Text = ''));
+end;
+
+procedure TSelIns.Edit1KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = 27 then ModalResult := mrCancel;
 end;
 
 end.

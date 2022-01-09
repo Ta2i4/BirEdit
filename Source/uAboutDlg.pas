@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@mail.ru
 
 
-The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-31.
+The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-07-27.
 All Rights Reserved.
 
-$Id: uAboutDlg.pas, v 1.2.4.406 2009/05/31 08:00:00 maelh Exp $
+$Id: uAboutDlg.pas, v 1.3.0.463 2009/07/27 05:27:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://fireforge.net/projects/biredit/
@@ -49,30 +49,11 @@ type
     btn1: TButton;
     procedure lbl5Click(Sender: TObject);
     procedure lbl7Click(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormShow(Sender: TObject);
   end;
 
 implementation
 
 {$R *.DFM}
-
-procedure TAbout.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  AnimateWindow(Self.Handle, 200, AW_HIDE or AW_BLEND);
-end;
-
-procedure TAbout.FormShow(Sender: TObject);
-var
-  x, y: Integer;
-begin
-  x := ((Main.Width - Width) div 2) + Main.Left;
-  y := ((Main.Height - Height) div 2) + Main.Top;
-  if x < Screen.DesktopLeft then x := Screen.DesktopLeft;
-  if y < Screen.DesktopTop then y := Screen.DesktopTop;
-  SetBounds(x, y, Width, Height);
-  AnimateWindow(Self.Handle, 200, AW_ACTIVATE or AW_BLEND);
-end;
 
 procedure TAbout.lbl5Click(Sender: TObject);
 begin

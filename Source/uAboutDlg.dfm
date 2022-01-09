@@ -14,8 +14,6 @@ object About: TAbout
   KeyPreview = True
   OldCreateOrder = False
   Position = poOwnerFormCenter
-  OnClose = FormClose
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Image1: TImage
@@ -42,7 +40,7 @@ object About: TAbout
     Top = 29
     Width = 86
     Height = 13
-    Caption = 'Version 1.2.9.417'
+    Caption = 'Version 1.3.0.463'
   end
   object lbl3: TLabel
     Left = 10
@@ -102,9 +100,9 @@ object About: TAbout
   object lbl8: TLabel
     Left = 10
     Top = 115
-    Width = 202
+    Width = 197
     Height = 13
-    Caption = 'Copyright (C) 2008-2009 Aleksey Tatuyko'
+    Caption = 'Copyright '#169' 2008-2009 Aleksey Tatuyko'
   end
   object btn1: TButton
     Left = 301

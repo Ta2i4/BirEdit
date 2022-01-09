@@ -28,8 +28,9 @@ object SearchForm: TSearchForm
     Top = 9
     Width = 247
     Height = 21
+    DropDownCount = 10
     ItemHeight = 13
-    TabOrder = 0
+    TabOrder = 2
   end
   object OptsGrp: TGroupBox
     Left = 8
@@ -37,7 +38,7 @@ object SearchForm: TSearchForm
     Width = 154
     Height = 127
     Caption = 'Options'
-    TabOrder = 1
+    TabOrder = 3
     object CaseSentChk: TCheckBox
       Left = 8
       Top = 17
@@ -89,7 +90,7 @@ object SearchForm: TSearchForm
     Items.Strings = (
       'Forward'
       'Backward')
-    TabOrder = 2
+    TabOrder = 4
   end
   object OkBtn: TButton
     Left = 170
@@ -98,8 +99,9 @@ object SearchForm: TSearchForm
     Height = 25
     Caption = 'OK'
     Default = True
+    Enabled = False
     ModalResult = 1
-    TabOrder = 3
+    TabOrder = 0
   end
   object CancelBtn: TButton
     Left = 252
@@ -109,6 +111,13 @@ object SearchForm: TSearchForm
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 4
+    TabOrder = 1
+  end
+  object Tmr1: TJvTimer
+    Interval = 100
+    ThreadPriority = tpLowest
+    OnTimer = Tmr1Timer
+    Left = 160
+    Top = 96
   end
 end

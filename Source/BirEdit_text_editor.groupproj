@@ -1,0 +1,36 @@
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{D7C14233-24E0-4B4F-A250-0A2709F48922}</ProjectGuid>
+		</PropertyGroup>
+		<ItemGroup>
+			<Projects Include="BirEdit.dproj">
+				<Dependencies/>
+			</Projects>
+		</ItemGroup>
+		<ProjectExtensions>
+			<Borland.Personality>Default.Personality.12</Borland.Personality>
+			<Borland.ProjectType/>
+			<BorlandProject>
+				<Default.Personality/>
+			</BorlandProject>
+		</ProjectExtensions>
+		<Target Name="BirEdit">
+			<MSBuild Projects="BirEdit.dproj"/>
+		</Target>
+		<Target Name="BirEdit:Clean">
+			<MSBuild Targets="Clean" Projects="BirEdit.dproj"/>
+		</Target>
+		<Target Name="BirEdit:Make">
+			<MSBuild Targets="Make" Projects="BirEdit.dproj"/>
+		</Target>
+		<Target Name="Build">
+			<CallTarget Targets="BirEdit"/>
+		</Target>
+		<Target Name="Clean">
+			<CallTarget Targets="BirEdit:Clean"/>
+		</Target>
+		<Target Name="Make">
+			<CallTarget Targets="BirEdit:Make"/>
+		</Target>
+		<Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+	</Project>

@@ -16,30 +16,28 @@ inherited ReplaceForm: TReplaceForm
   end
   inherited OptsGrp: TGroupBox
     Top = 70
-    TabOrder = 2
+    TabOrder = 4
     ExplicitTop = 70
   end
   inherited DirectGrp: TRadioGroup
     Top = 70
-    TabOrder = 3
+    TabOrder = 5
     ExplicitTop = 70
   end
   inherited OkBtn: TButton
     Top = 175
-    TabOrder = 4
     ExplicitTop = 175
   end
   inherited CancelBtn: TButton
     Top = 175
-    TabOrder = 5
     ExplicitTop = 175
   end
-  object ComboBox2: TComboBox
+  object ComboBox2: TComboBox [7]
     Left = 80
     Top = 37
     Width = 247
     Height = 21
     ItemHeight = 13
-    TabOrder = 1
+    TabOrder = 3
   end
 end

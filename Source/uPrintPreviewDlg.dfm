@@ -22,7 +22,7 @@ object Preview: TPreview
     Top = 0
     Width = 592
     Height = 316
-    SynEditPrint = Editor.synprint1
+    SynEditPrint = Main.synprint1
   end
   object Panel1: TPanel
     Left = 0

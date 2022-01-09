@@ -34,16 +34,18 @@ object SelIns: TSelIns
     Top = 24
     Width = 169
     Height = 21
-    TabOrder = 0
+    TabOrder = 1
     OnChange = Edit1Change
+    OnKeyDown = Edit1KeyDown
   end
   object Edit2: TEdit
     Left = 8
     Top = 72
     Width = 169
     Height = 21
-    TabOrder = 1
+    TabOrder = 2
     OnChange = Edit1Change
+    OnKeyDown = Edit1KeyDown
   end
   object OkBtn: TButton
     Left = 192
@@ -54,16 +56,6 @@ object SelIns: TSelIns
     Default = True
     Enabled = False
     ModalResult = 1
-    TabOrder = 2
-  end
-  object CancelBtn: TButton
-    Left = 192
-    Top = 56
-    Width = 75
-    Height = 25
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 3
+    TabOrder = 0
   end
 end

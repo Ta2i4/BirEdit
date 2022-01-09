@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@mail.ru
 
 
-The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-24.
+The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-07-27.
 All Rights Reserved.
 
-$Id: uSearchDlg.pas, v 1.2.1.399 2009/05/24 09:19:00 maelh Exp $
+$Id: uSearchDlg.pas, v 1.3.0.463 2009/07/27 05:30:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://fireforge.net/projects/biredit/
@@ -33,7 +33,7 @@ unit uSearchDlg;
 interface
 
 uses
-  Forms, Classes, Controls, StdCtrls, ExtCtrls;
+  Forms, Classes, Controls, StdCtrls, ExtCtrls, JvTimer;
 
 type
   TSearchForm = class(TForm)
@@ -48,7 +48,9 @@ type
     DirectGrp: TRadioGroup;
     OkBtn: TButton;
     CancelBtn: TButton;
+    Tmr1: TJvTimer;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure Tmr1Timer(Sender: TObject);
   private
     function GetSearchBackwards: Boolean;
     function GetSearchCaseSensitive: Boolean;
@@ -173,6 +175,11 @@ begin
   WholeWordChk.Checked := Value;
 end;
 
+procedure TSearchForm.Tmr1Timer(Sender: TObject);
+begin
+  OkBtn.Enabled := not (ComboBox1.Text = '');
+end;
+
 procedure TSearchForm.SetSearchRegularExpression(const Value: Boolean);
 begin
   RegExpChk.Checked := Value;
@@ -185,14 +192,14 @@ var
 begin
   if ModalResult = mrOk then begin
     s := ComboBox1.Text;
-    if s <> '' then begin
-      i := ComboBox1.Items.IndexOf(s);
-      if i > -1 then begin
-        ComboBox1.Items.Delete(i);
-        ComboBox1.Items.Insert(0, s);
-        ComboBox1.Text := s;
-      end else ComboBox1.Items.Insert(0, s);
-    end;
+    i := ComboBox1.Items.IndexOf(s);
+    if i > -1 then begin
+      ComboBox1.Items.Delete(i);
+      ComboBox1.Items.Insert(0, s);
+      ComboBox1.Text := s;
+    end else ComboBox1.Items.Insert(0, s);
+    if ComboBox1.Items.Count > 10 then for I := 10 to ComboBox1.Items.Count - 1
+    do ComboBox1.Items.Delete(i);
   end;
 end;
 

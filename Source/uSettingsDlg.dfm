@@ -3,7 +3,7 @@ object SettingsDlg: TSettingsDlg
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Settings'
-  ClientHeight = 384
+  ClientHeight = 373
   ClientWidth = 374
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -17,7 +17,7 @@ object SettingsDlg: TSettingsDlg
   TextHeight = 13
   object ApplyBtn: TButton
     Left = 15
-    Top = 350
+    Top = 340
     Width = 75
     Height = 25
     Caption = 'Apply'
@@ -27,7 +27,7 @@ object SettingsDlg: TSettingsDlg
   end
   object CancelBtn: TButton
     Left = 100
-    Top = 350
+    Top = 340
     Width = 75
     Height = 25
     Cancel = True
@@ -39,14 +39,13 @@ object SettingsDlg: TSettingsDlg
     Left = 0
     Top = 0
     Width = 374
-    Height = 340
+    Height = 335
     ActivePage = AppTab
     Align = alTop
     TabOrder = 2
     object AppTab: TTabSheet
       Caption = 'Application'
       ImageIndex = 2
-      ExplicitHeight = 277
       object Lbl1: TLabel
         Left = 10
         Top = 120
@@ -107,22 +106,17 @@ object SettingsDlg: TSettingsDlg
     end
     object EditorTab: TTabSheet
       Caption = 'Editor'
-      ExplicitHeight = 277
       object PageCtrl3: TPageControl
         Left = 0
         Top = 0
         Width = 366
-        Height = 312
+        Height = 307
         ActivePage = EditOptsTab
         Align = alClient
         TabOrder = 0
         TabPosition = tpBottom
-        ExplicitHeight = 277
         object EditOptsTab: TTabSheet
           Caption = 'Options'
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitHeight = 281
           object TabSizeLbl: TLabel
             Left = 10
             Top = 130
@@ -298,14 +292,6 @@ object SettingsDlg: TSettingsDlg
               'Top Line Only'
               'Top to Bottom')
           end
-          object Check4: TCheckBox
-            Left = 10
-            Top = 255
-            Width = 320
-            Height = 17
-            Caption = 'Use syntax highlighting'
-            TabOrder = 11
-          end
           object Spin9: TJvSpinEdit
             Left = 10
             Top = 185
@@ -314,16 +300,27 @@ object SettingsDlg: TSettingsDlg
             MaxValue = 1024.000000000000000000
             TabOrder = 4
           end
+          object Check4: TCheckBox
+            Left = 10
+            Top = 255
+            Width = 320
+            Height = 17
+            Caption = 'Paste text after caret'
+            TabOrder = 11
+          end
         end
         object AdvTab: TTabSheet
           Caption = 'Advanced'
           ImageIndex = 1
-          ExplicitHeight = 251
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object OptsList: TCheckListBox
             Left = 0
             Top = 0
             Width = 358
-            Height = 286
+            Height = 281
             Align = alClient
             ItemHeight = 13
             Items.Strings = (
@@ -355,7 +352,6 @@ object SettingsDlg: TSettingsDlg
               'Tabs To Spaces'
               'Trim Trailing Spaces')
             TabOrder = 0
-            ExplicitHeight = 251
           end
         end
       end
@@ -363,7 +359,10 @@ object SettingsDlg: TSettingsDlg
     object GutterTab: TTabSheet
       Caption = 'Gutter'
       ImageIndex = 2
-      ExplicitHeight = 277
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Lbl7: TLabel
         Left = 10
         Top = 10

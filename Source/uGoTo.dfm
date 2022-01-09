@@ -37,7 +37,7 @@ object GoToDlg: TGoToDlg
     MaxValue = 1.000000000000000000
     MinValue = 1.000000000000000000
     Value = 1.000000000000000000
-    TabOrder = 0
+    TabOrder = 1
     OnKeyDown = Spin1KeyDown
   end
   object OkBtn: TButton
@@ -48,7 +48,7 @@ object GoToDlg: TGoToDlg
     Caption = 'OK'
     Default = True
     ModalResult = 1
-    TabOrder = 2
+    TabOrder = 0
   end
   object Spin2: TJvSpinEdit
     Left = 120
@@ -58,7 +58,7 @@ object GoToDlg: TGoToDlg
     MaxValue = 1.000000000000000000
     MinValue = 1.000000000000000000
     Value = 1.000000000000000000
-    TabOrder = 1
+    TabOrder = 2
     OnKeyDown = Spin1KeyDown
   end
 end
