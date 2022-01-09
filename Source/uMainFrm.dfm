@@ -345,6 +345,11 @@ object Main: TMain
           ShortCut = 24657
           OnClick = N72Click
         end
+        object N182: TMenuItem
+          Caption = 'Char to Hex'
+          ShortCut = 32840
+          OnClick = N182Click
+        end
       end
       object N66: TMenuItem
         Caption = 'Convert'
@@ -489,6 +494,335 @@ object Main: TMain
         end
       end
     end
+    object N74: TMenuItem
+      Caption = 'Syntax'
+      object N75: TMenuItem
+        AutoCheck = True
+        Caption = 'Default'
+        Checked = True
+        Default = True
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N79: TMenuItem
+        AutoCheck = True
+        Caption = 'C/C++'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N81: TMenuItem
+        AutoCheck = True
+        Caption = 'Eiffel'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N82: TMenuItem
+        AutoCheck = True
+        Caption = 'Fortran'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N83: TMenuItem
+        AutoCheck = True
+        Caption = 'Java'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N84: TMenuItem
+        AutoCheck = True
+        Caption = 'Modula-3'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N91: TMenuItem
+        AutoCheck = True
+        Caption = 'Pascal'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N92: TMenuItem
+        AutoCheck = True
+        Caption = 'Visual Basic'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N93: TMenuItem
+        AutoCheck = True
+        Caption = 'COBOL'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N94: TMenuItem
+        AutoCheck = True
+        Caption = 'C#'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N97: TMenuItem
+        AutoCheck = True
+        Caption = 'Cascading Stylesheets'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N98: TMenuItem
+        AutoCheck = True
+        Caption = 'HTML Document'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N103: TMenuItem
+        AutoCheck = True
+        Caption = 'Javascript'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N106: TMenuItem
+        AutoCheck = True
+        Caption = 'PHP'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N107: TMenuItem
+        AutoCheck = True
+        Caption = 'VBScript'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N108: TMenuItem
+        AutoCheck = True
+        Caption = 'XML'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N109: TMenuItem
+        AutoCheck = True
+        Caption = 'Vrml97/X3D World'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N110: TMenuItem
+        AutoCheck = True
+        Caption = 'AWK Script'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N111: TMenuItem
+        AutoCheck = True
+        Caption = 'MS-DOS Batch'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N112: TMenuItem
+        AutoCheck = True
+        Caption = 'KiXtart Script'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N113: TMenuItem
+        AutoCheck = True
+        Caption = 'Perl'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N116: TMenuItem
+        AutoCheck = True
+        Caption = 'Python'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N118: TMenuItem
+        AutoCheck = True
+        Caption = 'Tcl/Tk'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N121: TMenuItem
+        AutoCheck = True
+        Caption = 'GW-TEL Script'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N125: TMenuItem
+        AutoCheck = True
+        Caption = 'Ruby'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N129: TMenuItem
+        AutoCheck = True
+        Caption = 'UNIX Shell Script'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N133: TMenuItem
+        AutoCheck = True
+        Caption = 'CA-Clipper'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N134: TMenuItem
+        AutoCheck = True
+        Caption = 'Cache'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N136: TMenuItem
+        AutoCheck = True
+        Caption = 'Foxpro'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N137: TMenuItem
+        AutoCheck = True
+        Caption = 'SQL'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N138: TMenuItem
+        AutoCheck = True
+        Caption = 'Semanta DD'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N139: TMenuItem
+        AutoCheck = True
+        Caption = 'DSP'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N140: TMenuItem
+        AutoCheck = True
+        Caption = 'x86 Assembly'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N142: TMenuItem
+        AutoCheck = True
+        Caption = '68HC11 Assembler'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N143: TMenuItem
+        AutoCheck = True
+        Caption = 'Structured Text'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N144: TMenuItem
+        AutoCheck = True
+        Caption = 'GEMBASE'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N145: TMenuItem
+        AutoCheck = True
+        Caption = 'Modelica'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N146: TMenuItem
+        AutoCheck = True
+        Caption = 'Standard ML'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N147: TMenuItem
+        AutoCheck = True
+        Caption = 'Borland Form'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N148: TMenuItem
+        AutoCheck = True
+        Caption = 'INI'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N149: TMenuItem
+        AutoCheck = True
+        Caption = 'Inno Setup Script'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N150: TMenuItem
+        AutoCheck = True
+        Caption = 'Baan 4GL'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N151: TMenuItem
+        AutoCheck = True
+        Caption = 'Galaxy'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N152: TMenuItem
+        AutoCheck = True
+        Caption = 'Progress'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N153: TMenuItem
+        AutoCheck = True
+        Caption = 'Msg'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N154: TMenuItem
+        AutoCheck = True
+        Caption = 'CORBA IDL'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N155: TMenuItem
+        AutoCheck = True
+        Caption = 'CPM Report'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N156: TMenuItem
+        AutoCheck = True
+        Caption = 'TeX'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N157: TMenuItem
+        AutoCheck = True
+        Caption = 'Haskell'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N158: TMenuItem
+        AutoCheck = True
+        Caption = 'LEGO LDraw'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N159: TMenuItem
+        AutoCheck = True
+        Caption = 'DOT Graph Drawing Description'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N160: TMenuItem
+        AutoCheck = True
+        Caption = 'Resource'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N180: TMenuItem
+        AutoCheck = True
+        Caption = 'HP48'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+      object N181: TMenuItem
+        AutoCheck = True
+        Caption = 'DWScript'
+        RadioItem = True
+        OnClick = MySetSyn
+      end
+    end
     object N101: TMenuItem
       Caption = 'Options'
       object N174: TMenuItem
@@ -528,323 +862,6 @@ object Main: TMain
       object N162: TMenuItem
         Caption = 'Read only'
         OnClick = N162Click
-      end
-      object N74: TMenuItem
-        Caption = 'Syntax'
-        object N75: TMenuItem
-          AutoCheck = True
-          Caption = 'Default'
-          Checked = True
-          Default = True
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N79: TMenuItem
-          AutoCheck = True
-          Caption = 'C/C++'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N81: TMenuItem
-          AutoCheck = True
-          Caption = 'Eiffel'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N82: TMenuItem
-          AutoCheck = True
-          Caption = 'Fortran'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N83: TMenuItem
-          AutoCheck = True
-          Caption = 'Java'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N84: TMenuItem
-          AutoCheck = True
-          Caption = 'Modula-3'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N91: TMenuItem
-          AutoCheck = True
-          Caption = 'Pascal'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N92: TMenuItem
-          AutoCheck = True
-          Caption = 'Visual Basic'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N93: TMenuItem
-          AutoCheck = True
-          Caption = 'COBOL'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N94: TMenuItem
-          AutoCheck = True
-          Caption = 'C#'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N97: TMenuItem
-          AutoCheck = True
-          Caption = 'Cascading Stylesheets'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N98: TMenuItem
-          AutoCheck = True
-          Caption = 'HTML Document'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N103: TMenuItem
-          AutoCheck = True
-          Caption = 'Javascript'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N106: TMenuItem
-          AutoCheck = True
-          Caption = 'PHP'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N107: TMenuItem
-          AutoCheck = True
-          Caption = 'VBScript'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N108: TMenuItem
-          AutoCheck = True
-          Caption = 'XML'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N109: TMenuItem
-          AutoCheck = True
-          Caption = 'Vrml97/X3D World'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N110: TMenuItem
-          AutoCheck = True
-          Caption = 'AWK Script'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N111: TMenuItem
-          AutoCheck = True
-          Caption = 'MS-DOS Batch'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N112: TMenuItem
-          AutoCheck = True
-          Caption = 'KiXtart Script'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N113: TMenuItem
-          AutoCheck = True
-          Caption = 'Perl'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N116: TMenuItem
-          AutoCheck = True
-          Caption = 'Python'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N118: TMenuItem
-          AutoCheck = True
-          Caption = 'Tcl/Tk'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N121: TMenuItem
-          AutoCheck = True
-          Caption = 'GW-TEL Script'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N125: TMenuItem
-          AutoCheck = True
-          Caption = 'Ruby'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N129: TMenuItem
-          AutoCheck = True
-          Caption = 'UNIX Shell Script'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N133: TMenuItem
-          AutoCheck = True
-          Caption = 'CA-Clipper'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N134: TMenuItem
-          AutoCheck = True
-          Caption = 'Cache'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N136: TMenuItem
-          AutoCheck = True
-          Caption = 'Foxpro'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N137: TMenuItem
-          AutoCheck = True
-          Caption = 'SQL'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N138: TMenuItem
-          AutoCheck = True
-          Caption = 'Semanta DD'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N139: TMenuItem
-          AutoCheck = True
-          Caption = 'DSP'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N140: TMenuItem
-          AutoCheck = True
-          Caption = 'x86 Assembly'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N142: TMenuItem
-          AutoCheck = True
-          Caption = '68HC11 Assembler'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N143: TMenuItem
-          AutoCheck = True
-          Caption = 'Structured Text'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N144: TMenuItem
-          AutoCheck = True
-          Caption = 'GEMBASE'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N145: TMenuItem
-          AutoCheck = True
-          Caption = 'Modelica'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N146: TMenuItem
-          AutoCheck = True
-          Caption = 'Standard ML'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N147: TMenuItem
-          AutoCheck = True
-          Caption = 'Borland Form'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N148: TMenuItem
-          AutoCheck = True
-          Caption = 'INI'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N149: TMenuItem
-          AutoCheck = True
-          Caption = 'Inno Setup Script'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N150: TMenuItem
-          AutoCheck = True
-          Caption = 'Baan 4GL'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N151: TMenuItem
-          AutoCheck = True
-          Caption = 'Galaxy'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N152: TMenuItem
-          AutoCheck = True
-          Caption = 'Progress'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N153: TMenuItem
-          AutoCheck = True
-          Caption = 'Msg'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N154: TMenuItem
-          AutoCheck = True
-          Caption = 'CORBA IDL'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N155: TMenuItem
-          AutoCheck = True
-          Caption = 'CPM Report'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N156: TMenuItem
-          AutoCheck = True
-          Caption = 'TeX'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N157: TMenuItem
-          AutoCheck = True
-          Caption = 'Haskell'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N158: TMenuItem
-          AutoCheck = True
-          Caption = 'LEGO LDraw'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N159: TMenuItem
-          AutoCheck = True
-          Caption = 'DOT Graph Drawing Description'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
-        object N160: TMenuItem
-          AutoCheck = True
-          Caption = 'Resource'
-          RadioItem = True
-          OnClick = MySetSyn
-        end
       end
       object N173: TMenuItem
         Caption = 'Word wrap'

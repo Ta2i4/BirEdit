@@ -39,9 +39,9 @@ object About: TAbout
   object lbl2: TLabel
     Left = 60
     Top = 29
-    Width = 80
+    Width = 86
     Height = 13
-    Caption = 'version 2.1.0.91'
+    Caption = 'version 2.2.0.117'
   end
   object btn1: TButton
     Left = 414
@@ -70,7 +70,7 @@ object About: TAbout
         Height = 210
         Align = alClient
         Lines.Strings = (
-          'Copyright '#169' 2008-2011 Alexey Tatuyko'
+          'Copyright '#169' 2008-2012 Alexey Tatuyko'
           ''
           
             'This program is freeware and released under the GNU general publ' +
@@ -99,16 +99,14 @@ object About: TAbout
         Lines.Strings = (
           'Third party libs used:'
           
-            '- FastMM v4.97 2011/06/22 SVN (http://sourceforge.net/projects/f' +
-            'astmm/)'
-          '- JVCL v3.40 (http://sourceforge.net/projects/jvcl/)'
+            '- FastMM v4.991 2012/09/05 SVN (http://sourceforge.net/projects/' +
+            'fastmm/)'
+          '- JVCL v3.47 (http://sourceforge.net/projects/jvcl/)'
           
-            '- SynEdit 2011/06/11 SVN (http://sourceforge.net/projects/synedi' +
+            '- SynEdit 2012/09/21 SVN (http://sourceforge.net/projects/synedi' +
             't/)'
           ''
-          'Special thanks:'
-          '- Andrey Bondarenko'
-          '- Oleg Domani')
+          'Special thanks to Oleg Domani')
         ReadOnly = True
         ScrollBars = ssVertical
         TabOrder = 0

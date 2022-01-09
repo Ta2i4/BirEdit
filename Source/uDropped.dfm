@@ -70,7 +70,6 @@ object DropDlg: TDropDlg
   end
   object dragdrop1: TJvDragDrop
     DropTarget = Owner
-    OnDrop = dragdrop1Drop
     Left = 376
     Top = 184
   end
