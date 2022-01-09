@@ -1,6 +1,6 @@
 {-------------------------------------------------------------------------------
 BirEdit text editor.
-Copyright (C) 2008 Aleksey Tatuyko
+Copyright (C) 2008-2009 Aleksey Tatuyko
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,74 +15,73 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>
 
+You can contact with me by e-mail: tatuich@mail.ru
 
-The Original Code is: dlgSearchText.pas, released 2000-06-23.
 
-The Original Code is part of the SearchReplaceDemo project, written by
-Michael Hieke for the SynEdit component suite.
-Using TNT Unicode Controls by Aleksey Tatuyko.
+The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-24.
 All Rights Reserved.
 
-Contributors to the SynEdit project are listed in the Contributors.txt file.
+$Id: uSearchDlg.pas, v 1.2.1.399 2009/05/24 09:19:00 maelh Exp $
 
-$Id: uSearchDlg.pas,v 1.3 2008/11/07 12:29:10 rmay Exp $
+You may retrieve the latest version of this file at the BirEdit project page,
+located at http://fireforge.net/projects/biredit/
 
-You may retrieve the latest version of this file at the SynEdit home page,
-located at http://SynEdit.SourceForge.net
-
-
-
-Known Issues:
--------------------------------------------------------------------------------}
+}
 
 unit uSearchDlg;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, TntForms, StdCtrls, TntStdCtrls, TntExtCtrls, SynUnicode;
+  Forms, Classes, Controls, StdCtrls, ExtCtrls;
 
 type
-  TSearchForm = class(TTntForm)
-    SearchForLbl: TTntLabel;
-    TntComboBox1: TTntComboBox;
-    OptsGrp: TTntGroupBox;
-    CaseSentChk: TTntCheckBox;
-    WholeWordChk: TTntCheckBox;
-    FromCaretChk: TTntCheckBox;
-    InSelChk: TTntCheckBox;
-    RegExpChk: TTntCheckBox;
-    DirectGrp: TTntRadioGroup;
-    OkBtn: TTntButton;
-    CancelBtn: TTntButton;
-    procedure TntFormCloseQuery(Sender: TObject; var CanClose: Boolean);
+  TSearchForm = class(TForm)
+    SearchForLbl: TLabel;
+    ComboBox1: TComboBox;
+    OptsGrp: TGroupBox;
+    CaseSentChk: TCheckBox;
+    WholeWordChk: TCheckBox;
+    FromCaretChk: TCheckBox;
+    InSelChk: TCheckBox;
+    RegExpChk: TCheckBox;
+    DirectGrp: TRadioGroup;
+    OkBtn: TButton;
+    CancelBtn: TButton;
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
-    function GetSearchBackwards: boolean;
-    function GetSearchCaseSensitive: boolean;
-    function GetSearchFromCursor: boolean;
-    function GetSearchInSelection: boolean;
-    function GetSearchText: UnicodeString;
-    function GetSearchTextHistory: UnicodeString;
-    function GetSearchWholeWords: boolean;
-    procedure SetSearchBackwards(Value: boolean);
-    procedure SetSearchCaseSensitive(Value: boolean);
-    procedure SetSearchFromCursor(Value: boolean);
-    procedure SetSearchInSelection(Value: boolean);
-    procedure SetSearchText(Value: UnicodeString);
-    procedure SetSearchTextHistory(Value: UnicodeString);
-    procedure SetSearchWholeWords(Value: boolean);
-    procedure SetSearchRegularExpression(const Value: boolean);
-    function GetSearchRegularExpression: boolean;
+    function GetSearchBackwards: Boolean;
+    function GetSearchCaseSensitive: Boolean;
+    function GetSearchFromCursor: Boolean;
+    function GetSearchInSelection: Boolean;
+    function GetSearchWholeWords: Boolean;
+    function GetSearchRegularExpression: Boolean;
+    function GetSearchText: string;
+    function GetSearchTextHistory: string;
+    procedure SetSearchBackwards(Value: Boolean);
+    procedure SetSearchCaseSensitive(Value: Boolean);
+    procedure SetSearchFromCursor(Value: Boolean);
+    procedure SetSearchInSelection(Value: Boolean);
+    procedure SetSearchWholeWords(Value: Boolean);
+    procedure SetSearchRegularExpression(const Value: Boolean);
+    procedure SetSearchText(Value: string);
+    procedure SetSearchTextHistory(Value: string);
   public
-    property SearchBackwards: boolean read GetSearchBackwards write SetSearchBackwards;
-    property SearchCaseSensitive: boolean read GetSearchCaseSensitive write SetSearchCaseSensitive;
-    property SearchFromCursor: boolean read GetSearchFromCursor write SetSearchFromCursor;
-    property SearchInSelectionOnly: boolean read GetSearchInSelection write SetSearchInSelection;
-    property SearchText: UnicodeString read GetSearchText write SetSearchText;
-    property SearchTextHistory: UnicodeString read GetSearchTextHistory write SetSearchTextHistory;
-    property SearchWholeWords: boolean read GetSearchWholeWords write SetSearchWholeWords;
-    property SearchRegularExpression: boolean read GetSearchRegularExpression write SetSearchRegularExpression;
+    property SearchBackwards: Boolean read GetSearchBackwards
+                                write SetSearchBackwards;
+    property SearchCaseSensitive: Boolean read GetSearchCaseSensitive
+                                write SetSearchCaseSensitive;
+    property SearchFromCursor: Boolean read GetSearchFromCursor
+                                write SetSearchFromCursor;
+    property SearchInSelectionOnly: Boolean read GetSearchInSelection
+                                write SetSearchInSelection;
+    property SearchRegularExpression: Boolean read GetSearchRegularExpression
+                                write SetSearchRegularExpression;
+    property SearchWholeWords: Boolean read GetSearchWholeWords
+                                write SetSearchWholeWords;
+    property SearchText: string read GetSearchText write SetSearchText;
+    property SearchTextHistory: string read GetSearchTextHistory
+                                write SetSearchTextHistory;
   end;
 
 var
@@ -92,106 +91,107 @@ implementation
 
 {$R *.DFM}
 
-function TSearchForm.GetSearchBackwards: boolean;
+function TSearchForm.GetSearchBackwards: Boolean;
 begin
-  Result:=DirectGrp.ItemIndex=1;
+  Result := DirectGrp.ItemIndex = 1;
 end;
 
-function TSearchForm.GetSearchCaseSensitive: boolean;
+function TSearchForm.GetSearchCaseSensitive: Boolean;
 begin
-  Result:=CaseSentChk.Checked;
+  Result := CaseSentChk.Checked;
 end;
 
-function TSearchForm.GetSearchFromCursor: boolean;
+function TSearchForm.GetSearchFromCursor: Boolean;
 begin
-  Result:=FromCaretChk.Checked;
+  Result := FromCaretChk.Checked;
 end;
 
-function TSearchForm.GetSearchInSelection: boolean;
+function TSearchForm.GetSearchInSelection: Boolean;
 begin
-  Result:=InSelChk.Checked;
+  Result := InSelChk.Checked;
 end;
 
-function TSearchForm.GetSearchRegularExpression: boolean;
+function TSearchForm.GetSearchRegularExpression: Boolean;
 begin
-  Result:=RegExpChk.Checked;
+  Result := RegExpChk.Checked;
 end;
 
-function TSearchForm.GetSearchText: UnicodeString;
+function TSearchForm.GetSearchText: string;
 begin
-  Result:=TntComboBox1.Text;
+  Result := ComboBox1.Text;
 end;
 
-function TSearchForm.GetSearchTextHistory: UnicodeString;
-var i:integer;
+function TSearchForm.GetSearchTextHistory: string;
+var
+  i: integer;
 begin
-  Result:='';
-  for i:=0 to TntComboBox1.Items.Count - 1 do begin
-    if i>=10 then break;
-    if i>0 then Result:=Result+#13#10;
-    Result:=Result+TntComboBox1.Items[i];
+  Result := '';
+  for i := 0 to ComboBox1.Items.Count - 1 do begin
+    if i >= 10 then Break;
+    if i > 0 then Result := Result + #13#10;
+    Result := Result + ComboBox1.Items[i];
   end;
 end;
 
-function TSearchForm.GetSearchWholeWords: boolean;
+function TSearchForm.GetSearchWholeWords: Boolean;
 begin
-  Result:=WholeWordChk.Checked;
+  Result := WholeWordChk.Checked;
 end;
 
-procedure TSearchForm.SetSearchBackwards(Value: boolean);
+procedure TSearchForm.SetSearchBackwards(Value: Boolean);
 begin
-  DirectGrp.ItemIndex:=Ord(Value);
+  DirectGrp.ItemIndex := Ord(Value);
 end;
 
-procedure TSearchForm.SetSearchCaseSensitive(Value: boolean);
+procedure TSearchForm.SetSearchCaseSensitive(Value: Boolean);
 begin
-  CaseSentChk.Checked:=Value;
+  CaseSentChk.Checked := Value;
 end;
 
-procedure TSearchForm.SetSearchFromCursor(Value: boolean);
+procedure TSearchForm.SetSearchFromCursor(Value: Boolean);
 begin
-  FromCaretChk.Checked:=Value;
+  FromCaretChk.Checked := Value;
 end;
 
-procedure TSearchForm.SetSearchInSelection(Value: boolean);
+procedure TSearchForm.SetSearchInSelection(Value: Boolean);
 begin
-  InSelChk.Checked:=Value;
+  InSelChk.Checked := Value;
 end;
 
-procedure TSearchForm.SetSearchText(Value: UnicodeString);
+procedure TSearchForm.SetSearchText(Value: string);
 begin
-  TntComboBox1.Text:=Value;
+  ComboBox1.Text := Value;
 end;
 
-procedure TSearchForm.SetSearchTextHistory(Value: UnicodeString);
+procedure TSearchForm.SetSearchTextHistory(Value: string);
 begin
-  TntComboBox1.Items.Text:=Value;
+  ComboBox1.Items.Text := Value;
 end;
 
-procedure TSearchForm.SetSearchWholeWords(Value: boolean);
+procedure TSearchForm.SetSearchWholeWords(Value: Boolean);
 begin
-  WholeWordChk.Checked:=Value;
+  WholeWordChk.Checked := Value;
 end;
 
-procedure TSearchForm.SetSearchRegularExpression(const Value: boolean);
+procedure TSearchForm.SetSearchRegularExpression(const Value: Boolean);
 begin
-  RegExpChk.Checked:=Value;
+  RegExpChk.Checked := Value;
 end;
 
-procedure TSearchForm.TntFormCloseQuery(Sender: TObject; var CanClose: Boolean);
+procedure TSearchForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 var
-  s: UnicodeString;
+  s: string;
   i: integer;
 begin
-  if ModalResult=mrOk then begin
-    s:=TntComboBox1.Text;
-    if s<>'' then begin
-      i:=TntComboBox1.Items.IndexOf(s);
-      if i>-1 then begin
-        TntComboBox1.Items.Delete(i);
-        TntComboBox1.Items.Insert(0,s);
-        TntComboBox1.Text:=s;
-      end else TntComboBox1.Items.Insert(0,s);
+  if ModalResult = mrOk then begin
+    s := ComboBox1.Text;
+    if s <> '' then begin
+      i := ComboBox1.Items.IndexOf(s);
+      if i > -1 then begin
+        ComboBox1.Items.Delete(i);
+        ComboBox1.Items.Insert(0, s);
+        ComboBox1.Text := s;
+      end else ComboBox1.Items.Insert(0, s);
     end;
   end;
 end;

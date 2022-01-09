@@ -1,5 +1,6 @@
 This program requires the following third party components:
 ===========================================================
 - Unicode SynEdit (http://mh-nexus.de/unisynedit.htm)
-- TNT Unicode Controls with Unicode exceptions (http://mh-nexus.de/tntunicodecontrols.htm)
-- JCL and JVCL (http://jvcl.sourceforge.net/)
+- JVCL (http://sourceforge.net/projects/jvcl/)
+- FastMM (http://sourceforge.net/projects/fastmm/)
+- VCL Fix Pack (http://andy.jgknet.de/blog/)

@@ -1,6 +1,6 @@
 {-------------------------------------------------------------------------------
 BirEdit text editor.
-Copyright (C) 2008 Aleksey Tatuyko
+Copyright (C) 2008-2009 Aleksey Tatuyko
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,49 +18,70 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@mail.ru
 
 
-The Original Code is BirEditAdv.pas by Aleksey Tatuyko, released 2008-11-05.
+The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-24.
 All Rights Reserved.
 
-$Id: BirEditAdv.pas,v 1.1.7.199 2008/11/05 12:31:00 maelh Exp $
+$Id: BirEditAdv.pas, v 1.2.1.399 2009/05/24 09:15:00 maelh Exp $
 
-You may retrieve the latest version of this file at the BirEdit home page,
-located at http://BirEdit.FireForge.net
- 
- }
+You may retrieve the latest version of this file at the BirEdit project page,
+located at http://fireforge.net/projects/biredit/
+
+}
 
 unit BirEditAdv;
 
 interface
 
 uses
-  Windows, TntWindows, SysUtils, TntSysUtils, ShellAPI, uMainFrm;
+  Windows, SysUtils, ShellAPI, uMainFrm, ShlObj;
 
-  function MyBytesToStr(const i64Size: Int64):WideString;
-  procedure MyShowFilePropertiesW(filename:TWideFileName);
+  function MyBytesToStr(const mfSize: UInt64): string;
+  function MyGetSpecialFolder(callerhndl: THandle; Ident: Integer): string;
+  procedure MyShowFileProperties(filename: string);
 
 implementation
 
-function MyBytesToStr(const i64Size: Int64):WideString;
+function MyBytesToStr(const mfSize: UInt64): string;
 const
+  i64TB = 1099511627776;
   i64GB = 1073741824;
   i64MB = 1048576;
   i64KB = 1024;
 begin
-  if i64Size div i64GB > 0 then Result:= WideFormat('%.2f ' + mysn1, [i64Size / i64GB])
-  else if i64Size div i64MB > 0 then Result := WideFormat('%.2f ' + mysn2, [i64Size / i64MB])
-  else if i64Size div i64KB > 0 then Result := WideFormat('%.2f ' + mysn3, [i64Size / i64KB])
-  else Result := IntToStr(i64Size) + ' ' + mysn4;
+  if mfSize >= i64TB
+  then Result := Format('%.2f ' + mysn0, [mfSize / i64TB]) else
+  if mfSize >= i64GB
+  then Result := Format('%.2f ' + mysn1, [mfSize / i64GB]) else
+  if mfSize >= i64MB
+  then Result := Format('%.2f ' + mysn2, [mfSize / i64MB]) else
+  if mfSize >= i64KB
+  then Result := Format('%.2f ' + mysn3, [mfSize / i64KB])
+  else Result := IntToStr(mfSize) + ' ' + mysn4;
 end;
 
-procedure MyShowFilePropertiesW(filename:TWideFileName);
-var sei: TShellExecuteInfoW;
+function MyGetSpecialFolder(callerhndl: THandle; Ident: Integer): string;
+var
+  mBuf: PChar;
 begin
-  FillChar(sei,SizeOf(sei),0);
-  sei.cbSize:=SizeOf(sei);
-  sei.lpFile:=PWideChar(filename);
-  sei.lpVerb:='properties';
-  sei.fMask:=SEE_MASK_INVOKEIDLIST;
-  ShellExecuteExW(@sei);
+  mBuf := StrAlloc(MAX_PATH);
+  if SHGetSpecialFolderPath(callerhndl, mBuf, Ident, True) = False
+    then
+      Result := ''
+    else
+      Result := mBuf;
+  StrDispose(mBuf);
+end;
+
+procedure MyShowFileProperties(filename: string);
+var
+  sei: TShellExecuteInfo;
+begin
+  FillChar(sei, SizeOf(sei), 0);
+  sei.cbSize := SizeOf(sei);
+  sei.lpFile := PChar(filename);
+  sei.lpVerb := 'properties';
+  sei.fMask := SEE_MASK_INVOKEIDLIST;
+  ShellExecuteEx(@sei);
 end;
 
 end.

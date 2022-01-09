@@ -1,6 +1,6 @@
 {-------------------------------------------------------------------------------
 BirEdit text editor.
-Copyright (C) 2008 Aleksey Tatuyko
+Copyright (C) 2008-2009 Aleksey Tatuyko
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,15 +15,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>
 
+You can contact with me by e-mail: tatuich@mail.ru
 
-The Original Code is uGoTo.pas by Aleksey Tatuyko, released 2008-11-07.
+
+The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-24.
 All Rights Reserved.
 
-$Id: uGoTo.pas,v 1.1.8.201 2008/11/07 12:28:00 maelh Exp $
+$Id: uGoTo.pas, v 1.2.1.399 2009/05/24 09:17:00 maelh Exp $
 
-You may retrieve the latest version of this file at the BirEdit home page,
-located at http://BirEdit.FireForge.net
- 
+You may retrieve the latest version of this file at the BirEdit project page,
+located at http://fireforge.net/projects/biredit/
+
 }
 
 unit uGoTo;
@@ -31,14 +33,13 @@ unit uGoTo;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, TntForms, StdCtrls, TntStdCtrls, Mask, JvExMask, JvSpin;
+  Forms, Classes, Controls, StdCtrls, Mask, JvExMask, JvSpin;
 
 type
-  TGoToDlg = class(TTntForm)
-    LineLbl: TTntLabel;
+  TGoToDlg = class(TForm)
+    LineLbl: TLabel;
     JvSpinEdit1: TJvSpinEdit;
-    OkBtn: TTntButton;
+    OkBtn: TButton;
     procedure JvSpinEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   end;
@@ -53,7 +54,7 @@ implementation
 procedure TGoToDlg.JvSpinEdit1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key=27 then ModalResult:=mrCancel;
+  if Key = 27 then ModalResult := mrCancel;
 end;
 
 end.

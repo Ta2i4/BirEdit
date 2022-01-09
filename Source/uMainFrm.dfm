@@ -12,10 +12,10 @@ object Editor: TEditor
   Font.Style = []
   Menu = MainMenu
   OldCreateOrder = False
-  OnCloseQuery = TntFormCloseQuery
-  OnCreate = TntFormCreate
-  OnDestroy = TntFormDestroy
-  OnResize = TntFormResize
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
   object Edit: TSynEdit
@@ -24,7 +24,7 @@ object Editor: TEditor
     Width = 592
     Height = 347
     Align = alClient
-    ActiveLineColor = clInactiveCaptionText
+    ActiveLineColor = clInfoBk
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -37,9 +37,10 @@ object Editor: TEditor
     Gutter.Font.Height = -11
     Gutter.Font.Name = 'Courier New'
     Gutter.Font.Style = []
+    OnChange = EditChange
     OnReplaceText = EditReplaceText
   end
-  object Status: TTntStatusBar
+  object Status: TStatusBar
     Left = 0
     Top = 347
     Width = 592
@@ -49,156 +50,130 @@ object Editor: TEditor
         Width = 100
       end
       item
+        Width = 80
+      end
+      item
+        Width = 100
+      end
+      item
         Width = 120
-      end
-      item
-        Width = 60
-      end
-      item
-        Width = 50
       end>
   end
-  object MainMenu: TTntMainMenu
+  object MainMenu: TMainMenu
     AutoHotkeys = maManual
     Left = 208
     Top = 64
-    object N1: TTntMenuItem
+    object N1: TMenuItem
       Caption = 'File'
-      object N105: TTntMenuItem
+      object N105: TMenuItem
         Caption = 'New'
         Hint = 'New'
         ImageIndex = 0
         ShortCut = 113
         OnClick = N105Click
       end
-      object N3: TTntMenuItem
+      object N3: TMenuItem
         Caption = 'Open'
         Hint = 'Open'
         ImageIndex = 1
         ShortCut = 16463
         OnClick = N3Click
       end
-      object N104: TTntMenuItem
+      object N104: TMenuItem
         Caption = 'Revert'
         Hint = 'Revert'
         ShortCut = 116
         OnClick = N104Click
       end
-      object N4: TTntMenuItem
+      object N4: TMenuItem
         Caption = 'Save'
         Hint = 'Save'
         ImageIndex = 2
         ShortCut = 16467
         OnClick = N4Click
       end
-      object N5: TTntMenuItem
+      object N5: TMenuItem
         Caption = 'Save As...'
         Hint = 'Save As...'
         ImageIndex = 14
         ShortCut = 117
         OnClick = N5Click
       end
-      object N135: TTntMenuItem
+      object N135: TMenuItem
         Caption = '-'
       end
-      object N120: TTntMenuItem
+      object N120: TMenuItem
         Caption = 'Launch'
-        object N119: TTntMenuItem
+        object N119: TMenuItem
           Caption = 'New Window'
           ShortCut = 32846
           OnClick = N119Click
         end
-        object N122: TTntMenuItem
+        object N122: TMenuItem
           Caption = 'Empty Window'
           ShortCut = 32816
           OnClick = N122Click
         end
-        object N123: TTntMenuItem
+        object N123: TMenuItem
           Caption = '-'
         end
-        object N124: TTntMenuItem
+        object N124: TMenuItem
           Caption = 'Execute Document'
           ShortCut = 16460
           OnClick = N124Click
         end
-        object N80: TTntMenuItem
+        object N80: TMenuItem
           Caption = 'Open With...'
           ShortCut = 32844
           OnClick = N80Click
         end
+        object N38: TMenuItem
+          Caption = 'Command...'
+          OnClick = N38Click
+        end
       end
-      object N9: TTntMenuItem
+      object N9: TMenuItem
         Caption = '-'
       end
-      object N125: TTntMenuItem
-        Caption = 'Codepage'
-        object N106: TTntMenuItem
-          AutoCheck = True
-          Caption = 'UTF-16 Little Endian'
-          RadioItem = True
-          OnClick = N106Click
-        end
-        object N98: TTntMenuItem
-          AutoCheck = True
-          Caption = 'UTF-16 Big Endian'
-          RadioItem = True
-          OnClick = N98Click
-        end
-        object N136: TTntMenuItem
-          AutoCheck = True
-          Caption = 'UTF-8'
-          RadioItem = True
-          OnClick = N136Click
-        end
-        object N97: TTntMenuItem
-          AutoCheck = True
-          Caption = 'ANSI'
-          RadioItem = True
-          OnClick = N97Click
-        end
-      end
-      object N121: TTntMenuItem
-        Caption = '-'
-      end
-      object N7: TTntMenuItem
+      object N7: TMenuItem
         Caption = 'Print Preview'
         OnClick = N7Click
       end
-      object N8: TTntMenuItem
+      object N8: TMenuItem
         Caption = 'Print'
         Hint = 'Print'
         ImageIndex = 17
         ShortCut = 16464
         OnClick = N8Click
       end
-      object N6: TTntMenuItem
+      object N6: TMenuItem
         Caption = '-'
       end
-      object N114: TTntMenuItem
+      object N114: TMenuItem
         Caption = 'Properties'
         OnClick = N114Click
       end
-      object N115: TTntMenuItem
+      object N115: TMenuItem
         Caption = '-'
       end
-      object N127: TTntMenuItem
+      object N127: TMenuItem
         Caption = 'Recent files'
-        object N130: TTntMenuItem
+        object N130: TMenuItem
           Caption = 'Delete non-existent'
           OnClick = N130Click
         end
-        object N132: TTntMenuItem
+        object N132: TMenuItem
           Caption = 'Clear list'
           OnClick = N132Click
         end
-        object N131: TTntMenuItem
+        object N131: TMenuItem
           Caption = '-'
         end
       end
-      object N128: TTntMenuItem
+      object N128: TMenuItem
         Caption = '-'
       end
-      object N2: TTntMenuItem
+      object N2: TMenuItem
         Caption = 'Exit'
         Hint = 'Exit'
         ImageIndex = 13
@@ -206,343 +181,231 @@ object Editor: TEditor
         OnClick = N2Click
       end
     end
-    object N10: TTntMenuItem
+    object N10: TMenuItem
       Caption = 'Edit'
-      object N11: TTntMenuItem
+      object N11: TMenuItem
         Caption = 'Undo'
         Hint = 'Undo'
         ImageIndex = 3
         ShortCut = 16474
         OnClick = N11Click
       end
-      object N12: TTntMenuItem
+      object N12: TMenuItem
         Caption = 'Redo'
         Hint = 'Redo'
         ImageIndex = 4
         ShortCut = 24666
         OnClick = N12Click
       end
-      object N13: TTntMenuItem
+      object N13: TMenuItem
         Caption = '-'
       end
-      object N17: TTntMenuItem
+      object N17: TMenuItem
         Caption = 'Cut'
         Hint = 'Cut'
         ImageIndex = 5
         ShortCut = 16472
         OnClick = N17Click
       end
-      object N15: TTntMenuItem
+      object N15: TMenuItem
         Caption = 'Copy'
         Hint = 'Copy'
         ImageIndex = 6
         ShortCut = 16451
         OnClick = N15Click
       end
-      object N39: TTntMenuItem
+      object N39: TMenuItem
         Caption = 'Copy All'
         ShortCut = 32835
         OnClick = N39Click
       end
-      object N30: TTntMenuItem
+      object N30: TMenuItem
         Caption = 'Copy Add'
         ShortCut = 16453
         OnClick = N30Click
       end
-      object N16: TTntMenuItem
+      object N16: TMenuItem
         Caption = 'Paste'
         Hint = 'Paste'
         ImageIndex = 7
         ShortCut = 16470
         OnClick = N16Click
       end
-      object N56: TTntMenuItem
+      object N56: TMenuItem
         Caption = 'Swap'
         ShortCut = 16459
         OnClick = N56Click
       end
-      object N59: TTntMenuItem
+      object N59: TMenuItem
         Caption = 'Clear'
         Hint = 'Clear'
         ImageIndex = 16
         ShortCut = 46
         OnClick = N59Click
       end
-      object N57: TTntMenuItem
+      object N57: TMenuItem
         Caption = 'Clear All'
         Hint = 'Clear All'
         OnClick = N57Click
       end
-      object N46: TTntMenuItem
+      object N46: TMenuItem
         Caption = 'Clear Clipboard'
         OnClick = N46Click
       end
-      object N14: TTntMenuItem
+      object N14: TMenuItem
         Caption = 'Select All'
         ShortCut = 16449
         OnClick = N14Click
       end
-      object N67: TTntMenuItem
+      object N67: TMenuItem
         Caption = '-'
       end
-      object N138: TTntMenuItem
+      object N138: TMenuItem
         Caption = 'Line'
-        object N42: TTntMenuItem
+        object N42: TMenuItem
           Caption = 'Insert'
           ShortCut = 16462
           OnClick = N42Click
         end
-        object N139: TTntMenuItem
+        object N139: TMenuItem
           Caption = 'Delete'
           ShortCut = 16473
           OnClick = N139Click
         end
       end
-      object N88: TTntMenuItem
+      object N88: TMenuItem
         Caption = 'Block'
-        object N86: TTntMenuItem
+        object N86: TMenuItem
           Caption = 'Indent'
           ShortCut = 9
           OnClick = N86Click
         end
-        object N87: TTntMenuItem
+        object N87: TMenuItem
           Caption = 'Unindent'
           ShortCut = 8201
           OnClick = N87Click
         end
-        object N89: TTntMenuItem
+        object N89: TMenuItem
           Caption = '-'
         end
-        object N90: TTntMenuItem
+        object N90: TMenuItem
           Caption = 'Enclose Selection'
           ShortCut = 32849
           OnClick = N90Click
         end
-        object N37: TTntMenuItem
+        object N37: TMenuItem
           Caption = 'Dublicate Selection'
           ShortCut = 32836
           OnClick = N37Click
         end
       end
-      object N66: TTntMenuItem
+      object N66: TMenuItem
         Caption = 'Convert'
-        object N60: TTntMenuItem
+        object N60: TMenuItem
           Caption = 'Uppercase'
           ShortCut = 24661
           OnClick = N60Click
         end
-        object N68: TTntMenuItem
+        object N68: TMenuItem
           Caption = 'Lowercase'
           ShortCut = 16469
           OnClick = N68Click
         end
-        object N70: TTntMenuItem
+        object N70: TMenuItem
           Caption = 'Invert Case'
           ShortCut = 49225
           OnClick = N70Click
         end
-        object N69: TTntMenuItem
+        object N69: TMenuItem
           Caption = 'Title Case'
           ShortCut = 49236
           OnClick = N69Click
         end
-        object N76: TTntMenuItem
+        object N76: TMenuItem
           Caption = 'Sentence Case'
           ShortCut = 49235
           OnClick = N76Click
         end
       end
-      object N77: TTntMenuItem
+      object N77: TMenuItem
         Caption = 'Insert'
-        object N48: TTntMenuItem
+        object N48: TMenuItem
           Caption = 'Color under cursor (RGB)'
           ShortCut = 32854
           OnClick = N48Click
         end
-        object N99: TTntMenuItem
+        object N99: TMenuItem
           Caption = 'Time/Date'
           ShortCut = 16500
           OnClick = N99Click
         end
-        object N78: TTntMenuItem
+        object N78: TMenuItem
           Caption = '-'
         end
-        object N100: TTntMenuItem
+        object N100: TMenuItem
           Caption = 'Filename'
           ShortCut = 16504
           OnClick = N100Click
         end
-        object N102: TTntMenuItem
+        object N102: TMenuItem
           Caption = 'Filename and path'
           ShortCut = 24696
           OnClick = N102Click
         end
       end
-      object N140: TTntMenuItem
+      object N140: TMenuItem
         Caption = 'Special'
-        object N141: TTntMenuItem
+        object N141: TMenuItem
           Caption = 'Find mathing brace'
           ShortCut = 24642
           OnClick = N141Click
         end
       end
-      object N58: TTntMenuItem
+      object N58: TMenuItem
         Caption = '-'
       end
-      object N26: TTntMenuItem
+      object N26: TMenuItem
         Caption = 'Find...'
         ShortCut = 16454
         OnClick = N26Click
       end
-      object N27: TTntMenuItem
+      object N27: TMenuItem
         Caption = 'Find Next'
         ShortCut = 114
         OnClick = N27Click
       end
-      object N28: TTntMenuItem
+      object N28: TMenuItem
         Caption = 'Find Previous'
         ShortCut = 8306
         OnClick = N28Click
       end
-      object N29: TTntMenuItem
+      object N29: TMenuItem
         Caption = 'Replace...'
         ShortCut = 16456
         OnClick = N29Click
       end
-      object N31: TTntMenuItem
+      object N31: TMenuItem
         Caption = 'Goto...'
         ShortCut = 16455
         OnClick = N31Click
       end
-      object N18: TTntMenuItem
-        Caption = '-'
-      end
-      object N38: TTntMenuItem
-        Caption = 'Bookmarks'
-        object N33: TTntMenuItem
-          Caption = 'Set'
-          object N03: TTntMenuItem
-            Caption = '0'
-            ShortCut = 24624
-            OnClick = N01Click
-          end
-          object N112: TTntMenuItem
-            Caption = '1'
-            ShortCut = 24625
-            OnClick = N110Click
-          end
-          object N210: TTntMenuItem
-            Caption = '2'
-            ShortCut = 24626
-            OnClick = N210Click
-          end
-          object N35: TTntMenuItem
-            Caption = '3'
-            ShortCut = 24627
-            OnClick = N035Click
-          end
-          object N43: TTntMenuItem
-            Caption = '4'
-            ShortCut = 24628
-            OnClick = N043Click
-          end
-          object N53: TTntMenuItem
-            Caption = '5'
-            ShortCut = 24629
-            OnClick = N53Click
-          end
-          object N63: TTntMenuItem
-            Caption = '6'
-            ShortCut = 24630
-            OnClick = N61Click
-          end
-          object N73: TTntMenuItem
-            Caption = '7'
-            ShortCut = 24631
-            OnClick = N71Click
-          end
-          object N83: TTntMenuItem
-            Caption = '8'
-            ShortCut = 24632
-            OnClick = N81Click
-          end
-          object N93: TTntMenuItem
-            Caption = '9'
-            ShortCut = 24633
-            OnClick = N91Click
-          end
-        end
-        object N34: TTntMenuItem
-          Caption = 'Go To'
-          object N04: TTntMenuItem
-            Caption = '0'
-            ShortCut = 16432
-            OnClick = N02Click
-          end
-          object N113: TTntMenuItem
-            Caption = '1'
-            ShortCut = 16433
-            OnClick = N111Click
-          end
-          object N211: TTntMenuItem
-            Caption = '2'
-            ShortCut = 16434
-            OnClick = N211Click
-          end
-          object N36: TTntMenuItem
-            Caption = '3'
-            ShortCut = 16435
-            OnClick = N36Click
-          end
-          object N44: TTntMenuItem
-            Caption = '4'
-            ShortCut = 16436
-            OnClick = N44Click
-          end
-          object N54: TTntMenuItem
-            Caption = '5'
-            ShortCut = 16437
-            OnClick = N52Click
-          end
-          object N64: TTntMenuItem
-            Caption = '6'
-            ShortCut = 16438
-            OnClick = N62Click
-          end
-          object N74: TTntMenuItem
-            Caption = '7'
-            ShortCut = 16439
-            OnClick = N72Click
-          end
-          object N84: TTntMenuItem
-            Caption = '8'
-            ShortCut = 16440
-            OnClick = N82Click
-          end
-          object N94: TTntMenuItem
-            Caption = '9'
-            ShortCut = 16441
-            OnClick = N92Click
-          end
-        end
-      end
     end
-    object N101: TTntMenuItem
+    object N101: TMenuItem
       Caption = 'Options'
-      object N51: TTntMenuItem
+      object N51: TMenuItem
         Caption = 'Font...'
         OnClick = N51Click
       end
-      object N32: TTntMenuItem
+      object N32: TMenuItem
         Caption = 'Settings'
         OnClick = N32Click
       end
-      object N52: TTntMenuItem
+      object N52: TMenuItem
         Caption = '-'
       end
-      object N117: TTntMenuItem
+      object N117: TMenuItem
         Caption = 'Language'
-        object N126: TTntMenuItem
+        object N126: TMenuItem
           AutoCheck = True
           Caption = 'Internal'
           Checked = True
@@ -552,16 +415,16 @@ object Editor: TEditor
         end
       end
     end
-    object N49: TTntMenuItem
+    object N49: TMenuItem
       Caption = 'Help'
-      object N50: TTntMenuItem
+      object N50: TMenuItem
         Caption = 'About...'
         ShortCut = 112
         OnClick = N50Click
       end
     end
   end
-  object Open: TTntOpenDialog
+  object Open: TOpenDialog
     Filter = 
       'All files (*.*)|*.*|C/C++ (*.c;*.cc;*.cpp;*.cxx;*.h;*.hh;*.hpp;*' +
       '.hxx)|*.c;*.cc;*.cpp;*.cxx;*.h;*.hh;*.hpp;*.hxx|Eiffel (*.ace;*.' +
@@ -592,14 +455,8 @@ object Editor: TEditor
       'eX (*.tex)|*.tex|Haskell (*.hs;*.lhs)|*.hs;*.lhs|LEGO LDraw (*.l' +
       'dr)|*.ldr|DOT Graph Drawing Description (*.dot)|*.dot|Resource (' +
       '*.rc)|*.rc'
-    Left = 240
-    Top = 64
-  end
-  object Save: TTntSaveDialog
-    FileName = 'Untitled.txt'
-    Filter = 'All files (*.*)|*.*'
-    Left = 272
-    Top = 64
+    Left = 200
+    Top = 184
   end
   object synprint1: TSynEditPrint
     Copies = 1
@@ -626,65 +483,65 @@ object Editor: TEditor
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Tahoma'
     Font.Style = []
     TabWidth = 8
     Color = clWhite
     Left = 208
     Top = 32
   end
-  object Popup1: TTntPopupMenu
+  object Popup1: TPopupMenu
     OnPopup = Popup1Popup
     Left = 304
     Top = 64
-    object N19: TTntMenuItem
+    object N19: TMenuItem
       Caption = 'Undo'
       OnClick = N11Click
     end
-    object N20: TTntMenuItem
+    object N20: TMenuItem
       Caption = 'Redo'
       OnClick = N12Click
     end
-    object N21: TTntMenuItem
+    object N21: TMenuItem
       Caption = '-'
     end
-    object N22: TTntMenuItem
+    object N22: TMenuItem
       Caption = 'Cut'
       OnClick = N17Click
     end
-    object N23: TTntMenuItem
+    object N23: TMenuItem
       Caption = 'Copy'
       OnClick = N15Click
     end
-    object N45: TTntMenuItem
+    object N45: TMenuItem
       Caption = 'Copy All'
       OnClick = N39Click
     end
-    object N55: TTntMenuItem
+    object N55: TMenuItem
       Caption = 'Copy Add'
       OnClick = N30Click
     end
-    object N24: TTntMenuItem
+    object N24: TMenuItem
       Caption = 'Paste'
       OnClick = N16Click
     end
-    object N65: TTntMenuItem
+    object N65: TMenuItem
       Caption = 'Swap'
       OnClick = N56Click
     end
-    object N85: TTntMenuItem
+    object N85: TMenuItem
       Caption = 'Clear'
       OnClick = N59Click
     end
-    object N95: TTntMenuItem
+    object N95: TMenuItem
       Caption = 'Clear All'
       OnClick = N57Click
     end
-    object N96: TTntMenuItem
+    object N96: TMenuItem
       Caption = 'Clear Clipboard'
       OnClick = N46Click
     end
-    object N25: TTntMenuItem
+    object N25: TMenuItem
       Caption = 'Select All'
       OnClick = N14Click
     end
@@ -714,14 +571,6 @@ object Editor: TEditor
     Left = 416
     Top = 64
   end
-  object JvDebugHandler1: TJvDebugHandler
-    Left = 448
-    Top = 64
-  end
-  object XPManifest1: TXPManifest
-    Left = 272
-    Top = 32
-  end
   object SynEditRegexSearch1: TSynEditRegexSearch
     Left = 88
     Top = 16
@@ -746,5 +595,23 @@ object Editor: TEditor
     OnClick = JvTrayIcon1Click
     Left = 480
     Top = 64
+  end
+  object Save: TSaveTextFileDialog
+    FileName = 'Untitled.txt'
+    Filter = 'Any file (*.*)|*.*'
+    Options = [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing]
+    Encodings.Strings = (
+      'Ansi'
+      'ASCII'
+      'UTF-16 little endian'
+      'UTF-16 big endian'
+      'UTF-8'
+      'UTF-7')
+    Left = 232
+    Top = 184
+  end
+  object dlg1: TJvRunDialog
+    Left = 520
+    Top = 32
   end
 end

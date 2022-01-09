@@ -15,7 +15,7 @@ object GoToDlg: TGoToDlg
   Position = poDesktopCenter
   PixelsPerInch = 96
   TextHeight = 13
-  object LineLbl: TTntLabel
+  object LineLbl: TLabel
     Left = 10
     Top = 10
     Width = 23
@@ -33,7 +33,7 @@ object GoToDlg: TGoToDlg
     TabOrder = 0
     OnKeyDown = JvSpinEdit1KeyDown
   end
-  object OkBtn: TTntButton
+  object OkBtn: TButton
     Left = 60
     Top = 40
     Width = 75

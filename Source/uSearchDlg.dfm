@@ -12,18 +12,18 @@ object SearchForm: TSearchForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
-  OnCloseQuery = TntFormCloseQuery
+  Position = poOwnerFormCenter
+  OnCloseQuery = FormCloseQuery
   PixelsPerInch = 96
   TextHeight = 13
-  object SearchForLbl: TTntLabel
+  object SearchForLbl: TLabel
     Left = 8
     Top = 12
     Width = 50
     Height = 13
     Caption = 'Search for'
   end
-  object TntComboBox1: TTntComboBox
+  object ComboBox1: TComboBox
     Left = 80
     Top = 9
     Width = 247
@@ -31,14 +31,14 @@ object SearchForm: TSearchForm
     ItemHeight = 13
     TabOrder = 0
   end
-  object OptsGrp: TTntGroupBox
+  object OptsGrp: TGroupBox
     Left = 8
     Top = 40
     Width = 154
     Height = 127
     Caption = 'Options'
     TabOrder = 1
-    object CaseSentChk: TTntCheckBox
+    object CaseSentChk: TCheckBox
       Left = 8
       Top = 17
       Width = 140
@@ -46,7 +46,7 @@ object SearchForm: TSearchForm
       Caption = 'Case sensitivity'
       TabOrder = 0
     end
-    object WholeWordChk: TTntCheckBox
+    object WholeWordChk: TCheckBox
       Left = 8
       Top = 39
       Width = 140
@@ -54,7 +54,7 @@ object SearchForm: TSearchForm
       Caption = 'Whole words only'
       TabOrder = 1
     end
-    object FromCaretChk: TTntCheckBox
+    object FromCaretChk: TCheckBox
       Left = 8
       Top = 61
       Width = 140
@@ -62,7 +62,7 @@ object SearchForm: TSearchForm
       Caption = 'Search from caret'
       TabOrder = 2
     end
-    object InSelChk: TTntCheckBox
+    object InSelChk: TCheckBox
       Left = 8
       Top = 83
       Width = 140
@@ -70,7 +70,7 @@ object SearchForm: TSearchForm
       Caption = 'Selected text only'
       TabOrder = 3
     end
-    object RegExpChk: TTntCheckBox
+    object RegExpChk: TCheckBox
       Left = 8
       Top = 105
       Width = 140
@@ -79,7 +79,7 @@ object SearchForm: TSearchForm
       TabOrder = 4
     end
   end
-  object DirectGrp: TTntRadioGroup
+  object DirectGrp: TRadioGroup
     Left = 170
     Top = 40
     Width = 157
@@ -91,7 +91,7 @@ object SearchForm: TSearchForm
       'Backward')
     TabOrder = 2
   end
-  object OkBtn: TTntButton
+  object OkBtn: TButton
     Left = 170
     Top = 142
     Width = 75
@@ -101,7 +101,7 @@ object SearchForm: TSearchForm
     ModalResult = 1
     TabOrder = 3
   end
-  object CancelBtn: TTntButton
+  object CancelBtn: TButton
     Left = 252
     Top = 142
     Width = 75

@@ -1,6 +1,6 @@
 {-------------------------------------------------------------------------------
 BirEdit text editor.
-Copyright (C) 2008 Aleksey Tatuyko
+Copyright (C) 2008-2009 Aleksey Tatuyko
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,44 +15,44 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>
 
+You can contact with me by e-mail: tatuich@mail.ru
 
-The Original Code is uPrintPreview.pas by Aleksey Tatuyko, released 2008-11-07.
+
+The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-24.
 All Rights Reserved.
 
-$Id: uPrintPreview.pas,v 1.1.8.201 2008/11/07 12:29:00 maelh Exp $
+$Id: uPrintPreviewDlg.pas, v 1.2.1.399 2009/05/24 09:18:00 maelh Exp $
 
-You may retrieve the latest version of this file at the BirEdit home page,
-located at http://BirEdit.FireForge.net
- 
- }
+You may retrieve the latest version of this file at the BirEdit project page,
+located at http://fireforge.net/projects/biredit/
+
+}
  
 unit uPrintPreviewDlg;
 
 interface
 
 uses
-  Messages, Classes, Controls, TntSysUtils, TntClasses, TntGraphics, TntControls,
-  TntDialogs, TntWindows, TntForms, SynEditPrintPreview, StdCtrls,
-  TntStdCtrls, SysUtils, ExtCtrls, TntExtCtrls;
+  Forms, SysUtils, Classes, Controls, SynEditPrintPreview, StdCtrls, ExtCtrls;
 
 type
-  TPreview = class(TTntForm)
+  TPreview = class(TForm)
     SynEditPrintPreview: TSynEditPrintPreview;
-    NextBtn: TTntButton;
-    TntPanel1: TTntPanel;
-    PrevBtn: TTntButton;
-    LastBtn: TTntButton;
-    FirstBtn: TTntButton;
-    PrintBtn: TTntButton;
-    TntLabel1: TTntLabel;
-    CloseBtn: TTntButton;
+    NextBtn: TButton;
+    Panel1: TPanel;
+    PrevBtn: TButton;
+    LastBtn: TButton;
+    FirstBtn: TButton;
+    PrintBtn: TButton;
+    Label1: TLabel;
+    CloseBtn: TButton;
     procedure NextBtnClick(Sender: TObject);
     procedure PrevBtnClick(Sender: TObject);
     procedure LastBtnClick(Sender: TObject);
     procedure FirstBtnClick(Sender: TObject);
     procedure PrintBtnClick(Sender: TObject);
-    procedure TntFormShow(Sender: TObject);
-    procedure TntFormKeyDown(Sender: TObject; var Key: Word;
+    procedure FormShow(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   end;
 
@@ -66,25 +66,29 @@ implementation
 procedure TPreview.NextBtnClick(Sender: TObject);
 begin
   SynEditPrintPreview.NextPage;
-  TntLabel1.Caption:=IntToStr(SynEditPrintPreview.PageNumber)+'/'+IntToStr(SynEditPrintPreview.PageCount);
+  Label1.Caption := IntToStr(SynEditPrintPreview.PageNumber) + '/'
+                      + IntToStr(SynEditPrintPreview.PageCount);
 end;
 
 procedure TPreview.PrevBtnClick(Sender: TObject);
 begin
   SynEditPrintPreview.PreviousPage;
-  TntLabel1.Caption:=IntToStr(SynEditPrintPreview.PageNumber)+'/'+IntToStr(SynEditPrintPreview.PageCount);
+  Label1.Caption := IntToStr(SynEditPrintPreview.PageNumber) + '/'
+                      + IntToStr(SynEditPrintPreview.PageCount);
 end;
 
 procedure TPreview.LastBtnClick(Sender: TObject);
 begin
   SynEditPrintPreview.LastPage;
-  TntLabel1.Caption:=IntToStr(SynEditPrintPreview.PageNumber)+'/'+IntToStr(SynEditPrintPreview.PageCount);
+  Label1.Caption := IntToStr(SynEditPrintPreview.PageNumber) + '/'
+                      + IntToStr(SynEditPrintPreview.PageCount);
 end;
 
 procedure TPreview.FirstBtnClick(Sender: TObject);
 begin
   SynEditPrintPreview.FirstPage;
-  TntLabel1.Caption:=IntToStr(SynEditPrintPreview.PageNumber)+'/'+IntToStr(SynEditPrintPreview.PageCount);
+  Label1.Caption := IntToStr(SynEditPrintPreview.PageNumber) + '/'
+                      + IntToStr(SynEditPrintPreview.PageCount);
 end;
 
 procedure TPreview.PrintBtnClick(Sender: TObject);
@@ -92,17 +96,17 @@ begin
   SynEditPrintPreview.Print;
 end;
 
-procedure TPreview.TntFormKeyDown(Sender: TObject; var Key: Word;
+procedure TPreview.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = 27 then // Escape
-    ModalResult:=mrOk;
+  if Key = 27 then ModalResult := mrOk;
 end;
 
-procedure TPreview.TntFormShow(Sender: TObject);
+procedure TPreview.FormShow(Sender: TObject);
 begin
   SynEditPrintPreview.FirstPage;
-  TntLabel1.Caption:=IntToStr(SynEditPrintPreview.PageNumber)+'/'+IntToStr(SynEditPrintPreview.PageCount);
+  Label1.Caption := IntToStr(SynEditPrintPreview.PageNumber) + '/'
+                      + IntToStr(SynEditPrintPreview.PageCount);
 end;
 
 end.

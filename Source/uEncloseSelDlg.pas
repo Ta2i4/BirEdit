@@ -1,6 +1,6 @@
 {-------------------------------------------------------------------------------
 BirEdit text editor.
-Copyright (C) 2008 Aleksey Tatuyko
+Copyright (C) 2008-2009 Aleksey Tatuyko
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,32 +18,32 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@mail.ru
 
 
-The Original Code is uEncloseDlg.pas by Aleksey Tatuyko, released 2008-11-07.
+The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-24.
 All Rights Reserved.
 
-$Id: uEncloseDlg.pas,v 1.1.8.201 2008/11/07 12:27:00 maelh Exp $
+$Id: uEncloseDlg.pas, v 1.2.1.399 2009/05/24 09:17:00 maelh Exp $
 
-You may retrieve the latest version of this file at the BirEdit home page,
-located at http://BirEdit.FireForge.net
- 
- }
+You may retrieve the latest version of this file at the BirEdit project page,
+located at http://fireforge.net/projects/biredit/
+
+}
  
 unit uEncloseSelDlg;
 
 interface
 
 uses
-  TntForms, TntStdCtrls, StdCtrls, Classes, Controls;
+  Forms, StdCtrls, Classes, Controls;
 
 type
-  TSelIns = class(TTntForm)
-    BeforeLbl: TTntLabel;
-    AfterLbl: TTntLabel;
-    TntEdit1: TTntEdit;
-    TntEdit2: TTntEdit;
-    OkBtn: TTntButton;
-    CancelBtn: TTntButton;
-    procedure TntEdit1Change(Sender: TObject);
+  TSelIns = class(TForm)
+    BeforeLbl: TLabel;
+    AfterLbl: TLabel;
+    Edit1: TEdit;
+    Edit2: TEdit;
+    OkBtn: TButton;
+    CancelBtn: TButton;
+    procedure Edit1Change(Sender: TObject);
   end;
 
 var
@@ -53,9 +53,9 @@ implementation
 
 {$R *.DFM}
 
-procedure TSelIns.TntEdit1Change(Sender: TObject);
+procedure TSelIns.Edit1Change(Sender: TObject);
 begin
-  OkBtn.Enabled:=(not(TntEdit1.Text=''))or(not(TntEdit2.Text=''));
+  OkBtn.Enabled := (not (Edit1.Text = '')) or (not (Edit2.Text = ''));
 end;
 
 end.

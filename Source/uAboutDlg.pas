@@ -1,6 +1,6 @@
 {-------------------------------------------------------------------------------
 BirEdit text editor.
-Copyright (C) 2008 Aleksey Tatuyko
+Copyright (C) 2008-2009 Aleksey Tatuyko
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,55 +18,72 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@mail.ru
 
 
-The Original Code is uAboutDlg.pas by Aleksey Tatuyko, released 2008-11-05.
+The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-24.
 All Rights Reserved.
 
-$Id: Unit3.pas,v 1.1.7.199 2008/11/05 12:31:00 maelh Exp $
+$Id: uAboutDlg.pas, v 1.2.1.399 2009/05/24 09:17:00 maelh Exp $
 
-You may retrieve the latest version of this file at the BirEdit home page,
-located at http://BirEdit.FireForge.net
- 
- }
+You may retrieve the latest version of this file at the BirEdit project page,
+located at http://fireforge.net/projects/biredit/
+
+}
  
 unit uAboutDlg;
 
 interface
 
 uses
-  Windows, TntWindows, TntForms, Graphics, Classes, Controls, ExtCtrls,
-  TntExtCtrls, StdCtrls, TntStdCtrls;
+  Windows, Forms, ShellAPI, uMainFrm, Classes, Controls, ExtCtrls, StdCtrls;
 
 type
-  TAbout = class(TTntForm)
-    TntImage1: TTntImage;
-    TntLabel1: TTntLabel;
-    TntLabel2: TTntLabel;
-    btn1: TTntButton;
-    TntLabel4: TTntLabel;
-    TntMemo1: TTntMemo;
-    TntLabel3: TTntLabel;
-    procedure TntLabel3Click(Sender: TObject);
-    procedure TntFormKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+  TAbout = class(TForm)
+    Image1: TImage;
+    lbl1: TLabel;
+    lbl2: TLabel;
+    lbl3: TLabel;
+    lbl4: TLabel;
+    lbl5: TLabel;
+    lbl6: TLabel;
+    lbl7: TLabel;
+    lbl8: TLabel;
+    btn1: TButton;
+    procedure lbl5Click(Sender: TObject);
+    procedure lbl7Click(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormShow(Sender: TObject);
   end;
-
-var
-  About: TAbout;
 
 implementation
 
 {$R *.DFM}
 
-procedure TAbout.TntFormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TAbout.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  if Key=27 // Escape
-  then ModalResult:=mrOk;
+  AnimateWindow(Self.Handle, 200, AW_HIDE or AW_BLEND);
 end;
 
-procedure TAbout.TntLabel3Click(Sender: TObject);
+procedure TAbout.FormShow(Sender: TObject);
+var
+  x, y: Integer;
 begin
-  Tnt_ShellExecuteW(Self.Handle,'open','http://biredit.fireforge.net/',nil,nil,SW_SHOWNORMAL);
+  x := ((Editor.Width - Width) div 2) + Editor.Left;
+  y := ((Editor.Height - Height) div 2) + Editor.Top;
+  if x < Screen.DesktopLeft then x := Screen.DesktopLeft;
+  if y < Screen.DesktopTop then y := Screen.DesktopTop;
+  SetBounds(x, y, Width, Height);
+  AnimateWindow(Self.Handle, 200, AW_ACTIVATE or AW_BLEND);
+end;
+
+procedure TAbout.lbl5Click(Sender: TObject);
+begin
+  ShellExecute(Self.Handle, 'open', 'http://fireforge.net/projects/biredit/',
+                 nil, nil, SW_SHOWNORMAL);
+end;
+
+procedure TAbout.lbl7Click(Sender: TObject);
+begin
+  ShellExecute(Self.Handle, 'open', 'http://biredit.freeforums.org/',
+                 nil, nil, SW_SHOWNORMAL);
 end;
 
 end.

@@ -1,6 +1,6 @@
 {-------------------------------------------------------------------------------
 BirEdit text editor.
-Copyright (C) 2008 Aleksey Tatuyko
+Copyright (C) 2008-2009 Aleksey Tatuyko
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,46 +15,40 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>
 
+You can contact with me by e-mail: tatuich@mail.ru
 
-The Original Code is: dlgReplaceText.pas, released 2000-06-23.
 
-The Original Code is part of the SearchReplaceDemo project, written by
-Michael Hieke for the SynEdit component suite.
-Using TNT Unicode Controls by Aleksey Tatuyko.
+The Original Code is BirEdit.dpr by Aleksey Tatuyko, released 2009-05-24.
 All Rights Reserved.
 
-Contributors to the SynEdit project are listed in the Contributors.txt file.
+$Id: uReplaceDlg.pas, v 1.2.1.399 2009/05/24 09:19:00 maelh Exp $
 
-$Id: dlgReplaceText.pas,v 1.3 2008/11/07 12:29:25 rmay Exp $
+You may retrieve the latest version of this file at the BirEdit project page,
+located at http://fireforge.net/projects/biredit/
 
-You may retrieve the latest version of this file at the SynEdit home page,
-located at http://SynEdit.SourceForge.net
-
-
-Known Issues:
--------------------------------------------------------------------------------}
+}
 
 unit uReplaceDlg;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, TntForms, uSearchDlg, StdCtrls, TntStdCtrls, TntExtCtrls, SynUnicode;
+  SysUtils, Forms, uSearchDlg, Classes, Controls, StdCtrls, ExtCtrls;
 
 type
   TReplaceForm = class(TSearchForm)
-    ReplaceLbl: TTntLabel;
-    TntComboBox2: TTntComboBox;
-    procedure TntFormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    ReplaceLbl: TLabel;
+    ComboBox2: TComboBox;
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
-    function GetReplaceText: UnicodeString;
-    function GetReplaceTextHistory: UnicodeString;
-    procedure SetReplaceText(Value: UnicodeString);
-    procedure SetReplaceTextHistory(Value: UnicodeString);
+    function GetReplaceText: string;
+    function GetReplaceTextHistory: string;
+    procedure SetReplaceText(Value: string);
+    procedure SetReplaceTextHistory(Value: string);
   public
-    property ReplaceText: UnicodeString read GetReplaceText write SetReplaceText;
-    property ReplaceTextHistory: UnicodeString read GetReplaceTextHistory write SetReplaceTextHistory;
+    property ReplaceText: string read GetReplaceText write SetReplaceText;
+    property ReplaceTextHistory: string read GetReplaceTextHistory
+                                   write SetReplaceTextHistory;
   end;
 
 var
@@ -64,48 +58,49 @@ implementation
 
 {$R *.DFM}
 
-function TReplaceForm.GetReplaceText: UnicodeString;
+function TReplaceForm.GetReplaceText: string;
 begin
-  Result:=TntComboBox2.Text;
+  Result := ComboBox2.Text;
 end;
 
-function TReplaceForm.GetReplaceTextHistory: UnicodeString;
-var i: integer;
+function TReplaceForm.GetReplaceTextHistory: string;
+var
+  i: integer;
 begin
   // set up the history
-  Result:='';
-  for i:=0 to TntComboBox2.Items.Count-1 do begin
-    if i>=10 then break;
-    if i>0 then Result:=Result+#13#10;
-    Result:=Result+TntComboBox2.Items[i];
+  Result := '';
+  for i := 0 to ComboBox2.Items.Count - 1 do begin
+    if i >= 10 then Break;
+    if i > 0 then Result := Result + #13#10;
+    Result := Result + ComboBox2.Items[i];
   end;
 end;
 
-procedure TReplaceForm.SetReplaceText(Value: UnicodeString);
+procedure TReplaceForm.SetReplaceText(Value: string);
 begin
-  TntComboBox2.Text:=WideTrim(Value);
+  ComboBox2.Text := Trim(Value);
 end;
 
-procedure TReplaceForm.SetReplaceTextHistory(Value: UnicodeString);
+procedure TReplaceForm.SetReplaceTextHistory(Value: string);
 begin
-  TntComboBox2.Items.Text:=Value;
+  ComboBox2.Items.Text := Value;
 end;
 
-procedure TReplaceForm.TntFormCloseQuery(Sender: TObject; var CanClose: Boolean);
+procedure TReplaceForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 var
-  s: UnicodeString;
+  s: string;
   i: integer;
 begin
   inherited;
-  if ModalResult=mrOK then begin
-    s:=TntComboBox2.Text;
-    if s<>'' then begin
-      i:=TntComboBox2.Items.IndexOf(s);
-      if i>-1 then begin
-        TntComboBox2.Items.Delete(i);
-        TntComboBox2.Items.Insert(0,s);
-        TntComboBox2.Text:=s;
-      end else TntComboBox2.Items.Insert(0,s);
+  if ModalResult = mrOK then begin
+    s := ComboBox2.Text;
+    if s <> '' then begin
+      i := ComboBox2.Items.IndexOf(s);
+      if i > -1 then begin
+        ComboBox2.Items.Delete(i);
+        ComboBox2.Items.Insert(0, s);
+        ComboBox2.Text := s;
+      end else ComboBox2.Items.Insert(0, s);
     end;
   end;
 end;

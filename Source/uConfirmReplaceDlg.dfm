@@ -13,24 +13,24 @@ object ConfirmReplace: TConfirmReplace
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
-  OnCreate = TntFormCreate
-  OnDestroy = TntFormDestroy
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
-  object TntImage1: TTntImage
+  object Image1: TImage
     Left = 16
     Top = 16
     Width = 32
     Height = 32
   end
-  object TntLabel1: TTntLabel
+  object Label1: TLabel
     Left = 60
     Top = 12
     Width = 265
     Height = 44
     AutoSize = False
   end
-  object TntButton1: TTntButton
+  object Button1: TButton
     Left = 10
     Top = 65
     Width = 75
@@ -40,7 +40,7 @@ object ConfirmReplace: TConfirmReplace
     ModalResult = 6
     TabOrder = 0
   end
-  object TntButton2: TTntButton
+  object Button2: TButton
     Left = 90
     Top = 65
     Width = 75
@@ -49,7 +49,7 @@ object ConfirmReplace: TConfirmReplace
     ModalResult = 7
     TabOrder = 1
   end
-  object TntButton3: TTntButton
+  object Button3: TButton
     Left = 170
     Top = 65
     Width = 75
@@ -58,7 +58,7 @@ object ConfirmReplace: TConfirmReplace
     ModalResult = 2
     TabOrder = 2
   end
-  object TntButton4: TTntButton
+  object Button4: TButton
     Left = 250
     Top = 65
     Width = 75

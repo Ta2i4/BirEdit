@@ -8,13 +8,13 @@ object Preview: TPreview
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
-  Position = poDesktopCenter
-  OnKeyDown = TntFormKeyDown
-  OnShow = TntFormShow
+  Position = poOwnerFormCenter
+  OnKeyDown = FormKeyDown
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object SynEditPrintPreview: TSynEditPrintPreview
@@ -24,20 +24,20 @@ object Preview: TPreview
     Height = 316
     SynEditPrint = Editor.synprint1
   end
-  object TntPanel1: TTntPanel
+  object Panel1: TPanel
     Left = 0
     Top = 316
     Width = 592
     Height = 100
     Align = alBottom
     TabOrder = 1
-    object TntLabel1: TTntLabel
+    object Label1: TLabel
       Left = 8
       Top = 8
       Width = 3
       Height = 13
     end
-    object NextBtn: TTntButton
+    object NextBtn: TButton
       Left = 264
       Top = 33
       Width = 120
@@ -46,7 +46,7 @@ object Preview: TPreview
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
-      Font.Name = 'MS Sans Serif'
+      Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
       ParentShowHint = False
@@ -54,7 +54,7 @@ object Preview: TPreview
       TabOrder = 2
       OnClick = NextBtnClick
     end
-    object PrevBtn: TTntButton
+    object PrevBtn: TButton
       Left = 136
       Top = 33
       Width = 120
@@ -63,7 +63,7 @@ object Preview: TPreview
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
-      Font.Name = 'MS Sans Serif'
+      Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
       ParentShowHint = False
@@ -71,7 +71,7 @@ object Preview: TPreview
       TabOrder = 1
       OnClick = PrevBtnClick
     end
-    object LastBtn: TTntButton
+    object LastBtn: TButton
       Left = 392
       Top = 33
       Width = 120
@@ -80,7 +80,7 @@ object Preview: TPreview
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
-      Font.Name = 'MS Sans Serif'
+      Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
       ParentShowHint = False
@@ -88,7 +88,7 @@ object Preview: TPreview
       TabOrder = 3
       OnClick = LastBtnClick
     end
-    object FirstBtn: TTntButton
+    object FirstBtn: TButton
       Left = 8
       Top = 33
       Width = 120
@@ -97,7 +97,7 @@ object Preview: TPreview
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
-      Font.Name = 'MS Sans Serif'
+      Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
       ParentShowHint = False
@@ -105,7 +105,7 @@ object Preview: TPreview
       TabOrder = 0
       OnClick = FirstBtnClick
     end
-    object PrintBtn: TTntButton
+    object PrintBtn: TButton
       Left = 8
       Top = 64
       Width = 120
@@ -114,7 +114,7 @@ object Preview: TPreview
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
-      Font.Name = 'MS Sans Serif'
+      Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
       ParentShowHint = False
@@ -122,7 +122,7 @@ object Preview: TPreview
       TabOrder = 4
       OnClick = PrintBtnClick
     end
-    object CloseBtn: TTntButton
+    object CloseBtn: TButton
       Left = 136
       Top = 64
       Width = 120
