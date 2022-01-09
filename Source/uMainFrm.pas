@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@mail.ru
 
 
-The Original Code is uMainFrm.pas by Aleksey Tatuyko, released 2009-06-05.
+The Original Code is uMainFrm.pas by Aleksey Tatuyko, released 2009-06-11.
 All Rights Reserved.
 
-$Id: uMainFrm.pas, v 1.2.8.411 2009/06/05 04:56:00 maelh Exp $
+$Id: uMainFrm.pas, v 1.2.9.417 2009/06/11 00:06:00 maelh Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://fireforge.net/projects/biredit/
@@ -2198,6 +2198,9 @@ begin
     Spin8.MinValue := 2;
     Spin8.MaxValue := MaxInt;
     Spin8.AsInteger := Edit.Gutter.GradientSteps;
+    Spin9.MinValue := 0;
+    Spin9.MaxValue := MaxInt;
+    Spin9.AsInteger := Edit.ExtraLineSpacing;
     for I := 0 to 26
     do OptsList.Checked[i] := TSynEditorOption(i) in Edit.Options;
     if ShowModal = mrOk then begin
@@ -2211,6 +2214,7 @@ begin
       Edit.MaxUndo := Spin3.AsInteger;
       Edit.RightEdge := Spin4.AsInteger;
       Edit.TabWidth := Spin5.AsInteger;
+      Edit.ExtraLineSpacing := Spin9.AsInteger;
       Edit.InsertCaret := TSynEditCaretType(Combo1.ItemIndex);
       Edit.OverwriteCaret := TSynEditCaretType(Combo2.ItemIndex);
       Edit.ScrollHintFormat := TScrollHintFormat(Combo3.ItemIndex);
