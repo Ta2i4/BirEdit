@@ -3,8 +3,8 @@ object SearchForm: TSearchForm
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Search text'
-  ClientHeight = 180
-  ClientWidth = 339
+  ClientHeight = 200
+  ClientWidth = 340
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -38,7 +38,7 @@ object SearchForm: TSearchForm
     Left = 8
     Top = 40
     Width = 154
-    Height = 127
+    Height = 150
     Caption = 'Options'
     TabOrder = 1
     object CaseSentChk: TCheckBox
@@ -86,6 +86,15 @@ object SearchForm: TSearchForm
       Caption = 'Regular expression'
       TabOrder = 4
     end
+    object CycleChk: TCheckBox
+      Tag = 206
+      Left = 8
+      Top = 127
+      Width = 140
+      Height = 17
+      Caption = 'Cycle search'
+      TabOrder = 5
+    end
   end
   object DirectGrp: TRadioGroup
     Tag = 1201
@@ -103,7 +112,7 @@ object SearchForm: TSearchForm
   object OkBtn: TButton
     Tag = 11
     Left = 170
-    Top = 142
+    Top = 159
     Width = 75
     Height = 25
     Caption = 'OK'
@@ -115,7 +124,7 @@ object SearchForm: TSearchForm
   object CancelBtn: TButton
     Tag = 12
     Left = 252
-    Top = 142
+    Top = 159
     Width = 75
     Height = 25
     Cancel = True

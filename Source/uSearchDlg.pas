@@ -49,6 +49,7 @@ type
     OkBtn: TButton;
     CancelBtn: TButton;
     Tmr1: TJvTimer;
+    CycleChk: TCheckBox;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure Tmr1Timer(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -59,6 +60,7 @@ type
     function GetSearchInSelection: Boolean;
     function GetSearchWholeWords: Boolean;
     function GetSearchRegularExpression: Boolean;
+    function GetSearchCycle: Boolean;
     function GetSearchText: string;
     function GetSearchTextHistory: string;
     procedure SetSearchBackwards(Value: Boolean);
@@ -66,6 +68,7 @@ type
     procedure SetSearchFromCursor(Value: Boolean);
     procedure SetSearchInSelection(Value: Boolean);
     procedure SetSearchWholeWords(Value: Boolean);
+    procedure SetSearchCycle(Value: Boolean);
     procedure SetSearchRegularExpression(const Value: Boolean);
     procedure SetSearchText(Value: string);
     procedure SetSearchTextHistory(Value: string);
@@ -82,6 +85,7 @@ type
                                 write SetSearchRegularExpression;
     property SearchWholeWords: Boolean read GetSearchWholeWords
                                 write SetSearchWholeWords;
+    property SearchCycle: Boolean read GetSearchCycle write SetSearchCycle;
     property SearchText: string read GetSearchText write SetSearchText;
     property SearchTextHistory: string read GetSearchTextHistory
                                 write SetSearchTextHistory;
@@ -146,6 +150,11 @@ begin
   Result := WholeWordChk.Checked;
 end;
 
+function TSearchForm.GetSearchCycle: Boolean;
+begin
+  Result := CycleChk.Checked;
+end;
+
 procedure TSearchForm.SetSearchBackwards(Value: Boolean);
 begin
   DirectGrp.ItemIndex := Ord(Value);
@@ -179,6 +188,11 @@ end;
 procedure TSearchForm.SetSearchWholeWords(Value: Boolean);
 begin
   WholeWordChk.Checked := Value;
+end;
+
+procedure TSearchForm.SetSearchCycle(Value: Boolean);
+begin
+  CycleChk.Checked := Value;
 end;
 
 procedure TSearchForm.Tmr1Timer(Sender: TObject);

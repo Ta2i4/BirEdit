@@ -41,7 +41,7 @@ object About: TAbout
     Top = 29
     Width = 80
     Height = 13
-    Caption = 'version 2.0.2.68'
+    Caption = 'version 2.1.0.91'
   end
   object btn1: TButton
     Left = 414
@@ -70,7 +70,7 @@ object About: TAbout
         Height = 210
         Align = alClient
         Lines.Strings = (
-          'Copyright '#169' 2008-2010 Alexey Tatuyko'
+          'Copyright '#169' 2008-2011 Alexey Tatuyko'
           ''
           
             'This program is freeware and released under the GNU general publ' +
@@ -99,11 +99,11 @@ object About: TAbout
         Lines.Strings = (
           'Third party libs used:'
           
-            '- FastMM v4.97 2010/11/10 SVN (http://sourceforge.net/projects/f' +
+            '- FastMM v4.97 2011/06/22 SVN (http://sourceforge.net/projects/f' +
             'astmm/)'
           '- JVCL v3.40 (http://sourceforge.net/projects/jvcl/)'
           
-            '- SynEdit 2010/11/29 SVN (http://sourceforge.net/projects/synedi' +
+            '- SynEdit 2011/06/11 SVN (http://sourceforge.net/projects/synedi' +
             't/)'
           ''
           'Special thanks:'

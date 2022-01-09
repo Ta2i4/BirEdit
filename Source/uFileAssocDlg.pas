@@ -1,6 +1,6 @@
 {-------------------------------------------------------------------------------
 BirEdit text editor.
-Copyright (C) 2008-2010 Alexey Tatuyko
+Copyright (C) 2008-2011 Alexey Tatuyko
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uFileAssocDlg.pas by Alexey Tatuyko, released 2010-10-26.
+The Original Code is uFileAssocDlg.pas by Alexey Tatuyko, released 2011-09-10.
 All Rights Reserved.
 
-$Id: uFileAssocDlg.pas, v 2.0.1.42 2010/10/26 04:33:00 tatuich Exp $
+$Id: uFileAssocDlg.pas, v 2.1.0.90 2011/09/10 04:58:00 tatuich Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.googlecode.com/
@@ -64,29 +64,13 @@ begin
 end;
 
 procedure TFAssoc.N1Click(Sender: TObject);
-{$IFNDEF VER210}
-var
-  i: Integer;
-{$ENDIF}
 begin
-  {$IFNDEF VER210}
-    for i := 0 to chklst1.Count - 1 do chklst1.Checked[i] := True;
-  {$ELSE}
-    chklst1.CheckAll(cbChecked);
-  {$ENDIF}
+  chklst1.CheckAll(cbChecked);
 end;
 
 procedure TFAssoc.N2Click(Sender: TObject);
-{$IFNDEF VER210}
-var
-  i: Integer;
-{$ENDIF}
 begin
-  {$IFNDEF VER210}
-    for i := 0 to chklst1.Count - 1 do chklst1.Checked[i] := False;
-  {$ELSE}
-    chklst1.CheckAll(cbUnchecked);
-  {$ENDIF}
+  chklst1.CheckAll(cbUnchecked);
 end;
 
 procedure TFAssoc.N3Click(Sender: TObject);

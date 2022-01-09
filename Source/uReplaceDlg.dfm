@@ -1,10 +1,8 @@
 inherited ReplaceForm: TReplaceForm
   Caption = 'Replace text'
-  ClientHeight = 207
-  ClientWidth = 336
+  ClientHeight = 230
   OldCreateOrder = True
-  ExplicitWidth = 342
-  ExplicitHeight = 235
+  ExplicitHeight = 258
   PixelsPerInch = 96
   TextHeight = 13
   object ReplaceLbl: TLabel [1]
@@ -26,14 +24,14 @@ inherited ReplaceForm: TReplaceForm
     ExplicitTop = 70
   end
   inherited OkBtn: TButton
-    Top = 175
+    Top = 189
     TabOrder = 4
-    ExplicitTop = 175
+    ExplicitTop = 189
   end
   inherited CancelBtn: TButton
-    Top = 175
+    Top = 189
     TabOrder = 5
-    ExplicitTop = 175
+    ExplicitTop = 189
   end
   object ComboBox2: TComboBox [7]
     Left = 80

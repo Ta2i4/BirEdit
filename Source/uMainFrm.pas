@@ -1,6 +1,6 @@
 {-------------------------------------------------------------------------------
 BirEdit text editor.
-Copyright (C) 2008-2010 Alexey Tatuyko
+Copyright (C) 2008-2011 Alexey Tatuyko
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uMainFrm.pas by Alexey Tatuyko, released 2010-11-18.
+The Original Code is uMainFrm.pas by Alexey Tatuyko, released 2011-09-10.
 All Rights Reserved.
 
-$Id: uMainFrm.pas, v 2.0.2.63 2010/11/18 12:49:00 tatuich Exp $
+$Id: uMainFrm.pas, v 2.1.0.90 2011/09/10 04:59:00 tatuich Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.googlecode.com/
@@ -35,13 +35,9 @@ interface
 uses
   Windows, Messages, ComCtrls, Dialogs, Menus, Classes, Controls, Forms,
   Graphics, SysUtils, ExtCtrls, ShellAPI, Clipbrd, IniFiles, CheckLst, ExtDlgs,
-  StdCtrls, ActnList, Printers, Registry, ShlObj,
-  {$IFNDEF UNICODE}WideStrings,{$ENDIF}
-  JvTimer, JvComponentBase, JvDragDrop, JvTrayIcon, JvWinDialogs,
-  JvMRUManager,
-  SynEdit, {$IFNDEF UNICODE}SynUnicode,{$ENDIF}
-  SynEditPrint, SynEditTypes, SynEditPrintTypes, SynEditRegexSearch,
-  SynEditSearch,
+  StdCtrls, ActnList, Printers, Registry, ShlObj, JvTimer, JvComponentBase,
+  JvDragDrop, JvTrayIcon, JvWinDialogs, JvMRUManager, SynEdit, SynEditPrint,
+  SynEditTypes, SynEditPrintTypes, SynEditRegexSearch, SynEditSearch,
   SynEditMiscClasses, SynEditHighlighter, SynHighlighterCpp,
   SynHighlighterEiffel, SynHighlighterFortran, SynHighlighterJava,
   SynHighlighterGeneral, SynHighlighterM3, SynHighlighterVB,
@@ -246,6 +242,11 @@ type
     N175: TMenuItem;
     N176: TMenuItem;
     N52: TMenuItem;
+    N73: TMenuItem;
+    N172: TMenuItem;
+    N177: TMenuItem;
+    N178: TMenuItem;
+    N179: TMenuItem;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure JvDragDrop1Drop(Sender: TObject; Pos: TPoint;
@@ -323,15 +324,15 @@ type
     procedure N174Click(Sender: TObject);
     procedure N175Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure N177Click(Sender: TObject);
   private
     fSearchFromCaret, gbSearchBackwards, gbSearchCaseSensitive,
     gbSearchFromCaret, gbSearchRegex, gbSearchSelectionOnly, prevnoex,
-    gbSearchWholeWords, gbTempSearchBackwards: Boolean;
+    gbSearchWholeWords, gbSearchCycle: Boolean;
     gsReplaceText, gsReplaceTextHistory, gsSearchText, gsSearchTextHistory,
     MyFileName, appath: string;
     prev, curcp: Integer;
     myfsize: Int64;
-    BEPlugList: TStrings;
     BESyn: TSynCustomHighlighter;
     jvtic: TJvTrayIcon;
     function MyGetAppDataPath: string;
@@ -341,7 +342,6 @@ type
     procedure ShowTrayIcon;
     procedure AddToClipboard;
     procedure ChangeClipboard;
-    procedure ClickPlugItem(Sender: TObject);
     procedure DoSearchReplaceText(AReplace, ABackwards: Boolean);
     procedure ShowSearchReplaceDialog(AReplace: Boolean);
     procedure FindExecute;
@@ -349,7 +349,6 @@ type
     procedure FindBackwardsExecute;
     procedure ItemClick(Sender: TObject);
     procedure LoadAppLoc;
-    procedure LoadPlugsList;
     procedure LoadTranslate(const lang: string);
     procedure MyLoadLoc(AWnd: TForm; mysect: string; dftitle: Boolean);
     procedure MySaveFile(SaveFileName: TFileName; seId, fid: Integer);
@@ -363,7 +362,6 @@ type
     procedure MyScanDropFiles(const fValues: TStrings);
     procedure MyShowDroppedDlg(const fValues: TStrings);
     procedure MyOpenDropped(const FileName: TFileName);
-    {$IFDEF UNICODE}
     procedure EditDropFiles(Sender: TObject; X, Y: Integer; AFiles: TStrings);
     procedure EditReplaceText(Sender: TObject; const ASearch, AReplace: string;
       Line, Column: Integer; var Action: TSynReplaceAction);
@@ -371,16 +369,6 @@ type
     procedure MyOpenFile(OpenFileName: TFileName; Encoding: TEncoding;
                            fd: Byte);
     procedure MySaveToFileEnc(const FileName: TFileName; Encoding: TEncoding);
-    {$ELSE}
-    procedure EditDropFiles(Sender: TObject; X, Y: Integer;
-                              AFiles: TUnicodeStrings);
-    procedure EditReplaceText(Sender: TObject; const ASearch,
-                                AReplace: WideString; Line, Column: Integer;
-                                var Action: TSynReplaceAction);
-    procedure MyLoadFromFile(const FileName: TFileName; Encoding: Byte);
-    procedure MyOpenFile(OpenFileName: TFileName; Encoding, fd: Byte);
-    procedure MySaveToFileEnc(const FileName: TFileName; Encoding: Byte);
-    {$ENDIF}
     procedure MyOpenFileWosf(OpenFileName: TFileName; fd: Byte);
     procedure DoUnAssoc;
   end;
@@ -459,6 +447,7 @@ var
   mysn3: string = 'KB';
   mysn4: string = 'Byte(s)';
   mysn5: string = 'read only';
+  mysn6: string = 'Please specify a directory';
   Main: TMain;
 
   bor: record
@@ -669,7 +658,6 @@ end;
 
 procedure TMain.MyOpenDifferCP(Sender: TObject);
 begin
-  {$IFDEF UNICODE}
   case N44.IndexOf(Sender as TMenuItem) of
     0: MyOpenFile(MyFileName, nil, 1);
     1: MyOpenFile(MyFileName, TEncoding.Default, 1);
@@ -679,13 +667,6 @@ begin
     5: MyOpenFile(MyFileName, TEncoding.UTF8, 1);
     6: MyOpenFile(MyFileName, TEncoding.UTF7, 1);
   end;
-  {$ELSE}
-  case N44.IndexOf(Sender as TMenuItem) of
-    0: MyOpenFile(MyFileName, 4, 1);
-    1: MyOpenFile(MyFileName, 3, 1);
-    3..5: MyOpenFile(MyFileName, N44.IndexOf(Sender as TMenuItem) - 3, 1);
-  end;
-  {$ENDIF}
 end;
 
 procedure TMain.MySetSelMode(Sender: TObject);
@@ -782,30 +763,11 @@ begin
   end;
 end;
 
-{$IFDEF UNICODE}
 procedure TMain.EditDropFiles(Sender: TObject; X, Y: Integer; AFiles: TStrings);
-{$ELSE}
-procedure TMain.EditDropFiles(Sender: TObject; X, Y: Integer;
-                                AFiles: TUnicodeStrings);
-var
-  tstrs: TStrings;
-{$ENDIF}
 begin
-  {$IFDEF UNICODE}
   MyScanDropFiles(AFiles);
-  {$ELSE}
-  tstrs := TStringList.Create;
-  try
-    AFiles.SaveFormat := sfAnsi;
-    tstrs.Text := AFiles.Text;
-    MyScanDropFiles(tstrs);
-  finally
-    tstrs.Free;
-  end;
-  {$ENDIF}
 end;
 
-{$IFDEF UNICODE}
 procedure TMain.MyLoadFromFile(const FileName: TFileName; Encoding: TEncoding);
 var
   Size, LineBreakLen: Integer;
@@ -859,91 +821,8 @@ begin
     FreeAndNil(Stream);
   end;
 end;
-{$ELSE}
-procedure TMain.MyLoadFromFile(const FileName: TFileName; Encoding: Byte);
-var
-  ByteOrderMask: array[0..5] of Byte;
-  Size, BytesRead: Integer;
-  SA: AnsiString;
-  SW: UnicodeString;
-  Stream: TStream;
-begin
-  Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
-  try
-    Edit.Lines.BeginUpdate;
-    try
-      Size := Stream.Size - Stream.Position;
-      BytesRead := Stream.Read(ByteOrderMask[0], SizeOf(ByteOrderMask));
-      if not (Encoding in [0..3]) then begin
-        if (BytesRead >= 2) and (ByteOrderMask[0] = UTF16BOMLE[0])
-               and (ByteOrderMask[1] = UTF16BOMLE[1])
-        then Encoding := 0;
-        if (BytesRead >= 2) and (ByteOrderMask[0] = UTF16BOMBE[0])
-               and (ByteOrderMask[1] = UTF16BOMBE[1])
-        then Encoding := 1;
-        if (BytesRead >= 3) and (ByteOrderMask[0] = UTF8BOM[0])
-               and (ByteOrderMask[1] = UTF8BOM[1])
-               and (ByteOrderMask[2] = UTF8BOM[2])
-        then Encoding := 2;
-        if not (Encoding in [0..3]) then Encoding := 3;
-      end;
-      case Encoding of
-        0: begin
-             SetLength(SW, (Size - 2) div SizeOf(WideChar));
-             Assert((Size and 1) <> 1,
-                      'Number of chars must be a multiple of 2');
-             if BytesRead > 2 then begin
-               System.Move(ByteOrderMask[2], SW[1], BytesRead - 2); 
-               if Size > BytesRead then Stream.Read(SW[3], Size - BytesRead);
-             end;
-             Edit.Lines.SetTextStr(SW);
-           end;
-        1: begin
-             SetLength(SW, (Size - 2) div SizeOf(WideChar));
-             Assert((Size and 1) <> 1,
-                     'Number of chars must be a multiple of 2');
-             if BytesRead > 2 then begin
-               System.Move(ByteOrderMask[2], SW[1] ,BytesRead - 2);
-               if Size > BytesRead then Stream.Read(SW[3], Size - BytesRead);
-               StrSwapByteOrder(PWideChar(SW));
-             end;
-             Edit.Lines.SetTextStr(SW);
-           end;
-        2: begin
-             SetLength(SA, (Size - 3) div SizeOf(AnsiChar));
-             if BytesRead > 3 then begin
-               System.Move(ByteOrderMask[3], SA[1], BytesRead - 3);
-               if Size > BytesRead then Stream.Read(SA[4], Size - BytesRead);
-               SW := UTF8Decode(SA);
-             end;
-             Edit.Lines.SetTextStr(SW);
-           end;
-        else begin
-          SetLength(SA, Size div SizeOf(AnsiChar));
-          if BytesRead > 0 then begin
-            System.Move(ByteOrderMask[0], SA[1], BytesRead);
-            if Size > BytesRead then Stream.Read(SA[7], Size - BytesRead);
-          end;
-          Edit.Lines.SetTextStr(SA);
-        end;
-      end;
-      curcp := Encoding;
-    finally
-      Edit.Lines.EndUpdate;
-    end;
-    myfsize := Stream.Size;
-    MyFileName := FileName;
-  finally
-    FreeAndNil(Stream);
-  end;
-end;
-{$ENDIF}
 
-{$IFDEF UNICODE}
 procedure TMain.MyOpenFile(OpenFileName: TFileName; Encoding: TEncoding; fd: Byte);
-{$ELSE}
-procedure TMain.MyOpenFile(OpenFileName: TFileName; Encoding: Byte; fd: Byte);
-{$ENDIF}
 begin
   if ExtractFilePath(OpenFileName) = ''
   then OpenFileName := appath + OpenFileName;
@@ -958,11 +837,7 @@ begin
     MessageBox(Self.Handle, PChar(mysg1), 'BirEdit', MB_OK+MB_ICONSTOP);
     MyFileName := '';
     myfsize := 0;
-    {$IFDEF UNICODE}
     curcp := 0;
-    {$ELSE}
-    curcp := 3;
-    {$ENDIF}
     if bor.synh then MySetSynByFid(0) else MySetSynByFid(-1);
   end;
   Status.Panels.Items[2].Text := MyBytesToStr(myfsize);
@@ -970,7 +845,6 @@ begin
   prev := FileAge(OpenFileName);
 end;
 
-{$IFDEF UNICODE}
 procedure TMain.MySaveToFileEnc(const FileName: TFileName; Encoding: TEncoding);
 var
   Stream: TStream;
@@ -985,28 +859,10 @@ begin
     FreeAndNil(Stream);
   end;
 end;
-{$ELSE}
-procedure TMain.MySaveToFileEnc(const FileName: TFileName; Encoding: Byte);
-var
-  Stream: TStream;
-begin
-  Stream := TFileStream.Create(FileName, fmCreate);
-  try
-    Edit.Lines.SaveFormat := TSaveFormat(Encoding);
-    Edit.Lines.SaveToStream(Stream);
-    MyFileName := FileName;
-    myfsize := Stream.Size;
-    Edit.Modified := False;
-  finally
-    FreeAndNil(Stream);
-  end;
-end;
-{$ENDIF}
 
 procedure TMain.MySaveToFile(const FileName: TFileName; seid, fid: Integer);
 begin
   try
-    {$IFDEF UNICODE}
     case seid of
       1: MySaveToFileEnc(FileName, TEncoding.ASCII);
       2: MySaveToFileEnc(FileName, TEncoding.Unicode);
@@ -1015,20 +871,13 @@ begin
       5: MySaveToFileEnc(FileName, TEncoding.UTF7);
       else MySaveToFileEnc(FileName, nil);
     end;
-    {$ELSE}
-    MySaveToFileEnc(FileName, seid);
-    {$ENDIF}
     curcp := seid;
     if bor.synh then begin
       if (fid > 1) and (fid <= 52) then MySetSynByFid(fid - 1)
       else MySetSynByExt(ExtractFileExt(FileName));
     end else MySetSynByFid(-1);
   except
-    {$IFDEF UNICODE}
     curcp := 0;
-    {$ELSE}
-    curcp := 3;
-    {$ENDIF}
     Edit.Modified := True;
     if bor.synh then MySetSynByFid(0) else MySetSynByFid(-1);
   end;
@@ -1065,19 +914,12 @@ begin
     dlg.Ctl3D := True;
     dlg.Options := [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing];
     dlg.Encodings.Clear;
-    {$IFDEF UNICODE}
     dlg.Encodings.Add('Ansi');
     dlg.Encodings.Add('ASCII');
     dlg.Encodings.Add('UTF-16 little endian');
     dlg.Encodings.Add('UTF-16 big endian');
     dlg.Encodings.Add('UTF-8');
     dlg.Encodings.Add('UTF-7');
-    {$ELSE}
-    dlg.Encodings.Add('UTF-16 little endian');
-    dlg.Encodings.Add('UTF-16 big endian');
-    dlg.Encodings.Add('UTF-8');
-    dlg.Encodings.Add('Ansi');
-    {$ENDIF}
     dlg.EncodingIndex := 0;
     for I := 0 to 51 do dlg.Filter := dlg.Filter + BEFileFilter[i];
     dlg.FilterIndex := 0;
@@ -1174,11 +1016,12 @@ begin
   else dlg := TSearchForm.Create(Self);
   with dlg do try
     MyLoadLoc(dlg, 'SearchDlg', AReplace);
-    SearchBackwards := (gbSearchBackwards or gbtempSearchBackwards);
+    SearchBackwards := gbSearchBackwards;
     SearchCaseSensitive := gbSearchCaseSensitive;
     SearchFromCursor := gbSearchFromCaret;
     SearchInSelectionOnly := gbSearchSelectionOnly;
     SearchRegularExpression := gbSearchRegex;
+    SearchCycle := gbSearchCycle;
     if not Edit.SelAvail then Edit.ExecuteCommand(198, 'A', @Edit.Lines);
     if Edit.SelAvail and (Edit.BlockBegin.Line = Edit.BlockEnd.Line)
     then SearchText := Edit.SelText
@@ -1190,12 +1033,13 @@ begin
     end;
     SearchWholeWords := gbSearchWholeWords;
     if ShowModal = mrOK then begin
-      if not gbtempSearchBackwards then gbSearchBackwards := SearchBackwards;
+      gbSearchBackwards := SearchBackwards;
       gbSearchCaseSensitive := SearchCaseSensitive;
       gbSearchFromCaret := SearchFromCursor;
       gbSearchSelectionOnly := SearchInSelectionOnly;
       gbSearchWholeWords := SearchWholeWords;
       gbSearchRegex := SearchRegularExpression;
+      gbSearchCycle := SearchCycle;
       gsSearchText := SearchText;
       gsSearchTextHistory := SearchTextHistory;
       if AReplace then with dlg as TReplaceForm do begin
@@ -1225,21 +1069,35 @@ begin
   if gbSearchRegex then Edit.SearchEngine := SynEditRegexSearch1
   else Edit.SearchEngine := SynEditSearch1;
   if Edit.SearchReplace(gsSearchText, gsReplaceText, Options) = 0 then begin
-    MessageBox(Self.Handle, PChar(mysg2), 'BirEdit', MB_OK+MB_ICONINFORMATION);
-    if ssoBackwards in Options then Edit.BlockEnd := Edit.BlockBegin
-    else Edit.BlockBegin := Edit.BlockEnd;
-    Edit.CaretXY := Edit.BlockBegin;
+    if gbSearchCycle then begin
+      fSearchFromCaret := False;
+      if AReplace then begin
+        if gbSearchBackwards then begin
+          if ABackwards then ReplaceAgainExecute else ReplaceBackwardsExecute;
+        end else begin
+          if ABackwards then ReplaceBackwardsExecute else ReplaceAgainExecute;
+        end;
+      end else begin
+        if gbSearchBackwards then begin
+          if ABackwards then FindAgainExecute else FindBackwardsExecute;
+        end else begin
+          if ABackwards then FindBackwardsExecute else FindAgainExecute;
+        end;
+      end;
+      fSearchFromCaret := True;
+    end else begin
+      MessageBox(Self.Handle, PChar(mysg2), 'BirEdit',
+                   MB_OK+MB_ICONINFORMATION);
+      if ssoBackwards in Options then Edit.BlockEnd := Edit.BlockBegin
+      else Edit.BlockBegin := Edit.BlockEnd;
+      Edit.CaretXY := Edit.BlockBegin;
+    end;
   end;
   if ConfirmReplace <> nil then ConfirmReplace.Free;
 end;
 
-{$IFDEF UNICODE}
 procedure TMain.EditReplaceText(Sender: TObject; const ASearch,
   AReplace: string; Line, Column: Integer; var Action: TSynReplaceAction);
-{$ELSE}
-procedure TMain.EditReplaceText(Sender: TObject; const ASearch,
-  AReplace: WideString; Line, Column: Integer; var Action: TSynReplaceAction);
-{$ENDIF}
 var
   APos: TPoint;
   EditRect: TRect;
@@ -1275,22 +1133,19 @@ end;
 
 procedure TMain.FindExecute;
 begin
-  gbtempSearchBackwards := False;
   ShowSearchReplaceDialog(False);
 end;
 
 procedure TMain.FindAgainExecute;
 begin
-  gbtempSearchBackwards := False;
 	if (gsSearchText = '') then ShowSearchReplaceDialog(False)
-  else DoSearchReplaceText(False, False);
+  else DoSearchReplaceText(False, gbSearchBackwards);
 end;
 
 procedure TMain.FindBackwardsExecute;
 begin
-	gbtempSearchBackwards := True;
 	if (gsSearchText = '') then ShowSearchReplaceDialog(False)
-  else DoSearchReplaceText(False, True);
+  else DoSearchReplaceText(False, not gbSearchBackwards);
 end;
 
 procedure TMain.ReplaceExecute;
@@ -1300,16 +1155,14 @@ end;
 
 procedure TMain.ReplaceAgainExecute;
 begin
-  gbtempSearchBackwards := False;
 	if (gsSearchText = '') then ShowSearchReplaceDialog(True)
-  else DoSearchReplaceText(True, False);
+  else DoSearchReplaceText(True, gbSearchBackwards);
 end;
 
 procedure TMain.ReplaceBackwardsExecute;
 begin
-	gbtempSearchBackwards := True;
 	if (gsSearchText = '') then ShowSearchReplaceDialog(True)
-  else DoSearchReplaceText(True, True);
+  else DoSearchReplaceText(True, not gbSearchBackwards);
 end;
 
 procedure TMain.N18Click(Sender: TObject);
@@ -1440,7 +1293,12 @@ begin
   N174.Caption := langini.ReadString('Main', '103', 'Associations');
   N173.Caption := langini.ReadString('Main', '104', 'Word wrap');
   N175.Caption := langini.ReadString('Main', '105', 'Open all');
-  N52.Caption := langini.ReadString('Main', '106', 'Plugins');
+  N73.Caption := langini.ReadString('Main', '106', 'Files');
+  N52.Caption := langini.ReadString('Main', '107', 'Folder contents');
+  N177.Caption := langini.ReadString('Main', '108', 'Files');
+  N178.Caption := langini.ReadString('Main', '109', 'Folders');
+  N179.Caption := langini.ReadString('Main', '110', 'Folders and files');
+  mysn6 := langini.ReadString('Main', '111', 'Please specify a directory');
   N19.Caption := N11.Caption;
   N20.Caption := N12.Caption;
   N22.Caption := N17.Caption;
@@ -1482,6 +1340,7 @@ begin
   mysn3 := 'KB';
   mysn4 := 'Byte(s)';
   mysn5 := 'read only';
+  mysn6 := 'Please specify a directory';
   myunk := 'Untitled';
   N1.Caption := 'File';
   N2.Caption := 'Exit';
@@ -1520,7 +1379,7 @@ begin
   N49.Caption := 'Help';
   N50.Caption := 'About...';
   N51.Caption := 'Font...';
-  N52.Caption := 'Plugins';
+  N52.Caption := 'Folder contents';
   N53.Caption := 'Auto';
   N56.Caption := 'Swap';
   N57.Caption := 'Clear all';
@@ -1532,6 +1391,7 @@ begin
   N70.Caption := 'Invert case';
   N71.Caption := 'Quote selection';
   N72.Caption := 'Dequote selection';
+  N73.Caption := 'Files';
   N74.Caption := 'Syntax';
   N75.Caption := 'Default';
   N76.Caption := 'Sentence case';
@@ -1571,6 +1431,9 @@ begin
   N173.Caption := 'Word wrap';
   N174.Caption := 'Associations';
   N175.Caption := 'Open all';
+  N177.Caption := 'Files';
+  N178.Caption := 'Folders';
+  N179.Caption := 'Folders and files';
   N19.Caption := N11.Caption;
   N20.Caption := N12.Caption;
   N22.Caption := N17.Caption;
@@ -2223,109 +2086,13 @@ begin
       end;
     end;
   end else if ToCreate
-  then
-  {$IFDEF UNICODE}
-    MySaveFile(ParamFile, 0, 1);
-  {$ELSE}
-    MySaveFile(ParamFile, 3, 1);
-  {$ENDIF}
+  then MySaveFile(ParamFile, 0, 1);
   if ToPaste then Edit.PasteFromClipboard;
   if ToQuit then if CallTerminateProcs then PostQuitMessage(0);
 end;
 
-procedure TMain.LoadPlugsList;
-var
-  {$IFDEF UNICODE}
-  beplugname: function: PChar;
-  {$ELSE}
-  beplugname: function: PWideChar;
-  {$ENDIF}
-  beplugflnm: string;
-  behnd: THandle;
-  beplugitem: TMenuItem;
-  beplugsrch: TSearchRec;
-begin
-  BEPlugList := TStringList.Create;
-  if FindFirst(appath + 'plugins\*.dll', faAnyFile, beplugsrch) = 0 then repeat
-    if (beplugsrch.Name = '.') or (beplugsrch.Name = '..') then Continue;
-    if not (beplugsrch.Attr and faDirectory) <> 0 then begin
-      beplugflnm := appath + 'plugins\' + beplugsrch.Name;
-      beplugitem := TMenuItem.Create(N52);
-      behnd := LoadLibrary(PChar(beplugflnm));
-      if behnd <> 0 then begin
-        @beplugname := GetProcAddress(behnd, 'BirEditPlugName');
-        if @beplugname <> nil then beplugitem.Caption := beplugname else Exit;
-        beplugitem.OnClick := ClickPlugItem;
-        N52.Add(beplugitem);
-        BEPlugList.Add(beplugflnm);
-      end;
-      FreeLibrary(behnd);
-    end;
-  until FindNext(beplugsrch) <> 0;
-  FindClose(beplugsrch);
-  N52.Visible := BEPlugList.Count > 0;
-end;
-
-procedure TMain.ClickPlugItem(Sender: TObject);
-var
-  beplugexec: function(AObject: TObject): Boolean;
-  beplugflnm, beplgtst: string;
-  behnd: THandle;
-  {$IFDEF UNICODE}
-  beplugtype: function: PChar;
-  beplugtext: TStrings;
-  {$ELSE}
-  beplugtype: function: PWideChar;
-  beplugtext: TWideStrings;
-  {$ENDIF}
-begin
-  with Sender as TMenuItem do beplugflnm := BEPlugList.Strings[MenuIndex];
-  behnd := LoadLibrary(PChar(beplugflnm));
-  if behnd <> 0 then begin
-    @beplugtype := GetProcAddress(behnd, 'BirEditPlugType');
-    @beplugexec := GetProcAddress(behnd, 'BirEditPlugExec');
-    if beplugtype = 'BE_EDIT_SELTEXT' then begin
-      {$IFDEF UNICODE}
-      beplugtext := TStringList.Create;
-      {$ELSE}
-      beplugtext := TWideStringList.Create;
-      {$ENDIF}
-      try
-        beplugexec(beplugtext);
-        beplgtst := beplugtext.Text;
-        if Copy(beplgtst, Length(beplgtst) - Length(#13#10) + 1, Length(#13#10))
-             = #13#10
-        then SetLength(beplgtst, Length(beplgtst) - Length(#13#10));
-        Edit.SelText := beplgtst;
-      finally
-        FreeAndNil(beplugtext);
-      end;
-    end else if beplugtype = 'BE_EDIT_ALLTEXT' then begin
-      {$IFDEF UNICODE}
-      beplugtext := TStringList.Create;
-      {$ELSE}
-      beplugtext := TWideStringList.Create;
-      {$ENDIF}
-      try
-        if Edit.SelAvail then beplugtext.Text := Edit.SelText
-        else beplugtext.Text := Edit.Text;
-        beplugexec(beplugtext);
-        beplgtst := beplugtext.Text;
-        if Copy(beplgtst, Length(beplgtst) - Length(#13#10) + 1, Length(#13#10))
-             = #13#10
-        then SetLength(beplgtst, Length(beplgtst) - Length(#13#10));
-        Edit.Text := beplgtst;
-      finally
-        FreeAndNil(beplugtext);
-      end;
-    end;
-  end;
-  FreeLibrary(behnd);
-end;
-
 procedure TMain.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  if BEPlugList <> nil then FreeAndNil(BEPlugList);
   MySaveSettings;
 end;
 
@@ -2707,20 +2474,13 @@ end;
 
 procedure TMain.FormCreate(Sender: TObject);
 begin
-  {$IFNDEF UNICODE}
-  N58.Visible := False;
-  N64.Visible := False;
-  curcp := 3;
-  {$ELSE}
   curcp := 0;
-  {$ENDIF}
   Edit.OnDropFiles := EditDropFiles;
   Edit.OnReplaceText := EditReplaceText;
   appath := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)));
   MyLoadSettings;
   LoadAppLoc;
   WorkParams;
-  LoadPlugsList;
 end;
 
 procedure TMain.ShowTrayIcon;
@@ -2994,11 +2754,6 @@ end;
 
 procedure TMain.N174Click(Sender: TObject);
 var
-  {$IFNDEF UNICODE}
-  wifn: array [0..MAX_PATH] of Char;
-  tmpext: string;
-  b: TIniFile;
-  {$ENDIF}
   i: Integer;
   a: TRegistry;
   fadlg: TFAssoc;
@@ -3008,103 +2763,42 @@ begin
     MyLoadLoc(fadlg, 'FAssocDlg', False);
     for I := 0 to 91 do begin
       chklst1.Items.Add(BEFileExtensions[i]);
-      {$IFNDEF UNICODE}
-      if Win32Platform = VER_PLATFORM_WIN32_NT then begin
-      {$ENDIF}
-        a := TRegistry.Create(KEY_READ);
+      a := TRegistry.Create(KEY_READ);
+      try
+        a.RootKey := HKEY_CLASSES_ROOT;
+        if a.OpenKeyReadOnly(BEFileExtensions[i]) then begin
+          chklst1.Checked[i] := a.ReadString('') = 'BirEdit.File';
+          a.CloseKey;
+        end;
+      finally
+        FreeAndNil(a);
+      end;
+    end;
+    if ShowModal = mrOk then begin
+      for I := 0 to chklst1.Count - 1 do begin
+        a := TRegistry.Create;
         try
           a.RootKey := HKEY_CLASSES_ROOT;
-          if a.OpenKeyReadOnly(BEFileExtensions[i]) then begin
-            chklst1.Checked[i] := a.ReadString('') = 'BirEdit.File';
+          if a.OpenKey(chklst1.Items[i], True) then begin
+            if chklst1.Checked[i] = True then begin
+              if not (a.ReadString('') = 'BirEdit.File') then begin
+                a.WriteString('BirEdit.bak', a.ReadString(''));
+                a.WriteString('', 'BirEdit.File');
+              end;
+            end else begin
+              if a.ReadString('') = 'BirEdit.File' then begin
+                a.WriteString('', a.ReadString('BirEdit.bak'));
+                a.DeleteValue('BirEdit.bak');
+              end;
+            end;
             a.CloseKey;
           end;
         finally
           FreeAndNil(a);
         end;
-      {$IFNDEF UNICODE}
-      end else begin
-        GetWindowsDirectory(wifn, SizeOf(wifn));
-        b := TIniFile.Create(IncludeTrailingPathDelimiter(wifn) + 'win.ini');
-        try
-          tmpext := BEFileExtensions[i];
-          Delete(tmpext, 1, 1);
-          chklst1.Checked[i] := b.ReadString('Extensions', tmpext, '')
-                                 = (appath + ExtractFileName(ParamStr(0)) + ' ^'
-                                      + BEFileExtensions[i]);
-        finally
-          FreeAndNil(b);
-        end;
-      end;
-      {$ENDIF}
-    end;
-    if ShowModal = mrOk then begin
-      for I := 0 to chklst1.Count - 1 do begin
-        {$IFNDEF UNICODE}
-        if Win32Platform = VER_PLATFORM_WIN32_NT then begin
-        {$ENDIF}
-          a := TRegistry.Create;
-          try
-            a.RootKey := HKEY_CLASSES_ROOT;
-            if a.OpenKey(chklst1.Items[i], True) then begin
-              if chklst1.Checked[i] = True then begin
-                if not (a.ReadString('') = 'BirEdit.File') then begin
-                  a.WriteString('BirEdit.bak', a.ReadString(''));
-                  a.WriteString('', 'BirEdit.File');
-                end;
-              end else begin
-                if a.ReadString('') = 'BirEdit.File' then begin
-                  a.WriteString('', a.ReadString('BirEdit.bak'));
-                  a.DeleteValue('BirEdit.bak');
-                end;
-              end;
-              a.CloseKey;
-            end;
-          finally
-            FreeAndNil(a);
-          end;
-        {$IFNDEF UNICODE}
-        end else begin
-          GetWindowsDirectory(wifn, SizeOf(wifn));
-          b := TIniFile.Create(IncludeTrailingPathDelimiter(wifn) + 'win.ini');
-          try
-            if chklst1.Checked[i] = True then begin
-              tmpext := BEFileExtensions[i];
-              Delete(tmpext, 1, 1);
-              if not (b.ReadString('Extensions', tmpext, '')
-                                 = (appath + ExtractFileName(ParamStr(0)) + ' ^'
-                                      + BEFileExtensions[i]))
-              then begin
-                b.WriteString('Extensions.bak', tmpext,
-                                b.ReadString('Extensions', tmpext, ''));
-                b.WriteString('Extensions', tmpext, appath
-                                + ExtractFileName(ParamStr(0)) + ' ^'
-                                + BEFileExtensions[i]);
-              end;
-            end else begin
-              tmpext := BEFileExtensions[i];
-              Delete(tmpext, 1, 1);
-              if b.ReadString('Extensions', tmpext, '')
-                                 = (appath + ExtractFileName(ParamStr(0)) + ' ^'
-                                      + BEFileExtensions[i])
-              then begin
-                b.WriteString('Extensions', tmpext,
-                                b.ReadString('Extensions.bak', tmpext, ''));
-                b.DeleteKey('Extensions.bak', tmpext);
-              end;
-            end;
-          finally
-            FreeAndNil(b);
-          end;
-        end;
-        {$ENDIF}
       end;
     end;
   finally
-    {$IFNDEF UNICODE}
-    if Win32Platform = VER_PLATFORM_WIN32_WINDOWS
-    then SendMessage(HWND_BROADCAST, WM_WININICHANGE, 0,
-                       LongInt(PChar('Extensions')));
-    {$ENDIF}
     fadlg.Free;
   end;
 end;
@@ -3119,6 +2813,68 @@ begin
                     PChar('"' + Recent.Strings.Strings[i] + '"'),
                   PChar('"' + ExtractFilePath(Recent.Strings.Strings[i]) + '"'),
                     SW_SHOWNORMAL);
+end;
+
+procedure TMain.N177Click(Sender: TObject);
+var
+  mid: ShortInt;
+  mybfr: array [0..MAX_PATH] of Char;
+  mytmp: string;
+  mybi: TBrowseInfo;
+  mylst: PItemIDList;
+  mydlt: TStringList;
+  bs: TBufferCoord;
+
+  procedure MyScanDir(MyDir: string; const uid: ShortInt);
+  var
+    mys: TSearchRec;
+  begin
+    MyDir := IncludeTrailingPathDelimiter(MyDir);
+    if FindFirst(MyDir + '*', faAnyFile, mys) = 0 then repeat
+      if (mys.Name = '.') or (mys.Name = '..') then Continue;
+      case uid of
+        0: if (mys.Attr and faDirectory) <> 0
+           then MyScanDir(MyDir + mys.Name, uid)
+           else mydlt.Add(MyDir + mys.Name);
+        1: if (mys.Attr and faDirectory) <> 0 then begin
+             mydlt.Add(IncludeTrailingPathDelimiter(MyDir + mys.Name));
+             MyScanDir(MyDir + mys.Name, uid);
+           end else Continue;
+        2: if (mys.Attr and faDirectory) <> 0 then begin
+             mydlt.Add(IncludeTrailingPathDelimiter(MyDir + mys.Name));
+             MyScanDir(MyDir + mys.Name, uid);
+           end else mydlt.Add(MyDir + mys.Name);
+      end;
+      Application.ProcessMessages;
+    until FindNext(mys) <> 0;
+  end;
+
+begin
+  try
+    mid := N52.IndexOf(Sender as TMenuItem);
+    FillChar(mybi, SizeOf(mybi), 0);
+    mybi.hwndOwner := Self.Handle;
+    mybi.ulFlags := BIF_RETURNONLYFSDIRS or BIF_NEWDIALOGSTYLE or BIF_UAHINT
+                      or BIF_NONEWFOLDERBUTTON;
+    mybi.lpszTitle := PChar(mysn6);
+    mylst := SHBrowseForFolder(mybi);
+    if mylst <> nil then begin
+      ShGetPathFromIDList(mylst, mybfr);
+      mytmp := mybfr;
+      GlobalFreePtr(mylst);
+      mydlt := TStringList.Create;
+      try
+        MyScanDir(mytmp, mid);
+        if Edit.SelAvail then bs := Edit.BlockBegin else bs := Edit.CaretXY;
+        Edit.SelText := mydlt.Text;
+        if bor.ptac then Edit.CaretXY := bs;
+      finally
+        FreeAndNil(mydlt);
+      end;
+    end;
+  finally
+    mylst := nil;
+  end;
 end;
 
 procedure TMain.N17Click(Sender: TObject);
@@ -3152,12 +2908,6 @@ var
 begin
   aboutdlg := TAbout.Create(Self);
   with aboutdlg do try
-    {$IFNDEF UNICODE}
-    lbl2.Caption := lbl2.Caption + '-ansi';
-    {$ENDIF}
-    {$IFNDEF VER210}
-    Memo3.Lines.Insert(4, '- VCLFixPack v1.4 (http://andy.jgknet.de/blog/)');
-    {$ENDIF}
     Image1.Picture.Icon := Application.Icon;
     ShowModal;
   finally
@@ -3547,7 +3297,6 @@ var
   bs: TBufferCoord;
 begin
   if Edit.SelAvail then bs := Edit.BlockBegin else bs := Edit.CaretXY;
-  {$IFDEF UNICODE}
   case curcp of
     1: Edit.SelText := 'ASCII';
     2: Edit.SelText := 'UTF-16 little endian';
@@ -3556,14 +3305,6 @@ begin
     5: Edit.SelText := 'UTF-7';
     else Edit.SelText := 'Ansi';
   end;
-  {$ELSE}
-  case curcp of
-    0: Edit.SelText := 'UTF-16 little endian';
-    1: Edit.SelText := 'UTF-16 big endian';
-    2: Edit.SelText := 'UTF-8';
-    else Edit.SelText := 'Ansi';
-  end;
-  {$ENDIF}
   if bor.ptac then Edit.CaretXY := bs;
 end;
 
@@ -3610,7 +3351,6 @@ end;
 
 procedure TMain.N104Click(Sender: TObject);
 begin
-  {$IFDEF UNICODE}
   case curcp of
     1: MyOpenFile(MyFileName, TEncoding.ASCII, 1);
     2: MyOpenFile(MyFileName, TEncoding.Unicode, 1);
@@ -3619,9 +3359,6 @@ begin
     5: MyOpenFile(MyFileName, TEncoding.UTF7, 1);
     else MyOpenFile(MyFileName, TEncoding.Default, 1);
   end;
-  {$ELSE}
-  MyOpenFile(MyFileName, curcp, 1);
-  {$ENDIF}
 end;
 
 procedure TMain.N105Click(Sender: TObject);
@@ -3664,7 +3401,6 @@ begin
   bor.ed_insm := Edit.InsertMode;
   if bor.ed_insm then Status.Panels.Items[1].Text := 'Insert'
   else Status.Panels.Items[1].Text := 'Overwrite';
-  {$IFDEF UNICODE}
   case curcp of
     1: Status.Panels.Items[3].Text := 'ASCII';
     2: Status.Panels.Items[3].Text := 'UTF-16 little endian';
@@ -3673,14 +3409,6 @@ begin
     5: Status.Panels.Items[3].Text := 'UTF-7';
     else Status.Panels.Items[3].Text := 'Ansi';
   end;
-  {$ELSE}
-  case curcp of
-    0: Status.Panels.Items[3].Text := 'UTF-16 little endian';
-    1: Status.Panels.Items[3].Text := 'UTF-16 big endian';
-    2: Status.Panels.Items[3].Text := 'UTF-8';
-    else Status.Panels.Items[3].Text := 'Ansi';
-  end;
-  {$ENDIF}
 end;
 
 procedure TMain.JvTimer3Timer(Sender: TObject);
@@ -3849,68 +3577,31 @@ end;
 
 procedure TMain.MyOpenFileWosf(OpenFileName: TFileName; fd: Byte);
 begin
-  {$IFDEF UNICODE}
   MyOpenFile(OpenFileName, nil, fd);
-  {$ELSE}
-  MyOpenFile(OpenFileName, 4, fd);
-  {$ENDIF}
 end;
 
 procedure TMain.DoUnAssoc;
 var
-  {$IFNDEF UNICODE}
-  wifn: array [0..MAX_PATH] of Char;
-  tmpext: string;
-  b: TIniFile;
-  {$ENDIF}
   i: Integer;
   a: TRegistry;
 begin
   try
     for I := 0 to 91 do begin
-      {$IFNDEF UNICODE}
-      if Win32Platform = VER_PLATFORM_WIN32_NT then begin
-      {$ENDIF}
-        a := TRegistry.Create;
-        try
-          a.RootKey := HKEY_CLASSES_ROOT;
-          if a.OpenKey(BEFileExtensions[i], False) then begin
-            if a.ReadString('') = 'BirEdit.File' then begin
-              a.WriteString('', a.ReadString('BirEdit.bak'));
-              a.DeleteValue('BirEdit.bak');
-            end;
-            a.CloseKey;
+      a := TRegistry.Create;
+      try
+        a.RootKey := HKEY_CLASSES_ROOT;
+        if a.OpenKey(BEFileExtensions[i], False) then begin
+          if a.ReadString('') = 'BirEdit.File' then begin
+            a.WriteString('', a.ReadString('BirEdit.bak'));
+            a.DeleteValue('BirEdit.bak');
           end;
-        finally
-          FreeAndNil(a);
+          a.CloseKey;
         end;
-      {$IFNDEF UNICODE}
-      end else begin
-        GetWindowsDirectory(wifn, SizeOf(wifn));
-        b := TIniFile.Create(IncludeTrailingPathDelimiter(wifn) + 'win.ini');
-        try
-          tmpext := BEFileExtensions[i];
-          Delete(tmpext, 1, 1);
-          if b.ReadString('Extensions', tmpext, '')
-                                 = (appath + ExtractFileName(ParamStr(0)) + ' ^'
-                                      + BEFileExtensions[i])
-          then begin
-            b.WriteString('Extensions', tmpext,
-                            b.ReadString('Extensions.bak', tmpext, ''));
-            b.DeleteKey('Extensions.bak', tmpext);
-          end;
-        finally
-          FreeAndNil(b);
-        end;
+      finally
+        FreeAndNil(a);
       end;
-      {$ENDIF}
     end;
   finally
-    {$IFNDEF UNICODE}
-    if Win32Platform = VER_PLATFORM_WIN32_WINDOWS
-    then SendMessage(HWND_BROADCAST, WM_WININICHANGE, 0,
-                       LongInt(PChar('Extensions')));
-    {$ENDIF}
     if CallTerminateProcs then PostQuitMessage(0);
   end;
 end;

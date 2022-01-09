@@ -1,6 +1,6 @@
 {-------------------------------------------------------------------------------
 BirEdit text editor.
-Copyright (C) 2008-2010 Alexey Tatuyko
+Copyright (C) 2008-2011 Alexey Tatuyko
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 You can contact with me by e-mail: tatuich@gmail.com
 
 
-The Original Code is uDropped.pas by Alexey Tatuyko, released 2010-10-26.
+The Original Code is uDropped.pas by Alexey Tatuyko, released 2011-09-11.
 All Rights Reserved.
 
-$Id: uDropped.pas, v 2.0.1.42 2010/10/26 04:33:00 tatuich Exp $
+$Id: uDropped.pas, v 2.1.0.90 2011/09/11 04:58:00 tatuich Exp $
 
 You may retrieve the latest version of this file at the BirEdit project page,
 located at http://biredit.googlecode.com/
@@ -134,29 +134,13 @@ begin
 end;
 
 procedure TDropDlg.N1Click(Sender: TObject);
-{$IFNDEF VER210}
-var
-  i: Integer;
-{$ENDIF}
 begin
-  {$IFNDEF VER210}
-    for i := 0 to ChkLst.Count - 1 do ChkLst.Checked[i] := True;
-  {$ELSE}
-    ChkLst.CheckAll(cbChecked);
-  {$ENDIF}
+  ChkLst.CheckAll(cbChecked);
 end;
 
 procedure TDropDlg.N2Click(Sender: TObject);
-{$IFNDEF VER210}
-var
-  i: Integer;
-{$ENDIF}
 begin
-  {$IFNDEF VER210}
-    for i := 0 to ChkLst.Count - 1 do ChkLst.Checked[i] := False;
-  {$ELSE}
-    ChkLst.CheckAll(cbUnchecked);
-  {$ENDIF}
+  ChkLst.CheckAll(cbUnchecked);
 end;
 
 procedure TDropDlg.N3Click(Sender: TObject);

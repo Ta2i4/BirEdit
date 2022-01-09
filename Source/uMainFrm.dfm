@@ -330,6 +330,11 @@ object Main: TMain
           ShortCut = 32836
           OnClick = N37Click
         end
+        object N90: TMenuItem
+          Caption = 'Enclose selection'
+          ShortCut = 32849
+          OnClick = N90Click
+        end
         object N71: TMenuItem
           Caption = 'Quote selection'
           ShortCut = 16465
@@ -437,11 +442,6 @@ object Main: TMain
           OnClick = N170Click
         end
       end
-      object N90: TMenuItem
-        Caption = 'Enclose selection'
-        ShortCut = 32849
-        OnClick = N90Click
-      end
       object N48: TMenuItem
         Caption = 'Color under cursor (RGB)'
         ShortCut = 32854
@@ -457,20 +457,37 @@ object Main: TMain
         ShortCut = 16503
         OnClick = N8Click
       end
-      object N100: TMenuItem
-        Caption = 'Filename'
-        ShortCut = 16504
-        OnClick = N100Click
+      object N73: TMenuItem
+        Caption = 'Files'
+        object N100: TMenuItem
+          Caption = 'Filename'
+          ShortCut = 16504
+          OnClick = N100Click
+        end
+        object N102: TMenuItem
+          Caption = 'Filename and path'
+          ShortCut = 24696
+          OnClick = N102Click
+        end
+        object N172: TMenuItem
+          Caption = '-'
+        end
+        object N52: TMenuItem
+          Caption = 'Folder contents'
+          object N177: TMenuItem
+            Caption = 'Files'
+            OnClick = N177Click
+          end
+          object N178: TMenuItem
+            Caption = 'Folders'
+            OnClick = N177Click
+          end
+          object N179: TMenuItem
+            Caption = 'Folders and files'
+            OnClick = N177Click
+          end
+        end
       end
-      object N102: TMenuItem
-        Caption = 'Filename and path'
-        ShortCut = 24696
-        OnClick = N102Click
-      end
-    end
-    object N52: TMenuItem
-      Caption = 'Plugins'
-      Visible = False
     end
     object N101: TMenuItem
       Caption = 'Options'
