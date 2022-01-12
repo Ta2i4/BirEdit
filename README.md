@@ -11,3 +11,5 @@ Free and open source text editor for Windows 2000/XP/2003/Vista/2008/Seven. BirE
 - Syntax highlighting;
 - Printing of a document;
 - Support of language files.
+
+V3 pre-alpha builds will be in this branch: https://github.com/Ta2i4/BirEdit/tree/v3_concept
